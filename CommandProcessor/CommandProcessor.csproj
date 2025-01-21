@@ -3,6 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <RootNamespace>com.tybern.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PackageId>com.tybern.$(AssemblyName)</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
 
 </Project>
