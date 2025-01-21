@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:CallRecordCore"
+        x:DataType="vm:CallUI"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1024"
+        x:Class="CallRecordGUI.MainWindow"
+        RequestedThemeVariant="Light"
+        Title="Call Record GUI" MinWidth="500" VerticalAlignment="Stretch">
+
+  <Design.DataContext>
+    <vm:CallUI />
+  </Design.DataContext>
+  <TabControl>
+    <TabItem Header="Today">
+      <StackPanel>
+        <TextBlock Name="fClock" FontSize="24" FontFamily="Lato" TextAlignment="Center" Text="{Binding CurrentTime, StringFormat='HH:mm:ss'}" />
+        <Grid HorizontalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+          <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" VerticalAlignment="Center" Margin="10" Padding="5">Next Break:</TextBlock>
+          <TimePicker Grid.Column="1" Grid.Row="0" ClockIdentifier="24HourClock" MinuteIncrement="5" SelectedTime="{Binding BreakTimer}"  Margin="10" Padding="5" />
+          <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" VerticalAlignment="Center" Margin="10" Padding="5">End Shift:</TextBlock>
+          <TimePicker Grid.Column="1" Grid.Row="1" ClockIdentifier="24HourClock" MinuteIncrement="5" SelectedTime="{Binding EOSTimer}" Margin="10" Padding="5" />
+          <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
+            <TextBlock Name="fBreakTimer" Text="{Binding BreakTimerText}" FontSize="18" FontFamily="Lato" />
+            <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
+            <TextBlock Name="fEOSTimer" Text="{Binding EOSTimerText}" FontSize="18" FontFamily="Lato" />
+          </StackPanel>
+        </Grid>
+        <Grid HorizontalAlignment="Center" ColumnDefinitions="*,*" RowDefinitions="*,*,*,*">
+          <Button HorizontalAlignment="Center" Name="btnStartCall" Margin="10" Padding="10" Grid.Row="0" Grid.Column="0" Content="Start Call" FontSize="16" />
+          <Button HorizontalAlignment="Center" Name="btnEndCall" Margin="10" Padding="10" Grid.Row="0" Grid.Column="1" Content="End Call" FontSize="16" />
+          
+          <Button HorizontalAlignment="Center" Name="btnSMECall" Margin="10" Padding="10" Grid.Row="1" Grid.Column="0" Content="SME Chat" FontSize="16" />
+          <Button HorizontalAlignment="Center" Name="btnMAECall" Margin="10" Padding="10" Grid.Row="1" Grid.Column="1" Content="Transfer Call" FontSize="16" />
+
+          <Button HorizontalAlignment="Center" Name="btnEOS" Margin="10" Padding="10" Grid.Row="2" Grid.Column="0" Content="End-of-shift" FontSize="16" />
+          <Button HorizontalAlignment="Center" Name="btnAddNote" Margin="10" Padding="10" Grid.Row="2" Grid.Column="1" Content="Add Note" FontSize="16" />
+
+          <Button HorizontalAlignment="Center" Name="btnSurvey" Margin="10" Padding="10" Grid.Row="3" Grid.Column="0" Content="Survey" FontSize="16" />
+          <Button HorizontalAlignment="Center" Name="btnSkipSurvey" Margin="10" Padding="10" Grid.Row="3" Grid.Column="1" Content="Skip Survey" FontSize="16" />
+        </Grid>
+        <Grid HorizontalAlignment="Center" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+          <TextBlock Grid.Row="0" Grid.Column="0" Margin="10" Padding="10" TextAlignment="Center" Text="In Call" Background="AliceBlue" Name="fIsInCall" />
+          <TextBlock Grid.Row="0" Grid.Column="1" Margin="10" Padding="10" TextAlignment="Center" Text="Wrap" Background="AliceBlue" Name="fIsInWrap" />
+          <TextBlock Grid.Row="0" Grid.Column="2" Margin="10" Padding="10" TextAlignment="Center" Text="Waiting" Background="AliceBlue" Name="fIsInbound" />
+          
+          <TextBlock Grid.Row="1" Grid.Column="0" Margin="10" Padding="10" TextAlignment="Center" Text="{Binding CallTime, StringFormat='hh\\:mm\\:ss'}" Background="AliceBlue" />
+          <TextBlock Grid.Row="1" Grid.Column="1" Margin="10" Padding="10" TextAlignment="Center" Background="AliceBlue">
+            <Run Text="Transfers: "/>
+            <Run Text="{Binding CallMAE}"/> 
+          </TextBlock>
+          <TextBlock Grid.Row="1" Grid.Column="2" Margin="10" Padding="10" TextAlignment="Center" Background="AliceBlue">
+            <Run Text="SME Call: " />
+            <Run Text="{Binding CallSME}"/>
+          </TextBlock>
+
+          <TextBlock Grid.Row="2" Grid.Column="0" Margin="10" Padding="10" TextAlignment="Center" Background="AliceBlue">
+            <Run Text="Total Calls: " />
+            <Run Text="{Binding TotalCalls}" />
+          </TextBlock>
+          <TextBlock Grid.Row="2" Grid.Column="1" Margin="10" Padding="10" TextAlignment="Center" Background="AliceBlue">
+            <Run Text="Total Transfers: " />
+            <Run Text="{Binding TotalMAE}" />
+          </TextBlock>
+          <TextBlock Grid.Row="2" Grid.Column="2" Margin="10" Padding="10" TextAlignment="Center" Background="AliceBlue">
+            <Run Text="Total Wrap: " />
+            <Run Text="{Binding TotalWrap}" />
+            <Run Text=" / " />
+            <Run Text="{Binding WrapPercent, StringFormat='P2'}" />
+          </TextBlock>
+        </Grid>
+        <StackPanel VerticalAlignment="Stretch">
+          <TextBlock Margin="10" Padding="10" FontSize="24" FontFamily="Lato" TextAlignment="Center">Call Notes</TextBlock>
+          <TextBox Name="txtNotes" Margin="10" Padding="10" MinHeight="250" MinWidth="350" TextWrapping="Wrap" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+        </StackPanel>
+      </StackPanel>
+    </TabItem>
+    <TabItem Header="Call Records">
+      <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding CallRecordsList}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+              <TextBlock Text="{Binding startTime}" />
+              <TextBlock Text="{Binding endTime}" />
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </TabItem>
+  </TabControl>
+</Window>

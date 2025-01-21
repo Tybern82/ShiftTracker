@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+        x:Class="CallRecordGUI.dialogs.CallNotes"
+        RequestedThemeVariant="Light"
+        Title="Call Notes">
+  <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+    <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Add Call Notes</TextBlock>
+    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Select primary call type for this contact: </TextBlock>
+    <Border Background="Gainsboro"
+          BorderBrush="Black"
+          BorderThickness="2"
+          CornerRadius="3"
+          Padding="10" Margin="15" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+      <StackPanel>
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeSME" IsChecked="True" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeMobile" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeNBN" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeADSL" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeeMail" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeBilling" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypePA" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypePrepaid" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypePSTN" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeOpticomm" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeFetchTV" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeHomeWireless" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypePlatinum" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeMisrouted" />
+        <StackPanel Orientation="Horizontal">
+          <RadioButton GroupName="rgpCallType" Name="rCallTypeOther" />
+          <TextBox Name="txtOther" Watermark="Enter other reason..." AcceptsReturn="False" TextWrapping="NoWrap" Width="200" Margin="10" />
+        </StackPanel>
+      </StackPanel>
+    </Border>
+    <Button Margin="5" Padding="5" Grid.Row="3" Grid.Column="2" Name="btnSaveNotes">Save</Button>
+  </Grid>
+</Window>

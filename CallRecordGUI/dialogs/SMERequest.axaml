@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+        x:Class="CallRecordGUI.dialogs.SMERequest"
+        xmlns:vm="using:CallRecordCore"
+        x:DataType="vm:CallUI"
+        RequestedThemeVariant="Light"
+        Title="SME Request">
+
+  <Design.DataContext>
+    <vm:CallUI />
+  </Design.DataContext>
+  <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+    <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">SME Request</TextBlock>
+    <TextBlock Margin="10" FontSize="24" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding SMETime, StringFormat='hh\\:mm\\:ss'}" />
+    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Add details and select "Save" when closing SME call - time will calculate automatically: </TextBlock>
+    <Border Background="Gainsboro"
+          BorderBrush="Black"
+          BorderThickness="2"
+          CornerRadius="3"
+          Padding="10" Margin="15" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+      <StackPanel>
+        <RadioButton GroupName="rgpSMERequest" Name="rSMETools" IsChecked="True" />
+        <RadioButton GroupName="rgpSMERequest" Name="rSMEQuery" />
+        <TextBox Margin="15" Padding="5" AcceptsReturn="True" TextWrapping="Wrap" Name="txtDetails" Height="200" Watermark="Enter request..." />
+      </StackPanel>
+    </Border>
+    <Button Margin="5" Padding="5" Grid.Row="4" Grid.Column="2" Name="btnSaveSME">Save</Button>
+  </Grid>
+</Window>
