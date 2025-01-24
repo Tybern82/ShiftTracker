@@ -1,67 +1,42 @@
 using Avalonia.Controls;
+using com.tybern.CallRecordCore;
+using com.tybern.CallRecordCore.dialogs;
 
 namespace CallRecordGUI.dialogs;
 
 public partial class SkipSurvey : Window {
 
-    public CallRecordCore.SkipSurvey.SkipSurveyResult Result { get; } = new CallRecordCore.SkipSurvey.SkipSurveyResult(CallRecordCore.SkipSurvey.SkipSurveyOption.None);
+    private SkipSurveyResult.OptionSkipSurvey SelectedOption { get; set; }
+    private string Text { get; set; } = string.Empty;
 
     public SkipSurvey() {
         InitializeComponent();
 
-        setContent(rSurveyCallback, CallRecordCore.SkipSurvey.SkipSurveyOption.Callback);
-        setContent(rSurveyAgent, CallRecordCore.SkipSurvey.SkipSurveyOption.Agent);
-        setContent(rSurveyTransfer, CallRecordCore.SkipSurvey.SkipSurveyOption.Transfer);
-        setContent(rSurveyNonTelstra, CallRecordCore.SkipSurvey.SkipSurveyOption.NonTelstra);
-        setContent(rSurveyPrompted, CallRecordCore.SkipSurvey.SkipSurveyOption.None);
-        setContent(rSurveyOther, CallRecordCore.SkipSurvey.SkipSurveyOption.Other);
+        setContent(rSurveyCallback, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.Callback);
+        setContent(rSurveyAgent, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.Agent);
+        setContent(rSurveyTransfer, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.Transfer);
+        setContent(rSurveyNonTelstra, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.NonTelstra);
+        setContent(rSurveyPrompted, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.None);
+        setContent(rSurveyOther, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey.Other);
 
-        rSurveyCallback.IsCheckedChanged += onChange_rSurveyCallback;
-        rSurveyAgent.IsCheckedChanged += onChange_rSurveyAgent;
-        rSurveyTransfer.IsCheckedChanged += onChange_rSurveyTransfer;
-        rSurveyNonTelstra.IsCheckedChanged += onChange_rSurveyNonTelstra;
-        rSurveyPrompted.IsCheckedChanged += onChange_rSurveyPrompted;
-        rSurveyOther.IsCheckedChanged += onChange_rSurveyOther;
+        txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        btnSaveSurvey.Click += onClick_btnSaveSurvey;
-        txtOther.TextChanged += onChange_txtOther;
+        rSurveyCallback.IsCheckedChanged += (sender, args) => { if (rSurveyCallback.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Callback; };
+        rSurveyAgent.IsCheckedChanged += (sender, args) => { if (rSurveyAgent.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Agent; };
+        rSurveyTransfer.IsCheckedChanged += (sender, args) => { if (rSurveyTransfer.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Transfer; };
+        rSurveyNonTelstra.IsCheckedChanged += (sender, args) => { if (rSurveyNonTelstra.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.NonTelstra; };
+        rSurveyPrompted.IsCheckedChanged += (sender, args) => { if (rSurveyPrompted.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.None; };
+        rSurveyOther.IsCheckedChanged += (sender, args) => { if (rSurveyOther.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Other; };
+
+        btnSaveSurvey.Click += (sender, args) => {
+            SkipSurveyResult cmdResult = new SkipSurveyResult(SelectedOption, Text);
+            CallRecordCore.Instance.Messages.Enqueue(cmdResult);    // Enqueue processing of the result
+            this.Close();                                           // and close the dialog window.
+        };
     }
 
-    private void setContent(RadioButton rControl, CallRecordCore.SkipSurvey.SkipSurveyOption reason) {
-        rControl.Content = CallRecordCore.SkipSurvey.getSkipSurveyOptionText(reason);
-        ToolTip.SetTip(rControl, CallRecordCore.SkipSurvey.getSkipSurveyOptionTooltip(reason));
-    }
-
-    private void onChange_rSurveyOther(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyOther.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.Other;
-    }
-
-    private void onChange_rSurveyPrompted(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyPrompted.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.None;
-    }
-
-    private void onChange_rSurveyNonTelstra(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyNonTelstra.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.NonTelstra;
-    }
-
-    private void onChange_rSurveyTransfer(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyTransfer.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.Transfer;
-    }
-
-    private void onChange_rSurveyCallback(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyCallback.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.Callback;
-    }
-
-    private void onChange_rSurveyAgent(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        if (rSurveyAgent.IsChecked == true) Result.Reason = CallRecordCore.SkipSurvey.SkipSurveyOption.Agent;
-    }
-
-    private void onChange_txtOther(object? sender, TextChangedEventArgs e) {
-        Result.Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty;
-    }
-
-    private void onClick_btnSaveSurvey(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {
-        // Nothing to do here, just close the window
-        this.Close();
+    private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey reason) {
+        rControl.Content = com.tybern.CallRecordCore.dialogs.SkipSurveyResult.GetText(reason);
+        ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.GetTooltip(reason));
     }
 }

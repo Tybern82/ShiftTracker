@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace com.tybern.CommandProcessor {
+namespace com.tybern.CMDProcessor {
 
     /// <summary>
     /// Implementation of Command interface used to trigger termination of CommandProcessor worker thread(s). This class is 
@@ -21,7 +21,7 @@ namespace com.tybern.CommandProcessor {
         /// </summary>
         /// <param name="proc">CommandProcessor instance to terminate</param>
         public CTerminate(CommandProcessor proc) {
-            this._proc = proc;
+            _proc = proc;
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallRecordCore", "CallRecor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallRecordGUI", "CallRecordGUI\CallRecordGUI.csproj", "{F4341DD9-39A7-4268-9CC5-1E48D38B91A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessor", "CommandProcessor\CommandProcessor.csproj", "{8F2571A9-1F94-475E-8870-B2C03E4F9956}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMDProcessor", "CommandProcessor\CMDProcessor.csproj", "{8F2571A9-1F94-475E-8870-B2C03E4F9956}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

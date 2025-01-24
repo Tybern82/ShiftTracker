@@ -2,19 +2,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="400"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
         x:Class="CallRecordGUI.dialogs.MultipleTransfer"
-        xmlns:vm="using:CallRecordCore"
-        x:DataType="vm:CallUI"
+        xmlns:vm="using:com.tybern.CallRecordCore"
+        x:DataType="vm:UIProperties"
         RequestedThemeVariant="Light"
-        Title="Multiple Transfer">
+        Title="Multiple Transfer" Width="350" Height="450">
 
   <Design.DataContext>
-    <vm:CallUI />
+    <vm:UIProperties />
   </Design.DataContext>
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
     <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Transfer Request</TextBlock>
-    <TextBlock Margin="10" FontSize="24" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TransferTime}" />
+    <TextBlock Margin="10" FontSize="24" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TransferTime, StringFormat='hh\\:mm\\:ss'}" />
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Select department being transferred to, hit save when transfer completes: </TextBlock>
     <Border Background="Gainsboro"
           BorderBrush="Black"

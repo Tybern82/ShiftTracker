@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace com.tybern.CommandProcessor {
+namespace com.tybern.CMDProcessor {
 
     /// <summary>
     /// Core component of the CommandProcessor. This class should be instantiated to create a worker thread / thread pool for 
@@ -21,10 +21,10 @@ namespace com.tybern.CommandProcessor {
         /// Identifies whether worker threads should terminate or wait for a new request. Locked as multiple worker threads may 
         /// be attempting to access, and public to allow CTerminate to trigger termination.
         /// </summary>
-        public bool Terminated { 
+        public bool Terminated {
             // Lock as we may be running multiple worker threads all accessing this value
-            private get { lock(this) return _terminated; } 
-            set { lock(this) _terminated = value; }
+            private get { lock (this) return _terminated; }
+            set { lock (this) _terminated = value; }
         }
 
         /// <summary>

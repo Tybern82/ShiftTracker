@@ -1,36 +1,44 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using static CallRecordCore.OutboundCall;
+using com.tybern.CallRecordCore;
+using com.tybern.CallRecordCore.dialogs;
+using static com.tybern.CallRecordCore.dialogs.OutboundCallResult;
+using static com.tybern.CallRecordCore.dialogs.TransferRequestResult;
 using static SQLite.SQLite3;
 
 namespace CallRecordGUI.dialogs;
 
 public partial class OutboundCall : Window {
 
-    public OutboundCallResult Result { get; set; } = new OutboundCallResult(OutboundCallOption.Disconnect);
+    private OptionOutboundCall Result { get; set; } = OptionOutboundCall.Disconnect;
+    private string Text { get; set; } = string.Empty;
 
     public OutboundCall() {
         InitializeComponent();
 
-        setContent(rDisconnect, OutboundCallOption.Disconnect);
-        setContent(rChangeNumber, OutboundCallOption.ChangeNumber);
-        setContent(rOutboundOther, OutboundCallOption.Other);
+        setContent(rDisconnect, OptionOutboundCall.Disconnect);
+        setContent(rChangeNumber, OptionOutboundCall.ChangeNumber);
+        setContent(rOutboundOther, OptionOutboundCall.Other);
 
-        rDisconnect.IsCheckedChanged += (sender, args) => { if (rDisconnect.IsChecked == true) Result.Reason = OutboundCallOption.Disconnect; };
-        rChangeNumber.IsCheckedChanged += (sender, args) => { if (rChangeNumber.IsChecked == true) Result.Reason = OutboundCallOption.ChangeNumber; };
-        rOutboundOther.IsCheckedChanged += (sender, args) => { if (rOutboundOther.IsChecked == true) Result.Reason = OutboundCallOption.Other; };
+        txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        btnSaveOutbound.Click += (sender, args) => { this.Close(); };
-        txtOther.TextChanged += onChange_txtOther;
+        rDisconnect.IsCheckedChanged += (sender, args) => updateChecked(rDisconnect, OptionOutboundCall.Disconnect);
+        rChangeNumber.IsCheckedChanged += (sender, args) => updateChecked(rChangeNumber, OptionOutboundCall.ChangeNumber);
+        rOutboundOther.IsCheckedChanged += (sender, args) => updateChecked(rOutboundOther, OptionOutboundCall.Other);
+
+        btnSaveOutbound.Click += (sender, args) => {
+            CallRecordCore.Instance.Messages.Enqueue(new OutboundCallResult(Result, Text));
+            this.Close(); 
+        };
     }
 
-    private void setContent(RadioButton rControl, CallRecordCore.OutboundCall.OutboundCallOption option) {
-        rControl.Content = CallRecordCore.OutboundCall.getOutboundCallOptionText(option);
-        ToolTip.SetTip(rControl, CallRecordCore.OutboundCall.getOutboundCallOptionTooltip(option));
+    private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.OutboundCallResult.OptionOutboundCall option) {
+        rControl.Content = com.tybern.CallRecordCore.dialogs.OutboundCallResult.GetText(option);
+        ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.OutboundCallResult.GetToolTip(option));
     }
 
-    private void onChange_txtOther(object? sender, TextChangedEventArgs e) {
-        Result.Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty;
+    private void updateChecked(RadioButton rControl, OptionOutboundCall value) {
+        if (rControl.IsChecked == true) Result = value;
     }
 }

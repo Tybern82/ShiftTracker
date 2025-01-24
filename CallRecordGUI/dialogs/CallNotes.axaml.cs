@@ -2,20 +2,19 @@ using System.Linq.Expressions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using CallRecordCore;
-using static CallRecordCore.CallNotes;
+using com.tybern.CallRecordCore;
+using com.tybern.CallRecordCore.dialogs;
+using static com.tybern.CallRecordCore.dialogs.CallNotesResult;
+using static com.tybern.CallRecordCore.dialogs.TransferRequestResult;
 
 namespace CallRecordGUI.dialogs;
 
 public partial class CallNotes : Window {
 
-    public CallNotesResult Result { get; set; } = new CallNotesResult(CallType.Helpdesk);
+    private CallType Result { get; set; } = CallType.Helpdesk;
+    private string Text { get; set; } = string.Empty;
 
-    private CallUI CallUI { get; }
-
-    public CallNotes(CallUI callUI) {
-        this.CallUI = callUI;
-
+    public CallNotes() {
         InitializeComponent();
 
         setContent(rCallTypeSME, CallType.Helpdesk);
@@ -34,32 +33,36 @@ public partial class CallNotes : Window {
         setContent(rCallTypeMisrouted, CallType.Misrouted);
         setContent(rCallTypeOther, CallType.Other);
 
-        rCallTypeSME.IsCheckedChanged += (sender, args) => { if (rCallTypeSME.IsChecked == true) Result.CallType = CallType.Helpdesk; };
-        rCallTypeMobile.IsCheckedChanged += (sender, args) => { if (rCallTypeMobile.IsChecked == true) Result.CallType = CallType.Mobile; };
-        rCallTypeNBN.IsCheckedChanged += (sender, args) => { if (rCallTypeNBN.IsChecked == true) Result.CallType = CallType.NBN; };
-        rCallTypeADSL.IsCheckedChanged += (sender, args) => { if (rCallTypeADSL.IsChecked == true) Result.CallType = CallType.ADSL; };
-        rCallTypeeMail.IsCheckedChanged += (sender, args) => { if (rCallTypeeMail.IsChecked == true) Result.CallType = CallType.eMail; };
-        rCallTypeBilling.IsCheckedChanged += (sender, args) => { if (rCallTypeBilling.IsChecked == true) Result.CallType = CallType.Billing; };
-        rCallTypePA.IsCheckedChanged += (sender, args) => { if (rCallTypePA.IsChecked == true) Result.CallType = CallType.PA; };
-        rCallTypePrepaid.IsCheckedChanged += (sender, args) => { if (rCallTypePrepaid.IsChecked == true) Result.CallType = CallType.Prepaid; };
-        rCallTypePSTN.IsCheckedChanged += (sender, args) => { if (rCallTypePSTN.IsChecked == true) Result.CallType = CallType.PSTN; };
-        rCallTypeOpticomm.IsCheckedChanged += (sender, args) => { if (rCallTypeOpticomm.IsChecked == true) Result.CallType = CallType.Opticomm; };
-        rCallTypeFetchTV.IsCheckedChanged += (sender, args) => { if (rCallTypeFetchTV.IsChecked == true) Result.CallType = CallType.FetchTV; };
-        rCallTypeHomeWireless.IsCheckedChanged += (sender, args) => { if (rCallTypeHomeWireless.IsChecked == true) Result.CallType = CallType.HomeWireless; };
-        rCallTypePlatinum.IsCheckedChanged += (sender, args) => { if (rCallTypePlatinum.IsChecked == true) Result.CallType = CallType.Platinum; };
-        rCallTypeMisrouted.IsCheckedChanged += (sender, args) => { if (rCallTypeMisrouted.IsChecked == true) Result.CallType = CallType.Misrouted; };
-        rCallTypeOther.IsCheckedChanged += (sender, args) => { if (rCallTypeOther.IsChecked == true) Result.CallType = CallType.Other; };
+        txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        btnSaveNotes.Click += (sender, args) => { this.Close(); callUI.updateCallType(Result.CallType); };
-        txtOther.TextChanged += onChange_txtOther;
+        rCallTypeSME.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeSME, CallType.Helpdesk);
+        rCallTypeMobile.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeMobile, CallType.Mobile);
+        rCallTypeNBN.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeNBN, CallType.NBN);
+        rCallTypeADSL.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeADSL, CallType.ADSL);
+        rCallTypeeMail.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeeMail, CallType.eMail);
+        rCallTypeBilling.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeBilling, CallType.Billing);
+        rCallTypePA.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePA, CallType.PA);
+        rCallTypePrepaid.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePrepaid, CallType.Prepaid);
+        rCallTypePSTN.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePSTN, CallType.PSTN);
+        rCallTypeOpticomm.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeOpticomm, CallType.Opticomm);
+        rCallTypeFetchTV.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeFetchTV, CallType.FetchTV);
+        rCallTypeHomeWireless.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeHomeWireless, CallType.HomeWireless);
+        rCallTypePlatinum.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePlatinum, CallType.Platinum);
+        rCallTypeMisrouted.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeMisrouted, CallType.Misrouted);
+        rCallTypeOther.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeOther, CallType.Other);
+
+        btnSaveNotes.Click += (sender, args) => {
+            CallRecordCore.Instance.Messages.Enqueue(new CallNotesResult(Result, Text));
+            this.Close();
+        };
     }
 
-    private void setContent(RadioButton rControl, CallRecordCore.CallNotes.CallType option) {
-        rControl.Content = CallRecordCore.CallNotes.getCallNotesOptionText(option);
-        ToolTip.SetTip(rControl, CallRecordCore.CallNotes.getCallNotesOptionTooltip(option));
+    private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType option) {
+        rControl.Content = com.tybern.CallRecordCore.dialogs.CallNotesResult.GetText(option);
+        ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.GetToolTip(option));
     }
 
-    private void onChange_txtOther(object? sender, TextChangedEventArgs e) {
-        Result.Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty;
+    private void updateChecked(RadioButton rControl, CallType value) {
+        if (rControl.IsChecked == true) Result = value;
     }
 }

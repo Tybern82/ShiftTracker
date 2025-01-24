@@ -1,45 +1,45 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using CallRecordCore;
-using static CallRecordCore.MultipleTransfer;
+using com.tybern.CallRecordCore;
+using com.tybern.CallRecordCore.dialogs;
+using static com.tybern.CallRecordCore.dialogs.MultipleTransferResult;
 
 namespace CallRecordGUI.dialogs;
 
 public partial class MultipleTransfer : Window {
 
-    public MultipleTransferResult Result { get; set; } = new MultipleTransferResult(MultipleTransferOption.Misrouted);
-    private CallUI callUI { get; }
+    private OptionMultipleTransfer Result { get; set; }
+    private string Text { get; set; } = string.Empty;
 
-    public MultipleTransfer(CallUI callUI) {
-        this.callUI = callUI;
+    public MultipleTransfer() {
         InitializeComponent();
+        DataContext = CallRecordCore.Instance.UIProperties;
 
-        setContent(rMisrouted, MultipleTransferOption.Misrouted);
-        setContent(rDrop, MultipleTransferOption.CallDrop);
-        setContent(rAgentDrop, MultipleTransferOption.AgentDrop);
-        setContent(rIncorrect, MultipleTransferOption.Incorrect);
-        setContent(rMAEOther, MultipleTransferOption.Other);
+        setContent(rMisrouted, OptionMultipleTransfer.Misrouted);
+        setContent(rDrop, OptionMultipleTransfer.CallDrop);
+        setContent(rAgentDrop, OptionMultipleTransfer.AgentDrop);
+        setContent(rIncorrect, OptionMultipleTransfer.Incorrect);
+        setContent(rMAEOther, OptionMultipleTransfer.Other);
 
-        rMisrouted.IsCheckedChanged += (sender, args) => { if (rMisrouted.IsChecked == true) Result.Reason = MultipleTransferOption.Misrouted; };
-        rDrop.IsCheckedChanged      += (sender, args) => { if (rDrop.IsChecked == true) Result.Reason = MultipleTransferOption.CallDrop; };
-        rAgentDrop.IsCheckedChanged += (sender, args) => { if (rAgentDrop.IsChecked == true) Result.Reason = MultipleTransferOption.AgentDrop; };
-        rIncorrect.IsCheckedChanged += (sender, args) => { if (rIncorrect.IsChecked == true) Result.Reason = MultipleTransferOption.Incorrect; };
-        rMAEOther.IsCheckedChanged  += (sender, args) => { if (rMAEOther.IsChecked == true) Result.Reason = MultipleTransferOption.Other; };
+        txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        btnSaveMAE.Click += (sender, args) => { 
+        rMisrouted.IsCheckedChanged += (sender, args) => updateChecked(rMisrouted, OptionMultipleTransfer.Misrouted);
+        rDrop.IsCheckedChanged      += (sender, args) => updateChecked(rDrop, OptionMultipleTransfer.CallDrop);
+        rAgentDrop.IsCheckedChanged += (sender, args) => updateChecked(rAgentDrop, OptionMultipleTransfer.AgentDrop);
+        rIncorrect.IsCheckedChanged += (sender, args) => updateChecked(rIncorrect, OptionMultipleTransfer.Incorrect);
+        rMAEOther.IsCheckedChanged  += (sender, args) => updateChecked(rMAEOther, OptionMultipleTransfer.Other);
+
+        btnSaveMAE.Click += (sender, args) => {
+            CallRecordCore.Instance.Messages.Enqueue(new MultipleTransferResult(Result, Text));
             this.Close();
-            callUI.doSaveMAE(Result.Reason, Result.Text);
         };
-        txtOther.TextChanged += onChange_txtOther;
     }
 
-    private void setContent(RadioButton rControl, CallRecordCore.MultipleTransfer.MultipleTransferOption option) {
-        rControl.Content = CallRecordCore.MultipleTransfer.getMultipleTransferOptionsText(option);
-        ToolTip.SetTip(rControl, CallRecordCore.MultipleTransfer.getMultipleTransferOptionsTooltip(option));
+    private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.MultipleTransferResult.OptionMultipleTransfer option) {
+        rControl.Content = com.tybern.CallRecordCore.dialogs.MultipleTransferResult.GetText(option);
+        ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.MultipleTransferResult.GetToolTip(option));
     }
 
-    private void onChange_txtOther(object? sender, TextChangedEventArgs e) {
-        Result.Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty;
+    private void updateChecked(RadioButton rControl, OptionMultipleTransfer value) {
+        if (rControl.IsChecked == true) Result = value;
     }
 }

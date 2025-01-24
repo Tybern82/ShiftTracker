@@ -2,10 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="700"
         x:Class="CallRecordGUI.dialogs.CallNotes"
         RequestedThemeVariant="Light"
-        Title="Call Notes">
+        Title="Call Notes" Width="350" Height="700">
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
     <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Add Call Notes</TextBlock>
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Select primary call type for this contact: </TextBlock>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace com.tybern.CommandProcessor {
+namespace com.tybern.CMDProcessor {
 
     /// <summary>
     /// Interface implemented by individual commands to be processed by the CommandProcessor worker thread(s)

@@ -8,16 +8,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using com.tybern.CallRecordCore.dialogs;
 
-namespace CallRecordCore {
+namespace com.tybern.CallRecordCore.old {
+    /*
     public class CallUI : INotifyPropertyChanged {
 
         private UICallbacks UICallbacks { get; }
 
         public CallUI() : this(new DesignCallbacks()) { }
 
-        public CallUI(UICallbacks callbacks) { 
-            UICallbacks = callbacks; 
+        public CallUI(UICallbacks callbacks) {
+            UICallbacks = callbacks;
             CurrentCallDetails = new CurrentCallDetails(callbacks);
         }
 
@@ -138,7 +140,7 @@ namespace CallRecordCore {
             set {
                 fTotalWrap = value;
                 OnPropertyChanged(nameof(TotalWrap));
-                WrapPercent = (fTotalWrap.Ticks / fTotalDuration.Ticks);
+                WrapPercent = fTotalWrap.Ticks / fTotalDuration.Ticks;
             }
         }
 
@@ -148,7 +150,7 @@ namespace CallRecordCore {
             set {
                 fTotalDuration = value;
                 OnPropertyChanged(nameof(TotalDuration));
-                WrapPercent = (fTotalWrap.Ticks / fTotalDuration.Ticks);
+                WrapPercent = fTotalWrap.Ticks / fTotalDuration.Ticks;
             }
         }
 
@@ -176,23 +178,23 @@ namespace CallRecordCore {
 
         public void doClockUpdate(object? ui) {
             if (ui != null) {
-                CallUI callUI = (CallUI) ui;
+                CallUI callUI = (CallUI)ui;
                 DateTime currTime = DateTime.Now;
                 callUI.CurrentTime = currTime;
 
                 DateTime breakTime = fromCurrent(currTime, BreakTimer);
-                BreakTimerText = (breakTime <= currTime) ? "BREAK" : toShortTimeString(breakTime - currTime);
+                BreakTimerText = breakTime <= currTime ? "BREAK" : toShortTimeString(breakTime - currTime);
 
                 DateTime eosTime = fromCurrent(currTime, EOSTimer);
-                EOSTimerText = (eosTime <= currTime) ? "END-OF-SHIFT" : ((EOSTimer == BreakTimer) ? "EOS" : toShortTimeString(eosTime - currTime));
+                EOSTimerText = eosTime <= currTime ? "END-OF-SHIFT" : EOSTimer == BreakTimer ? "EOS" : toShortTimeString(eosTime - currTime);
 
-                if (CurrentCallDetails.isInCall && (CurrentCallDetails.callStartTime != TimeSpan.Zero)) {
+                if (CurrentCallDetails.isInCall && CurrentCallDetails.callStartTime != TimeSpan.Zero) {
                     CallTime = currTime.TimeOfDay - CurrentCallDetails.callStartTime;
                 } else {
                     CallTime = TimeSpan.Zero;
                 }
                 if (CurrentCallDetails.isInSMECall) SMETime = currTime.TimeOfDay - CurrentCallDetails.smeStartTime;
-                if (CurrentCallDetails.isInTransferCall) TransferTime = currTime.TimeOfDay - CurrentCallDetails.transferStartTime; 
+                if (CurrentCallDetails.isInTransferCall) TransferTime = currTime.TimeOfDay - CurrentCallDetails.transferStartTime;
             }
         }
 
@@ -202,10 +204,10 @@ namespace CallRecordCore {
                 CurrentCallDetails.isCallback = true;
                 doStopCall();
                 UICallbacks.appendNote("Callback / Outbound");
-                Task<OutboundCall.OutboundCallResult> uiResult = UICallbacks.doOutboundCall();
+                Task<OutboundCallResult.OutboundCallResult> uiResult = UICallbacks.doOutboundCall();
                 new Thread(() => {
                     uiResult.Wait();
-                    string reason = OutboundCall.getOutboundCallOptionText(uiResult.Result.Reason);
+                    string reason = OutboundCallResult.getOutboundCallOptionText(uiResult.Result.Reason);
                     if (!string.IsNullOrWhiteSpace(uiResult.Result.Text)) reason += " - " + uiResult.Result.Text;
                     UICallbacks.appendNote(reason);
                 });
@@ -265,7 +267,7 @@ namespace CallRecordCore {
                     UICallbacks.appendNote(SMERequest.getSMERequestOptionText(result.Type));
                     if (!string.IsNullOrWhiteSpace(result.Text)) UICallbacks.appendNote(result.Text);
 
-                    TimeSpan smeTime = (DateTime.Now.TimeOfDay - CurrentCallDetails.smeStartTime);
+                    TimeSpan smeTime = DateTime.Now.TimeOfDay - CurrentCallDetails.smeStartTime;
                     shiftCounter.TotalSMETime += smeTime;
                     CurrentCallDetails.isInSMECall = false;
                     SMETime = TimeSpan.Zero;
@@ -275,7 +277,7 @@ namespace CallRecordCore {
         }
 
         public void doAddNote() {
-            Task<CallNotes.CallNotesResult> uiResult = UICallbacks.doCallNotes();
+            Task<CallNotesResult.CallNotesResult> uiResult = UICallbacks.doCallNotes();
             Thread t = new Thread(() => {
                 uiResult.Wait();
                 DateTime currTime = DateTime.Now;
@@ -289,7 +291,7 @@ namespace CallRecordCore {
             if (!CurrentCallDetails.isSurveyRecorded) {
                 CurrentCallDetails.isSurveyRecorded = true;
                 UICallbacks.enableSurvey(false);
-                Task<SkipSurvey.SkipSurveyResult> uiResult = UICallbacks.doSkipSurvey();
+                Task<SkipSurveyResult.ResultSkipSurvey> uiResult = UICallbacks.doSkipSurvey();
                 // Push to separate thread to release the UIThread to allow interaction with popup
                 Thread t = new Thread(() => { uiResult.Wait(); appendSurvey(uiResult.Result); });
                 t.Start();
@@ -300,7 +302,7 @@ namespace CallRecordCore {
             if (!CurrentCallDetails.isSurveyRecorded) {
                 CurrentCallDetails.isSurveyRecorded = true;
                 UICallbacks.enableSurvey(false);
-                appendSurvey(new SkipSurvey.SkipSurveyResult(SkipSurvey.SkipSurveyOption.None, string.Empty));
+                appendSurvey(new SkipSurveyResult.ResultSkipSurvey(SkipSurveyResult.OptionSkipSurvey.None, string.Empty));
             }
         }
 
@@ -319,13 +321,13 @@ namespace CallRecordCore {
             }
         }
 
-        public void doSaveMAE(MultipleTransfer.MultipleTransferOption reason, string notes) {
-            UICallbacks.appendNote(MultipleTransfer.getMultipleTransferOptionsText(reason));
+        public void doSaveMAE(MultipleTransferResult.OptionMultipleTransfer reason, string notes) {
+            UICallbacks.appendNote(MultipleTransferResult.GetText(reason));
             if (!string.IsNullOrWhiteSpace(notes)) UICallbacks.appendNote(notes);
         }
 
-        public void doCloseTransfer(TransferRequest.TransferRequestOption destination, string notes) {
-            UICallbacks.appendNote(TransferRequest.getTransferRequestOptionText(destination));
+        public void doCloseTransfer(TransferRequestResult.OptionTransferRequest destination, string notes) {
+            UICallbacks.appendNote(TransferRequestResult.GetText(destination));
             if (!string.IsNullOrWhiteSpace(notes)) UICallbacks.appendNote(notes);
             TimeSpan transferTime = DateTime.Now.TimeOfDay - CurrentCallDetails.transferStartTime;
             shiftCounter.TotalTransferTime += transferTime;
@@ -334,26 +336,26 @@ namespace CallRecordCore {
             UICallbacks.appendNote("Transfer Time: " + toShortTimeString(transferTime));
         }
 
-        public void updateCallType(CallNotes.CallType type) {
+        public void updateCallType(CallNotesResult.CallType type) {
             switch (type) {
-                case CallNotes.CallType.Mobile:         callTypeCounter.Mobile++; break;
-                case CallNotes.CallType.NBN:            callTypeCounter.NBN++; break;
-                case CallNotes.CallType.ADSL:           callTypeCounter.ADSL++; break;
-                case CallNotes.CallType.eMail:          callTypeCounter.eMail++; break;
-                case CallNotes.CallType.Billing:        callTypeCounter.Billing++; break;
-                case CallNotes.CallType.PA:             callTypeCounter.PriorityAssist++; break;
-                case CallNotes.CallType.Prepaid:        callTypeCounter.Prepaid++; break;
-                case CallNotes.CallType.PSTN:           callTypeCounter.PSTN++; break;
-                case CallNotes.CallType.Opticomm:       callTypeCounter.Opticomm++; break;
-                case CallNotes.CallType.FetchTV:        callTypeCounter.FetchTV++; break;
-                case CallNotes.CallType.HomeWireless:   callTypeCounter.HomeWireless++; break;
-                case CallNotes.CallType.Platinum:       callTypeCounter.Platinum++; break;
-                case CallNotes.CallType.Misrouted:      callTypeCounter.Misrouted++; break;
-                case CallNotes.CallType.Helpdesk:       callTypeCounter.Helpdesk++; break;
+                case CallNotesResult.CallType.Mobile: callTypeCounter.Mobile++; break;
+                case CallNotesResult.CallType.NBN: callTypeCounter.NBN++; break;
+                case CallNotesResult.CallType.ADSL: callTypeCounter.ADSL++; break;
+                case CallNotesResult.CallType.eMail: callTypeCounter.eMail++; break;
+                case CallNotesResult.CallType.Billing: callTypeCounter.Billing++; break;
+                case CallNotesResult.CallType.PA: callTypeCounter.PriorityAssist++; break;
+                case CallNotesResult.CallType.Prepaid: callTypeCounter.Prepaid++; break;
+                case CallNotesResult.CallType.PSTN: callTypeCounter.PSTN++; break;
+                case CallNotesResult.CallType.Opticomm: callTypeCounter.Opticomm++; break;
+                case CallNotesResult.CallType.FetchTV: callTypeCounter.FetchTV++; break;
+                case CallNotesResult.CallType.HomeWireless: callTypeCounter.HomeWireless++; break;
+                case CallNotesResult.CallType.Platinum: callTypeCounter.Platinum++; break;
+                case CallNotesResult.CallType.Misrouted: callTypeCounter.Misrouted++; break;
+                case CallNotesResult.CallType.Helpdesk: callTypeCounter.Helpdesk++; break;
 
-                default:                                callTypeCounter.Other++; break;
+                default: callTypeCounter.Other++; break;
             }
-            UICallbacks.prependNote(CallNotes.getCallNotesOptionText(type));
+            UICallbacks.prependNote(CallNotesResult.GetText(type));
         }
 
         public void addCallRecord(DateTime endTime) {
@@ -371,7 +373,7 @@ namespace CallRecordCore {
 
             CallRecord callRecord = new CallRecord(fromCurrent(endTime, CurrentCallDetails.callStartTime), endTime, duration, wrap, CallMAE);
             if (!CurrentCallDetails.isCallback) {
-                Task<CallNotes.CallNotesResult> uiResult = UICallbacks.doCallNotes();
+                Task<CallNotesResult.CallNotesResult> uiResult = UICallbacks.doCallNotes();
                 Thread t = new Thread(() => {
                     uiResult.Wait();
                     callRecord.CallType = uiResult.Result.CallType;
@@ -384,11 +386,11 @@ namespace CallRecordCore {
             }
         }
 
-        public void appendSurvey(SkipSurvey.SkipSurveyResult result) {
+        public void appendSurvey(SkipSurveyResult.ResultSkipSurvey result) {
             shiftCounter.CallNumber++;
-            bool isPrompted = (result.Reason == SkipSurvey.SkipSurveyOption.None);
+            bool isPrompted = result.Result == SkipSurveyResult.OptionSkipSurvey.None;
             // TODO: Update to actually record survey record
-            UICallbacks.appendNote(shiftCounter.CallNumber + ": " + isPrompted + (string.IsNullOrWhiteSpace(result.Text) ? string.Empty : (" - " + result.Text)));
+            UICallbacks.appendNote(shiftCounter.CallNumber + ": " + isPrompted + (string.IsNullOrWhiteSpace(result.Text) ? string.Empty : " - " + result.Text));
         }
 
         private string toShortTimeString(TimeSpan timeSpan) {
@@ -406,4 +408,5 @@ namespace CallRecordCore {
 
         private Regex reg = new Regex("(\r\n|\n|\r)");
     }
+    */
 }
