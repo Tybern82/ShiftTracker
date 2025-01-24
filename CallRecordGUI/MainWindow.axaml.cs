@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,13 +12,24 @@ using Avalonia.Threading;
 using CallRecordGUI.dialogs;
 using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.commands;
+using Newtonsoft.Json.Linq;
 using static com.tybern.CallRecordCore.UICallbacks;
 
 namespace CallRecordGUI {
     public partial class MainWindow : Window, UICallbacks {
 
+        private static string ConfigFile = "CallRecordGUI.config";
+
         public MainWindow() {
             InitializeComponent();
+
+            FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate);
+            StreamReader configReader = new StreamReader(configFile);
+            string configJSON = configReader.ReadToEnd();
+            if (!string.IsNullOrWhiteSpace(configJSON)) {
+                JObject configData = JObject.Parse(configJSON);
+                decodeJSON(configData);
+            }
 
             CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
             DataContext = CallRecordCore.Instance.UIProperties;
@@ -47,7 +59,34 @@ namespace CallRecordGUI {
 
             CallRecordCore.Instance.CurrentCall.CurrentMode = CallDetails.CallMode.Disconnect;  // should set button states correctly
 
-            this.Closing += (sender, args) => CallRecordCore.Instance.Messages.Terminate();     // make sure to terminate the processing thread when the main window closes
+            this.Closing += (sender, args) => {
+                CallRecordCore.Instance.Messages.Terminate();     // make sure to terminate the processing thread when the main window closes
+                FileStream configFile = File.OpenWrite(ConfigFile);
+                StreamWriter configWriter = new StreamWriter(configFile);
+                configWriter.Write(encodeJSON().ToString());
+                configWriter.Flush();
+                configWriter.Close();
+            };
+        }
+
+        private void decodeJSON(JObject configData) {
+            int posx = configData.ContainsKey("PosX") ? configData.Value<int>("PosX") : this.Position.X;
+            int posy = configData.ContainsKey("PosY") ? configData.Value<int>("PosY") : this.Position.Y;
+            double width = configData.ContainsKey("Width") ? configData.Value<double>("Width") : this.Width;
+            double height = configData.ContainsKey("Height") ? configData.Value<double>("Height") : this.Height;
+
+            this.Position = new Avalonia.PixelPoint(posx, posy);
+            this.Width = width;
+            this.Height = height;
+        }
+
+        private JObject encodeJSON() {
+            JObject _result = new JObject();
+            _result.Add("PosX", this.Position.X);
+            _result.Add("PosY", this.Position.Y);
+            _result.Add("Width", this.Width);
+            _result.Add("Height", this.Height);
+            return _result;
         }
 
         public void ShowDialog(CallRecordDialog dlgType) {
