@@ -26,6 +26,7 @@ namespace com.tybern.CallRecordCore {
         }
 
         public ObservableCollection<CallRecord> CallRecordsList { get; } = new ObservableCollection<CallRecord>();
+        public ObservableCollection<SurveyRecord> SurveyRecordList { get; } = new ObservableCollection<SurveyRecord>();
 
         private static string NULL_TIME = "00:00:00";
 
@@ -184,6 +185,15 @@ namespace com.tybern.CallRecordCore {
             private set {
                 lock (this) { _wrapPercent = value; }
                 OnPropertyChanged(nameof(WrapPercent));
+            }
+        }
+
+        private string _sendEmailAddress = string.Empty;
+        public string SendEmailAddress {
+            get { lock (_sendEmailAddress) { return _sendEmailAddress; } }
+            set {
+                lock (_sendEmailAddress) { _sendEmailAddress = value; }
+                OnPropertyChanged(nameof(SendEmailAddress));
             }
         }
     }

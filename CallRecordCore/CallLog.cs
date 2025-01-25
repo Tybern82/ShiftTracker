@@ -1,9 +1,12 @@
 ﻿using System;
+using com.tybern.CallRecordCore.commands;
 using com.tybern.CallRecordCore.dialogs;
 using SQLite;
 
 namespace com.tybern.CallRecordCore {
     public class CallLog {
+
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
         public SQLiteConnection conn;
 
@@ -12,6 +15,45 @@ namespace com.tybern.CallRecordCore {
 
             // Ensure the required tables exist in the db
             conn.CreateTable<CallRecord>();
+        }
+
+        public void LoadCurrentDay() {
+            // preload any records from today
+            DateTime currTime = DateTime.Now;
+            DateTime dayStart = CallRecordCore.fromCurrent(currTime, TimeSpan.Zero);
+            try {
+                const string query = "SELECT * FROM callRecord WHERE startTime BETWEEN @dayStart AND @currTime";
+                var cmd = new SQLiteCommand(conn);
+                cmd.CommandText = query;
+                cmd.Bind("@dayStart", dayStart.Ticks);
+                cmd.Bind("@currTime", currTime.Ticks);
+                var data = cmd.ExecuteQuery<CallRecord>();
+                if (data != null) {
+                    data.Sort(new Comparison<CallRecord>((item1, item2) => { return item1.startTime.CompareTo(item2.startTime); }));
+                    foreach (var record in data) {
+                        CallRecordCore.Instance.Messages.Enqueue(new AddCallRecord(record, true));
+                    }
+                }
+            } catch (SQLiteException e) {
+                LOG.Error(e.ToString());
+            }
+        }
+
+        private bool isBetween(DateTime value, DateTime startTime, DateTime endTime) {
+            int compare1 = DateTime.Compare(value, startTime);
+            int compare2 = DateTime.Compare(value, endTime);
+            return (compare1 >= 0) && (compare2 <= 0);
+        }
+
+        public void AddRecord(CallRecord record) {
+            try {
+                conn.BeginTransaction();
+                conn.InsertOrReplace(record);
+                conn.Commit();
+            } catch (SQLiteException e) {
+                LOG.Error(e.ToString());
+                try { conn.Rollback(); } catch (SQLiteException) { }
+            }
         }
     }
 
@@ -61,6 +103,8 @@ namespace com.tybern.CallRecordCore {
             CallType = type;
             this.notes = notes;
         }
+
+        public CallRecord() : this(DateTime.MinValue, DateTime.MinValue, TimeSpan.Zero, TimeSpan.Zero) { }
 
         public override string ToString() {
             string _result = string.Empty;

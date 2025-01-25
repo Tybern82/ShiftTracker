@@ -15,7 +15,10 @@
   <TabControl>
     <TabItem Header="Today">
       <StackPanel>
-        <TextBlock Name="fClock" FontSize="24" FontFamily="Lato" TextAlignment="Center" Text="{Binding CurrentTime, StringFormat='HH:mm:ss'}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <TextBlock Name="fDayOfWeek" Margin="10" FontSize="24" FontFamily="Lato" TextAlignment="Center" Text="{Binding CurrentTime, StringFormat='dddd'}" />
+        <TextBlock Name="fClock" Margin="10" FontSize="24" FontFamily="Lato" TextAlignment="Center" Text="{Binding CurrentTime, StringFormat='HH:mm:ss'}" />
+        </StackPanel>
         <Grid HorizontalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto">
           <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" VerticalAlignment="Center" Margin="10" Padding="5">Next Break:</TextBlock>
           <TimePicker Grid.Column="1" Grid.Row="0" ClockIdentifier="24HourClock" MinuteIncrement="5" SelectedTime="{Binding BreakTimer}"  Margin="10" Padding="5" />
@@ -70,6 +73,12 @@
             <Run Text="{Binding WrapPercent, StringFormat='P2'}" />
           </TextBlock>
         </Grid>
+
+        <StackPanel Orientation="Horizontal" Margin="10">
+          <TextBlock Text="Destination Email: " VerticalAlignment="Center" Margin="10" Padding="10" />
+          <TextBox Text="{Binding SendEmailAddress}" Width="250" Margin="10" Padding="10" />
+        </StackPanel>
+        
         <StackPanel VerticalAlignment="Stretch">
           <TextBlock Margin="10" Padding="10" FontSize="24" FontFamily="Lato" TextAlignment="Center">Call Notes</TextBlock>
           <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="250" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
@@ -86,8 +95,19 @@
                 <TextBlock Text="{Binding startTime}" />
                 <TextBlock Text="{Binding endTime}" />
               -->
-                <TextBlock Text="{Binding AsString}" />
+                <TextBlock Text="{Binding AsString}" Margin="10" />
               </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </TabItem>
+    <TabItem Header="Survey">
+      <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding SurveyRecordList}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding AsString}" Margin="5" />
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>

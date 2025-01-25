@@ -20,8 +20,8 @@ namespace com.tybern.CallRecordCore.commands {
 
         public void Process() {
             LOG.Info("SURVEY: " + CallNumber + ": " + IsPrompted + (string.IsNullOrWhiteSpace(Text) ? string.Empty : " - " + Text));
-            // TODO: Implement Survey Record
-            // throw new NotImplementedException();
+            SurveyRecord record = new SurveyRecord(CallNumber, IsPrompted, Text);
+            CallRecordCore.Instance.UIProperties.SurveyRecordList.Add(record);
         }
     }
 }

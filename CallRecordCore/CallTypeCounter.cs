@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using com.tybern.CallRecordCore.dialogs;
 using static com.tybern.CallRecordCore.dialogs.CallNotesResult;
 
 namespace com.tybern.CallRecordCore {
@@ -21,6 +22,28 @@ namespace com.tybern.CallRecordCore {
         public int Misrouted { get; set; } = 0;
         public int Helpdesk { get; set; } = 0;
         public int Other { get; set; } = 0;
+
+        public void UpdateCallType(CallNotesResult.CallType type) {
+            CallTypeCounter callTypeCounter = CallRecordCore.Instance.ShiftCounter.CallTypeCounter;
+            switch (type) {
+                case CallNotesResult.CallType.Mobile: callTypeCounter.Mobile++; break;
+                case CallNotesResult.CallType.NBN: callTypeCounter.NBN++; break;
+                case CallNotesResult.CallType.ADSL: callTypeCounter.ADSL++; break;
+                case CallNotesResult.CallType.eMail: callTypeCounter.eMail++; break;
+                case CallNotesResult.CallType.Billing: callTypeCounter.Billing++; break;
+                case CallNotesResult.CallType.PA: callTypeCounter.PriorityAssist++; break;
+                case CallNotesResult.CallType.Prepaid: callTypeCounter.Prepaid++; break;
+                case CallNotesResult.CallType.PSTN: callTypeCounter.PSTN++; break;
+                case CallNotesResult.CallType.Opticomm: callTypeCounter.Opticomm++; break;
+                case CallNotesResult.CallType.FetchTV: callTypeCounter.FetchTV++; break;
+                case CallNotesResult.CallType.HomeWireless: callTypeCounter.HomeWireless++; break;
+                case CallNotesResult.CallType.Platinum: callTypeCounter.Platinum++; break;
+                case CallNotesResult.CallType.Misrouted: callTypeCounter.Misrouted++; break;
+                case CallNotesResult.CallType.Helpdesk: callTypeCounter.Helpdesk++; break;
+
+                default: callTypeCounter.Other++; break;
+            }
+        }
 
         public override string ToString() {
             string _result = "";

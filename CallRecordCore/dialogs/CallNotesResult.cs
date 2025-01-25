@@ -42,7 +42,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                     notes = "Dropped / Callback\n" + notes;
                 }
 
-                updateCallType(Result);
+                CallRecordCore.Instance.ShiftCounter.CallTypeCounter.UpdateCallType(Result);
                 notes = GetText(Result) + "\n" + notes;
                 if (!string.IsNullOrWhiteSpace(Text)) notes += "\n" + Text;
 
@@ -52,28 +52,6 @@ namespace com.tybern.CallRecordCore.dialogs {
                 CallRecordCore.Instance.UIProperties.CallMAE = 0;
                 CallRecordCore.Instance.UIProperties.CallSME = 0;
                 CallRecordCore.Instance.UIProperties.Notes = "";      // set the field to empty value
-            }
-        }
-
-        private void updateCallType(CallNotesResult.CallType type) {
-            CallTypeCounter callTypeCounter = CallRecordCore.Instance.ShiftCounter.CallTypeCounter;
-            switch (type) {
-                case CallNotesResult.CallType.Mobile: callTypeCounter.Mobile++; break;
-                case CallNotesResult.CallType.NBN: callTypeCounter.NBN++; break;
-                case CallNotesResult.CallType.ADSL: callTypeCounter.ADSL++; break;
-                case CallNotesResult.CallType.eMail: callTypeCounter.eMail++; break;
-                case CallNotesResult.CallType.Billing: callTypeCounter.Billing++; break;
-                case CallNotesResult.CallType.PA: callTypeCounter.PriorityAssist++; break;
-                case CallNotesResult.CallType.Prepaid: callTypeCounter.Prepaid++; break;
-                case CallNotesResult.CallType.PSTN: callTypeCounter.PSTN++; break;
-                case CallNotesResult.CallType.Opticomm: callTypeCounter.Opticomm++; break;
-                case CallNotesResult.CallType.FetchTV: callTypeCounter.FetchTV++; break;
-                case CallNotesResult.CallType.HomeWireless: callTypeCounter.HomeWireless++; break;
-                case CallNotesResult.CallType.Platinum: callTypeCounter.Platinum++; break;
-                case CallNotesResult.CallType.Misrouted: callTypeCounter.Misrouted++; break;
-                case CallNotesResult.CallType.Helpdesk: callTypeCounter.Helpdesk++; break;
-
-                default: callTypeCounter.Other++; break;
             }
         }
 

@@ -45,6 +45,8 @@ namespace com.tybern.CallRecordCore {
 
         private ApplicationClockTask _clockTask;
 
+        public CallLog CallRecordLog { get; } = new CallLog("CallRecordGUI.db");
+
         /// <summary>
         /// Private constructor - ensures access must be via the single, static instance in this class
         /// </summary>

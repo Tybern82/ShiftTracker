@@ -39,6 +39,8 @@ namespace com.tybern.CallRecordCore.commands {
 				if (!string.IsNullOrWhiteSpace(callTypes)) report += callTypes + "\n";
 
 				CallRecordCore.Instance.UICallbacks?.SetClipboard(report);
+
+				CallRecordCore.Instance.Messages.Enqueue(new CSendMail(currTimeText, CallRecordCore.Instance.UIProperties.SendEmailAddress, report));
             }
 
             /*

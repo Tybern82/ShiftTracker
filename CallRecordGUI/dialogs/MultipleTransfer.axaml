@@ -32,6 +32,6 @@
         </StackPanel>
       </StackPanel>
     </Border>
-    <Button Margin="5" Padding="5" Grid.Row="4" Grid.Column="2" Name="btnSaveMAE">Save</Button>
+    <Button Margin="10" Padding="10" Grid.Row="4" Grid.Column="2" Name="btnSaveMAE">Save</Button>
   </Grid>
 </Window>

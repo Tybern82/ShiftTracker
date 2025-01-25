@@ -23,6 +23,9 @@ namespace CallRecordGUI {
         public MainWindow() {
             InitializeComponent();
 
+            CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
+            DataContext = CallRecordCore.Instance.UIProperties;
+
             FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate);
             StreamReader configReader = new StreamReader(configFile);
             string configJSON = configReader.ReadToEnd();
@@ -30,9 +33,7 @@ namespace CallRecordGUI {
                 JObject configData = JObject.Parse(configJSON);
                 decodeJSON(configData);
             }
-
-            CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
-            DataContext = CallRecordCore.Instance.UIProperties;
+            CallRecordCore.Instance.Messages.Enqueue(new CLoadDB());    // trigger loading existing call records from today
 
             btnStartCall.Click += (sender, args) => {
                 if (CallRecordCore.Instance.CurrentCall.CurrentMode == CallDetails.CallMode.InCall) {
@@ -78,6 +79,18 @@ namespace CallRecordGUI {
             this.Position = new Avalonia.PixelPoint(posx, posy);
             this.Width = width;
             this.Height = height;
+
+            if (configData.ContainsKey("SMTP")) {
+                JObject? smtpDetails = configData.Value<JObject>("SMTP");
+                if (smtpDetails != null) {
+                    CSendMail.SMTP_HOST = smtpDetails.Value<string>("Host") ?? CSendMail.SMTP_HOST;
+                    CSendMail.SMTP_PORT = smtpDetails.Value<int>("Port");
+                    CSendMail.SMTP_USERNAME = smtpDetails.Value<string>("Username") ?? CSendMail.SMTP_USERNAME;
+                    CSendMail.SMTP_PASSWORD = smtpDetails.Value<string>("Password") ?? CSendMail.SMTP_PASSWORD;
+                    CSendMail.FROM_ADDRESS = smtpDetails.Value<string>("FromAddress") ?? CSendMail.FROM_ADDRESS;
+                    CallRecordCore.Instance.UIProperties.SendEmailAddress = smtpDetails.Value<string>("ToAddress") ?? string.Empty;
+                }
+            }
         }
 
         private JObject encodeJSON() {
@@ -86,6 +99,16 @@ namespace CallRecordGUI {
             _result.Add("PosY", this.Position.Y);
             _result.Add("Width", this.Width);
             _result.Add("Height", this.Height);
+
+            JObject smtpDetails = new JObject();
+            smtpDetails.Add("Host", CSendMail.SMTP_HOST);
+            smtpDetails.Add("Port", CSendMail.SMTP_PORT);
+            smtpDetails.Add("Username", CSendMail.SMTP_USERNAME);
+            smtpDetails.Add("Password", CSendMail.SMTP_PASSWORD);
+            smtpDetails.Add("FromAddress", CSendMail.FROM_ADDRESS);
+            smtpDetails.Add("ToAddress", CallRecordCore.Instance.UIProperties.SendEmailAddress);
+            _result.Add("SMTP", smtpDetails);
+
             return _result;
         }
 
