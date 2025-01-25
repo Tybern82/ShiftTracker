@@ -76,7 +76,7 @@
 
         <StackPanel Orientation="Horizontal" Margin="10">
           <TextBlock Text="Destination Email: " VerticalAlignment="Center" Margin="10" Padding="10" />
-          <TextBox Text="{Binding SendEmailAddress}" Width="250" Margin="10" Padding="10" />
+          <TextBox Text="{Binding SendEmailAddress}" Width="250" Margin="10" Padding="10" Watermark="Leave blank to skip sending..." />
         </StackPanel>
         
         <StackPanel VerticalAlignment="Stretch">
