@@ -42,8 +42,11 @@ namespace com.tybern.CallRecordCore.commands {
 
                 using (var client = new SmtpClient()) {
                     client.Connect(SMTP_HOST, SMTP_PORT, SecureSocketOptions.Auto);
+                    LOG.Info("SMTP Connected");
                     client.Authenticate(SMTP_USERNAME, SMTP_PASSWORD);
+                    LOG.Info("SMTP Authenticated");
                     client.Send(message);
+                    LOG.Info("SMTP Sent...");
                     client.Disconnect(true);
                 }
             } catch (Exception) { }
