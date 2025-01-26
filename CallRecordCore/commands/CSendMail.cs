@@ -49,7 +49,9 @@ namespace com.tybern.CallRecordCore.commands {
                     LOG.Info("SMTP Sent...");
                     client.Disconnect(true);
                 }
-            } catch (Exception) { }
+            } catch (Exception e) {
+                LOG.Error(e.ToString());
+            }
         }
     }
 }
