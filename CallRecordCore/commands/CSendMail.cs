@@ -41,8 +41,9 @@ namespace com.tybern.CallRecordCore.commands {
                 message.Body = new TextPart("plain") { Text = Report };
 
                 using (var client = new SmtpClient()) {
-                    client.Connect(SMTP_HOST, SMTP_PORT, SecureSocketOptions.Auto);
+                    client.Connect(SMTP_HOST, SMTP_PORT, SecureSocketOptions.SslOnConnect);
                     LOG.Info("SMTP Connected");
+                    LOG.Info("Authenticating: <" + SMTP_USERNAME + ">:<" + SMTP_PASSWORD + ">");
                     client.Authenticate(SMTP_USERNAME, SMTP_PASSWORD);
                     LOG.Info("SMTP Authenticated");
                     client.Send(message);
