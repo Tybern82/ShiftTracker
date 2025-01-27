@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Threading;
 
 namespace com.tybern.CallRecordCore {
 
@@ -34,8 +35,8 @@ namespace com.tybern.CallRecordCore {
         public static string LabelStartWrap { get; } = "Start Wrap";
         public static string LabelStartCallback { get; } = "Callback";
         private string _startCallButtonText = LabelStartCall;
-        public string StartCallButtonText { 
-            get { lock(_startCallButtonText) { return _startCallButtonText; } }
+        public string StartCallButtonText {
+            get { lock (_startCallButtonText) { return _startCallButtonText; } }
             set {
                 lock (_startCallButtonText) { _startCallButtonText = value; }
                 OnPropertyChanged(nameof(StartCallButtonText));
@@ -73,7 +74,7 @@ namespace com.tybern.CallRecordCore {
 
         private TimeSpan _transferTime = TimeSpan.Zero;
         public TimeSpan TransferTime {
-            get { lock(this) return _transferTime; }
+            get { lock (this) return _transferTime; }
             set {
                 lock (this) { _transferTime = value; }
                 OnPropertyChanged(nameof(TransferTime));
@@ -84,7 +85,7 @@ namespace com.tybern.CallRecordCore {
         public int TotalMAE {
             get { lock (this) { return _totalMAE; } }
             set {
-                lock(this) { _totalMAE = value; }
+                lock (this) { _totalMAE = value; }
                 OnPropertyChanged(nameof(TotalMAE));
             }
         }
@@ -129,8 +130,10 @@ namespace com.tybern.CallRecordCore {
         public TimeSpan BreakTimer {
             get { lock (this) { return _breakTimer; } }
             set {
-                lock (this) { _breakTimer = value; }
-                OnPropertyChanged(nameof(BreakTimer));
+                if (_breakTimer != value) {
+                    lock (this) { _breakTimer = value; }
+                    OnPropertyChanged(nameof(BreakTimer));
+                }
             }
         }
 
@@ -143,12 +146,12 @@ namespace com.tybern.CallRecordCore {
             }
         }
 
-        private TimeSpan _eosTimer = TimeSpan.Zero;
-        public TimeSpan EOSTimer {
-            get { lock (this) { return _eosTimer; } }
+        private string _currBreakText = string.Empty;
+        public string CurrentBreakText {
+            get { lock (_currBreakText) { return _currBreakText; } }
             set {
-                lock (this) { _eosTimer = value; }
-                OnPropertyChanged(nameof(EOSTimer));
+                lock (_currBreakText) { _currBreakText = value; }
+                OnPropertyChanged(nameof(CurrentBreakText));
             }
         }
 
@@ -188,13 +191,63 @@ namespace com.tybern.CallRecordCore {
             }
         }
 
-        private string _sendEmailAddress = string.Empty;
-        public string SendEmailAddress {
-            get { lock (_sendEmailAddress) { return _sendEmailAddress; } }
+        private string _destinationAddress = string.Empty;
+        public string DestinationAddress {
+            get { lock (_destinationAddress) { return _destinationAddress; } }
             set {
-                lock (_sendEmailAddress) { _sendEmailAddress = value; }
-                OnPropertyChanged(nameof(SendEmailAddress));
+                lock (_destinationAddress) { _destinationAddress = value; }
+                OnPropertyChanged(nameof(DestinationAddress));
             }
         }
+
+        private string _senderAddress = string.Empty;
+        public string SenderAddress {
+            get { lock (_senderAddress) { return _senderAddress; } }
+            set {
+                lock (_senderAddress) { _senderAddress = value; }
+                OnPropertyChanged(nameof(SenderAddress));
+            }
+        }
+
+        private string _smtpHost = string.Empty;
+        public string SMTPHost {
+            get { lock (_smtpHost) { return _smtpHost; } }
+            set {
+                lock (_smtpHost) { _smtpHost = value; }
+                OnPropertyChanged(nameof(SMTPHost));
+            }
+        }
+
+        private int _smtpPort = 465;
+        public int SMTPPort {
+            get { lock (this) { return _smtpPort; } }
+            set {
+                int val = value;
+                if (val < 1) val = 1;
+                if (val > 65535) val = 65535;
+                lock (this) { _smtpPort = val; }
+                OnPropertyChanged(nameof(SMTPPort));
+            }
+        }
+
+        private string _smtpUsername = string.Empty;
+        public string SMTPUsername {
+            get { lock (_smtpUsername) { return _smtpUsername; } }
+            set {
+                lock (_smtpUsername) { _smtpUsername = value; }
+                OnPropertyChanged(nameof(SMTPUsername));
+            }
+        }
+
+        private string _smtpPassword = string.Empty;
+        public string SMTPPassword {
+            get { lock (_smtpPassword) { return _smtpPassword; } }
+            set {
+                lock (_smtpPassword) { _smtpPassword = value; }
+                OnPropertyChanged(nameof(SMTPPassword));
+            }
+        }
+
+        public BreakTimes BreakTimes { get; } = new BreakTimes();
     }
 }

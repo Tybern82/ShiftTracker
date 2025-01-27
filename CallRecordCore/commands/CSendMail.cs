@@ -11,12 +11,6 @@ namespace com.tybern.CallRecordCore.commands {
 
         protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
-        public static string FROM_ADDRESS { get; set; } = "email@host.com";
-        public static string SMTP_HOST { get; set; } = "smtp.gmail.com";
-        public static  int SMTP_PORT { get; set; } = 587;
-        public static  string SMTP_USERNAME { get; set; } = "email@host.com";
-        public static  string SMTP_PASSWORD { get; set; } = "Password";
-
         private string Subject { get;  }
         private string Address { get; }
         private string Report { get; }
@@ -35,16 +29,16 @@ namespace com.tybern.CallRecordCore.commands {
             }
             try {
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("CallRecordGUI", FROM_ADDRESS));
+                message.From.Add(new MailboxAddress("CallRecordGUI", CallRecordCore.Instance.UIProperties.SenderAddress));
                 message.To.Add(new MailboxAddress("", Address));    // Default to FROM_ADDRESS if not specified
                 message.Subject = Subject;
                 message.Body = new TextPart("plain") { Text = Report };
 
                 using (var client = new SmtpClient()) {
-                    client.Connect(SMTP_HOST, SMTP_PORT, SecureSocketOptions.SslOnConnect);
+                    client.Connect(CallRecordCore.Instance.UIProperties.SMTPHost, CallRecordCore.Instance.UIProperties.SMTPPort, SecureSocketOptions.SslOnConnect);
                     LOG.Info("SMTP Connected");
-                    LOG.Info("Authenticating: <" + SMTP_USERNAME + ">:<" + SMTP_PASSWORD + ">");
-                    client.Authenticate(SMTP_USERNAME, SMTP_PASSWORD);
+                    // LOG.Info("Authenticating: <" + SMTP_USERNAME + ">:<" + SMTP_PASSWORD + ">");
+                    client.Authenticate(CallRecordCore.Instance.UIProperties.SMTPUsername, CallRecordCore.Instance.UIProperties.SMTPPassword);
                     LOG.Info("SMTP Authenticated");
                     client.Send(message);
                     LOG.Info("SMTP Sent...");

@@ -30,12 +30,16 @@ namespace com.tybern.CallRecordCore {
                 DateTime breakTime = CallRecordCore.fromCurrent(currTime, CallRecordCore.Instance.UIProperties.BreakTimer);
                 CallRecordCore.Instance.UIProperties.BreakTimerText = (breakTime <= currTime ? "BREAK" : CallRecordCore.toShortTimeString(breakTime - currTime));
 
-                DateTime eosTime = CallRecordCore.fromCurrent(currTime, CallRecordCore.Instance.UIProperties.EOSTimer);
+                if (CallRecordCore.Instance.InBreak) {
+                    CallRecordCore.Instance.UIProperties.CurrentBreakText = CallRecordCore.toShortTimeString(DateTime.Now.TimeOfDay - CallRecordCore.Instance.BreakStartTime);
+                }
+
+                DateTime eosTime = CallRecordCore.fromCurrent(currTime, CallRecordCore.Instance.UIProperties.BreakTimes.ShiftEnd);
                 CallRecordCore.Instance.UIProperties.EOSTimerText = (
                     eosTime <= currTime 
                     ? "END-OF-SHIFT" 
                     : (
-                        CallRecordCore.Instance.UIProperties.EOSTimer == CallRecordCore.Instance.UIProperties.BreakTimer 
+                        CallRecordCore.Instance.UIProperties.BreakTimes.ShiftEnd == CallRecordCore.Instance.UIProperties.BreakTimer 
                         ? "EOS" 
                         : CallRecordCore.toShortTimeString(eosTime - currTime)
                     )

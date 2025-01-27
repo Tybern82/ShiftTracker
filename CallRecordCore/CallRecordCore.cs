@@ -43,6 +43,9 @@ namespace com.tybern.CallRecordCore {
         /// </summary>
         public UICallbacks? UICallbacks { get; set; }
 
+        public bool InBreak { get; set; } = false;
+        public TimeSpan BreakStartTime { get; set; } = TimeSpan.Zero;
+
         private ApplicationClockTask _clockTask;
 
         public CallLog CallRecordLog { get; } = new CallLog("CallRecordGUI.db");
@@ -55,6 +58,11 @@ namespace com.tybern.CallRecordCore {
         }
 
         public static DateTime fromCurrent(DateTime currDay, TimeSpan timeOffset) => new DateTime(currDay.Year, currDay.Month, currDay.Day, timeOffset.Hours, timeOffset.Minutes, timeOffset.Seconds);
-        public static string toShortTimeString(TimeSpan timeSpan) => timeSpan.ToString(@"hh\:mm\:ss");
+        public static string toShortTimeString(TimeSpan timeSpan) {
+            if (timeSpan.TotalHours > 1)
+                return timeSpan.ToString(@"hh\:mm\:ss");
+            else 
+                return timeSpan.ToString(@"mm\:ss");
+        }
     }
 }

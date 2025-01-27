@@ -40,7 +40,12 @@ namespace com.tybern.CallRecordCore.commands {
 
 				CallRecordCore.Instance.UICallbacks?.SetClipboard(report);
 
-				CallRecordCore.Instance.Messages.Enqueue(new CSendMail(currTimeText, CallRecordCore.Instance.UIProperties.SendEmailAddress, report));
+				CallRecordCore.Instance.Messages.Enqueue(new CSendMail(currTimeText, CallRecordCore.Instance.UIProperties.DestinationAddress, report));
+
+                CallRecordCore.Instance.UICallbacks?.EnableButton(UICallbacks.UITriggerType.StartShiftButton);
+                CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.StartBreakButton);
+                CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.EndBreakButton);
+                CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.EndShiftButton);
             }
 
             /*

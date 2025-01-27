@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CallRecordGUI.dialogs;
@@ -51,23 +52,53 @@ namespace CallRecordGUI {
                 }
             };
 
+            spinSMTPPort.Spin += (sender, args) => {
+                SpinEventArgs spinArgs = args as SpinEventArgs;
+                switch (spinArgs.Direction) {
+                    case SpinDirection.Increase:
+                        CallRecordCore.Instance.UIProperties.SMTPPort++;
+                        break;
+
+                    case SpinDirection.Decrease:
+                        CallRecordCore.Instance.UIProperties.SMTPPort--;
+                        break;
+                }
+                if (CallRecordCore.Instance.UIProperties.SMTPPort == 1) spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Increase;
+                else if (CallRecordCore.Instance.UIProperties.SMTPPort == 65535) spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Decrease;
+                else spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Increase | ValidSpinDirections.Decrease;
+            };
+
             btnSMECall.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSMERequest());
             btnSurvey.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSurvey());
             btnSkipSurvey.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSkipSurvey());
             btnAddNote.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CCallNotes());
             btnMAECall.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CMAERequest());
-            btnEOS.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
+            btnStartShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CShiftStart());
+            btnStartBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakStart());
+            btnEndBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
+            btnEndShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
 
             CallRecordCore.Instance.CurrentCall.CurrentMode = CallDetails.CallMode.Disconnect;  // should set button states correctly
 
             this.Closing += (sender, args) => {
                 CallRecordCore.Instance.Messages.Terminate();     // make sure to terminate the processing thread when the main window closes
-                FileStream configFile = File.OpenWrite(ConfigFile);
+                FileStream configFile = File.Open(ConfigFile, FileMode.Create);
                 StreamWriter configWriter = new StreamWriter(configFile);
                 configWriter.Write(encodeJSON().ToString());
                 configWriter.Flush();
                 configWriter.Close();
             };
+        }
+
+        private void FSMTPPort_TextChanged(object? sender, TextChangedEventArgs e) {
+            try {
+                if (sender == null) return;
+                TextBox fSMTPPort = (TextBox)sender;
+                if (fSMTPPort.Text != null) {
+                    int val = int.Parse(fSMTPPort.Text);
+                    CallRecordCore.Instance.UIProperties.SMTPPort = val;
+                }
+            } catch (Exception) { }
         }
 
         private void decodeJSON(JObject configData) {
@@ -83,12 +114,25 @@ namespace CallRecordGUI {
             if (configData.ContainsKey("SMTP")) {
                 JObject? smtpDetails = configData.Value<JObject>("SMTP");
                 if (smtpDetails != null) {
-                    CSendMail.SMTP_HOST = smtpDetails.Value<string>("Host") ?? CSendMail.SMTP_HOST;
-                    CSendMail.SMTP_PORT = smtpDetails.Value<int>("Port");
-                    CSendMail.SMTP_USERNAME = smtpDetails.Value<string>("Username") ?? CSendMail.SMTP_USERNAME;
-                    CSendMail.SMTP_PASSWORD = smtpDetails.Value<string>("Password") ?? CSendMail.SMTP_PASSWORD;
-                    CSendMail.FROM_ADDRESS = smtpDetails.Value<string>("FromAddress") ?? CSendMail.FROM_ADDRESS;
-                    CallRecordCore.Instance.UIProperties.SendEmailAddress = smtpDetails.Value<string>("ToAddress") ?? string.Empty;
+                    CallRecordCore.Instance.UIProperties.SMTPHost = smtpDetails.Value<string>("Host") ?? CallRecordCore.Instance.UIProperties.SMTPHost;
+                    CallRecordCore.Instance.UIProperties.SMTPPort = smtpDetails.Value<int>("Port");
+                    CallRecordCore.Instance.UIProperties.SMTPUsername = smtpDetails.Value<string>("Username") ?? CallRecordCore.Instance.UIProperties.SMTPUsername;
+                    CallRecordCore.Instance.UIProperties.SMTPPassword = smtpDetails.Value<string>("Password") ?? CallRecordCore.Instance.UIProperties.SMTPPassword;
+                    CallRecordCore.Instance.UIProperties.SenderAddress = smtpDetails.Value<string>("FromAddress") ?? CallRecordCore.Instance.UIProperties.SenderAddress;
+                    CallRecordCore.Instance.UIProperties.DestinationAddress = smtpDetails.Value<string>("ToAddress") ?? string.Empty;
+                }
+            }
+
+            if (configData.ContainsKey("Breaks")) {
+                JObject? breakDetails = configData.Value<JObject>("Breaks");
+                if (breakDetails != null) {
+                    if (breakDetails.ContainsKey("ShiftStart")) CallRecordCore.Instance.UIProperties.BreakTimes.ShiftStart = TimeSpan.FromTicks(breakDetails.Value<long>("ShiftStart"));
+                    if (breakDetails.ContainsKey("ShiftEnd")) CallRecordCore.Instance.UIProperties.BreakTimes.ShiftEnd = TimeSpan.FromTicks(breakDetails.Value<long>("ShiftEnd"));
+                    if (breakDetails.ContainsKey("FirstBreak")) CallRecordCore.Instance.UIProperties.BreakTimes.FirstBreak = TimeSpan.FromTicks(breakDetails.Value<long>("FirstBreak"));
+                    if (breakDetails.ContainsKey("LunchBreak")) CallRecordCore.Instance.UIProperties.BreakTimes.LunchBreak = TimeSpan.FromTicks(breakDetails.Value<long>("LunchBreak"));
+                    if (breakDetails.ContainsKey("LastBreak")) CallRecordCore.Instance.UIProperties.BreakTimes.LastBreak = TimeSpan.FromTicks(breakDetails.Value<long>("LastBreak"));
+                    if (breakDetails.ContainsKey("MeetingTime")) CallRecordCore.Instance.UIProperties.BreakTimes.MeetingBreak = TimeSpan.FromTicks(breakDetails.Value<long>("MeetingTime"));
+                    if (breakDetails.ContainsKey("TrainingTime")) CallRecordCore.Instance.UIProperties.BreakTimes.TrainingBreak = TimeSpan.FromTicks(breakDetails.Value<long>("TrainingTime"));
                 }
             }
         }
@@ -101,13 +145,23 @@ namespace CallRecordGUI {
             _result.Add("Height", this.Height);
 
             JObject smtpDetails = new JObject();
-            smtpDetails.Add("Host", CSendMail.SMTP_HOST);
-            smtpDetails.Add("Port", CSendMail.SMTP_PORT);
-            smtpDetails.Add("Username", CSendMail.SMTP_USERNAME);
-            smtpDetails.Add("Password", CSendMail.SMTP_PASSWORD);
-            smtpDetails.Add("FromAddress", CSendMail.FROM_ADDRESS);
-            smtpDetails.Add("ToAddress", CallRecordCore.Instance.UIProperties.SendEmailAddress);
+            smtpDetails.Add("Host", CallRecordCore.Instance.UIProperties.SMTPHost);
+            smtpDetails.Add("Port", CallRecordCore.Instance.UIProperties.SMTPPort);
+            smtpDetails.Add("Username", CallRecordCore.Instance.UIProperties.SMTPUsername);
+            smtpDetails.Add("Password", CallRecordCore.Instance.UIProperties.SMTPPassword);
+            smtpDetails.Add("FromAddress", CallRecordCore.Instance.UIProperties.SenderAddress);
+            smtpDetails.Add("ToAddress", CallRecordCore.Instance.UIProperties.DestinationAddress);
             _result.Add("SMTP", smtpDetails);
+
+            JObject breakDetails = new JObject();
+            breakDetails.Add("ShiftStart", CallRecordCore.Instance.UIProperties.BreakTimes.ShiftStart.Ticks);
+            breakDetails.Add("ShiftEnd", CallRecordCore.Instance.UIProperties.BreakTimes.ShiftEnd.Ticks);
+            breakDetails.Add("FirstBreak", CallRecordCore.Instance.UIProperties.BreakTimes.FirstBreak.Ticks);
+            breakDetails.Add("LunchBreak", CallRecordCore.Instance.UIProperties.BreakTimes.LunchBreak.Ticks);
+            breakDetails.Add("LastBreak", CallRecordCore.Instance.UIProperties.BreakTimes.LastBreak.Ticks);
+            breakDetails.Add("MeetingTime", CallRecordCore.Instance.UIProperties.BreakTimes.MeetingBreak.Ticks);
+            breakDetails.Add("TrainingTime", CallRecordCore.Instance.UIProperties.BreakTimes.TrainingBreak.Ticks);
+            _result.Add("Breaks", breakDetails);
 
             return _result;
         }
@@ -184,6 +238,22 @@ namespace CallRecordGUI {
 
                 case UITriggerType.MAECallButton:
                     btnMAECall.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.StartShiftButton:
+                    btnStartShift.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.EndShiftButton:
+                    btnEndShift.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.StartBreakButton:
+                    btnStartBreak.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.EndBreakButton:
+                    btnEndBreak.IsEnabled = enabled;
                     break;
 
                 default:
