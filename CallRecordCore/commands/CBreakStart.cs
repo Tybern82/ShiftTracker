@@ -6,6 +6,14 @@ using com.tybern.CMDProcessor;
 namespace com.tybern.CallRecordCore.commands {
     public class CBreakStart : Command {
         public void Process() {
+            if (CallRecordCore.Instance.CurrentCall.IsInCall) {
+                // Terminate any active call when starting break
+                if (CallRecordCore.Instance.CurrentCall.CurrentMode != CallDetails.CallMode.Disconnect) {
+                    if (!CallRecordCore.Instance.CurrentCall.IsInWrap) CallRecordCore.Instance.Messages.Enqueue(new CStartWrap());
+                    if (!CallRecordCore.Instance.CurrentCall.IsSurveyRecorded) CallRecordCore.Instance.Messages.Enqueue(new CSkipSurvey());
+                    CallRecordCore.Instance.Messages.Enqueue(new CStopCall());
+                }
+            }
             CallRecordCore.Instance.BreakStartTime = DateTime.Now.TimeOfDay;
             CallRecordCore.Instance.InBreak = true;
             TimeSpan currBreak = CallRecordCore.Instance.UIProperties.BreakTimer;

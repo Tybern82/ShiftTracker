@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Text;
 using com.tybern.CMDProcessor;
+using static com.tybern.CallRecordCore.dialogs.SkipSurveyResult;
 
 namespace com.tybern.CallRecordCore.commands {
     public class AddSurveyRecord : Command {
 
         protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
-        private int CallNumber { get; }
-        private bool IsPrompted { get; }
-        private string Text { get; } 
+        private SurveyRecord Record { get; set; }
+        private bool DBLoaded { get; set; } = false;
 
-        public AddSurveyRecord(int callNumber, bool isPrompted, string text) {
-            CallNumber = callNumber;
-            IsPrompted = isPrompted;
-            Text = text;
+
+        public AddSurveyRecord(int callNumber, bool isPrompted, OptionSkipSurvey type, string text) : this(new SurveyRecord(DateTime.Now, callNumber, isPrompted, type, text), false) {}
+
+        public AddSurveyRecord(SurveyRecord record, bool isPreloaded) {
+            Record = record; 
+            DBLoaded = isPreloaded;
         }
 
         public void Process() {
-            LOG.Info("SURVEY: " + CallNumber + ": " + IsPrompted + (string.IsNullOrWhiteSpace(Text) ? string.Empty : " - " + Text));
-            SurveyRecord record = new SurveyRecord(CallNumber, IsPrompted, Text);
-            CallRecordCore.Instance.UIProperties.SurveyRecordList.Add(record);
+            LOG.Info("SURVEY: " + Record.AsString);
+            if (!DBLoaded) CallRecordCore.Instance.SurveyRecordLog.AddRecord(Record);
+            CallRecordCore.Instance.UIProperties.SurveyRecordList.Add(Record);
         }
     }
 }

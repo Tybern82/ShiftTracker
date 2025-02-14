@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using com.tybern.CMDProcessor;
+using SQLite;
 
 namespace com.tybern.CallRecordCore {
     /// <summary>
@@ -48,7 +49,24 @@ namespace com.tybern.CallRecordCore {
 
         private ApplicationClockTask _clockTask;
 
-        public CallLog CallRecordLog { get; } = new CallLog("CallRecordGUI.db");
+
+        private SQLiteConnection _conn { get; } = new SQLiteConnection("CallRecordGUI.db", true);
+
+        private CallLog? _CallLog;
+        public CallLog CallRecordLog {
+            get { 
+                if (_CallLog == null) _CallLog = new CallLog(_conn);
+                return _CallLog;
+            }
+        }
+
+        private SurveyLog? _SurveyLog;
+        public SurveyLog SurveyRecordLog {
+            get {
+                if (_SurveyLog == null) _SurveyLog = new SurveyLog(_conn);
+                return _SurveyLog;
+            }
+        }
 
         /// <summary>
         /// Private constructor - ensures access must be via the single, static instance in this class

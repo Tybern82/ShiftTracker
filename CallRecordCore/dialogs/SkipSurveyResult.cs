@@ -18,7 +18,7 @@ namespace com.tybern.CallRecordCore.dialogs {
             LOG.Info("DIALOG <SkipSurvey> : Completed");
             CallRecordCore.Instance.ShiftCounter.CallNumber++;
             bool isPrompted = Result == SkipSurveyResult.OptionSkipSurvey.None;
-            CallRecordCore.Instance.Messages.Enqueue(new AddSurveyRecord(CallRecordCore.Instance.ShiftCounter.CallNumber, isPrompted, (string.IsNullOrWhiteSpace(Text) ? string.Empty : Text)));
+            CallRecordCore.Instance.Messages.Enqueue(new AddSurveyRecord(CallRecordCore.Instance.ShiftCounter.CallNumber, isPrompted, Result, (string.IsNullOrWhiteSpace(Text) ? string.Empty : Text)));
         }
 
         public enum OptionSkipSurvey {

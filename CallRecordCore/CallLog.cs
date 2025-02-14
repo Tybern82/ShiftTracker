@@ -10,8 +10,9 @@ namespace com.tybern.CallRecordCore {
 
         public SQLiteConnection conn;
 
-        public CallLog(string dbPath) {
-            conn = new SQLiteConnection(dbPath, true);
+        public CallLog(string dbPath) : this(new SQLiteConnection(dbPath, true)) { }
+        public CallLog(SQLiteConnection conn) { 
+            this.conn = conn;
 
             // Ensure the required tables exist in the db
             conn.CreateTable<CallRecord>();

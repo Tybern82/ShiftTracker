@@ -7,6 +7,7 @@ namespace com.tybern.CallRecordCore.commands {
     public class CLoadDB : Command {
         public void Process() {
             CallRecordCore.Instance.CallRecordLog.LoadCurrentDay();
+            CallRecordCore.Instance.SurveyRecordLog.LoadCurrentDay();
         }
     }
 }
