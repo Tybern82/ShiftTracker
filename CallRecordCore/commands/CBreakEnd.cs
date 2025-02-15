@@ -10,7 +10,8 @@ namespace com.tybern.CallRecordCore.commands {
             CallRecordCore.Instance.UIProperties.CurrentBreakText = string.Empty;
             CallRecordCore.Instance.UIProperties.BreakTimer = CallRecordCore.Instance.UIProperties.BreakTimes.NextBreak;
             CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.StartShiftButton);
-            CallRecordCore.Instance.UICallbacks?.EnableButton(UICallbacks.UITriggerType.StartBreakButton);
+            // Only enable Start Break button if not at EOS
+            if (CallRecordCore.Instance.UIProperties.BreakTimes.ShiftEnd != CallRecordCore.Instance.UIProperties.BreakTimer) CallRecordCore.Instance.UICallbacks?.EnableButton(UICallbacks.UITriggerType.StartBreakButton);
             CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.EndBreakButton);
             CallRecordCore.Instance.UICallbacks?.EnableButton(UICallbacks.UITriggerType.EndShiftButton);
         }
