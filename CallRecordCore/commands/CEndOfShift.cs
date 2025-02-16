@@ -38,6 +38,7 @@ namespace com.tybern.CallRecordCore.commands {
 				string callTypes = CallRecordCore.Instance.ShiftCounter.CallTypeCounter.ToString();
 				if (!string.IsNullOrWhiteSpace(callTypes)) report += callTypes + "\n";
 
+				report += "\n";
 				foreach (SurveyRecord r in CallRecordCore.Instance.UIProperties.SurveyRecordList) {
 					report += "Call " + r.AsString + "\n";
 				}
