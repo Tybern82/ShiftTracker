@@ -86,6 +86,16 @@
     <TabItem Header="Settings">
       <StackPanel>
 
+        <HeaderedContentControl Classes="GroupBox" Header="App Settings">
+          <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*">
+            <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Note: Changes to DB file will not take effect until app restarts." />
+            <TextBlock Grid.Column="0" Grid.Row="1" Text="Database File: " />
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DBFile}" />
+            <Button Grid.Column="1" Grid.Row="2" Content="Set File" Name="btnSetFile" Margin="10" Padding="10" />
+            <Button Grid.Column="1" Grid.Row="3" Content="Update Breaks" Name="btnUpdateBreaks" Margin="10" Padding="10" />
+          </Grid>
+        </HeaderedContentControl>
+
         <HeaderedContentControl Classes="GroupBox" Header="EMail Settings">
           <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto, Auto" RowDefinitions="*,*,*,*,*,*">
             
@@ -116,7 +126,7 @@
           </Grid>
         </HeaderedContentControl>
 
-        <HeaderedContentControl Classes="GroupBox" Header="Break Times">
+        <HeaderedContentControl Classes="GroupBox" Header="Break Times Today">
           <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*,*,*,*">
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Shift Start: " Classes="MainWindowLabel" />

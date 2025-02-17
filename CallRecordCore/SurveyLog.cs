@@ -71,7 +71,7 @@ namespace com.tybern.CallRecordCore {
     [Table("surveyRecord")]
     public class SurveyRecord {
 
-        [PrimaryKey, Column("startTime")]
+        [PrimaryKey, Indexed, Column("startTime")]
         public DateTime CallTime { get; set; } = DateTime.Now;
 
         [Column("callNumber")]

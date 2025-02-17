@@ -13,6 +13,8 @@ namespace com.tybern.CallRecordCore {
     /// </summary>
     public class UIProperties : INotifyPropertyChanged {
 
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+
         /// <inheritdoc cref="INotifyPropertyChanged.PropertyChanged"/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -248,6 +250,35 @@ namespace com.tybern.CallRecordCore {
             }
         }
 
-        public BreakTimes BreakTimes { get; } = new BreakTimes();
+        public BreakTimes BreakTimes { get; } = new BreakTimes(true);
+
+
+
+        private string _DBFile = "CallRecordGUI.db";
+        public string DBFile {
+            get { lock (_DBFile) { return _DBFile; } }
+            set {
+                lock (_DBFile) { _DBFile = value; }
+                OnPropertyChanged(nameof(DBFile));
+            }
+        }
+
+        private DateTimeOffset _SelectedDate = DateTime.Now.Date;
+        public DateTimeOffset SelectedDate {
+            get { lock (this) { return _SelectedDate; } }
+            set {
+                lock (this) {
+                    LOG.Info("Updating SelectedDate");
+                    if (_SelectedDate != value) {
+                        LOG.Info("Date Changed");
+                        _SelectedDate = value;
+                        CallRecordCore.Instance.BreakTimesDB.LoadBreakTimes(_SelectedDate.Date, SelectedBreakTimes);
+                    }
+                }
+                OnPropertyChanged(nameof(SelectedDate));
+            }
+        }
+
+        public BreakTimes SelectedBreakTimes { get; } = new BreakTimes();
     }
 }

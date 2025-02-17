@@ -50,12 +50,18 @@ namespace com.tybern.CallRecordCore {
         private ApplicationClockTask _clockTask;
 
 
-        private SQLiteConnection _conn { get; } = new SQLiteConnection("CallRecordGUI.db", true);
+        private SQLiteConnection? _conn;
+        private SQLiteConnection Connection {
+            get {
+                if (_conn == null) _conn = new SQLiteConnection(UIProperties.DBFile, true);
+                return _conn;
+            }
+        }
 
         private CallLog? _CallLog;
         public CallLog CallRecordLog {
             get { 
-                if (_CallLog == null) _CallLog = new CallLog(_conn);
+                if (_CallLog == null) _CallLog = new CallLog(Connection);
                 return _CallLog;
             }
         }
@@ -63,8 +69,16 @@ namespace com.tybern.CallRecordCore {
         private SurveyLog? _SurveyLog;
         public SurveyLog SurveyRecordLog {
             get {
-                if (_SurveyLog == null) _SurveyLog = new SurveyLog(_conn);
+                if (_SurveyLog == null) _SurveyLog = new SurveyLog(Connection);
                 return _SurveyLog;
+            }
+        }
+
+        private BreakTimesDB? _BreakTimesDB;
+        public BreakTimesDB BreakTimesDB {
+            get {
+                if (_BreakTimesDB == null) _BreakTimesDB = new BreakTimesDB(Connection);
+                return _BreakTimesDB;
             }
         }
 

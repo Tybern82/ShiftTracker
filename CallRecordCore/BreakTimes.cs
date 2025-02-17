@@ -25,7 +25,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _shiftStart; } }
             set {
                 lock (this) { _shiftStart = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(ShiftStart));
             }
         }
@@ -35,7 +35,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _shiftEnd; } }
             set {
                 lock (this) { _shiftEnd = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(ShiftEnd));
             }
         }
@@ -45,7 +45,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _firstBreak; } }
             set {
                 lock (this) { _firstBreak = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(FirstBreak));
             }
         }
@@ -55,7 +55,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _lastBreak; } }
             set {
                 lock (this) { _lastBreak = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(LastBreak));
             }
         }
@@ -65,7 +65,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _lunchBreak; } }
             set {
                 lock (this) { _lunchBreak = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(LunchBreak));
             }
         }
@@ -75,7 +75,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _meetingBreak; } }
             set {
                 lock (this) { _meetingBreak = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(MeetingBreak));
             }
         }
@@ -85,7 +85,7 @@ namespace com.tybern.CallRecordCore {
             get { lock (this) { return _trainingBreak; } }
             set {
                 lock (this) { _trainingBreak = value; }
-                CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
+                if (isActive) CallRecordCore.Instance.UIProperties.BreakTimer = NextBreak;
                 OnPropertyChanged(nameof(TrainingBreak));
             }
         }
@@ -107,6 +107,24 @@ namespace com.tybern.CallRecordCore {
 
         private void addEntry(SortedList<TimeSpan, TimeSpan> lst, TimeSpan currTime, TimeSpan entry) {
             if ((currTime <= entry) && (entry != TimeSpan.Zero)) lst.Add(entry, entry);
+        }
+
+        private bool isActive = false;
+
+        public BreakTimes(bool isActive = false) {
+            this.isActive = isActive;
+        }
+
+        public void Update(BreakTimeRecord record) {
+            lock (this) {
+                ShiftStart = record.ShiftStart;
+                ShiftEnd = record.ShiftEnd;
+                FirstBreak = record.FirstBreak;
+                LastBreak = record.LastBreak;
+                LunchBreak = record.LunchBreak;
+                MeetingBreak = record.MeetingBreak;
+                TrainingBreak = record.TrainingBreak;
+            }
         }
     }
 }

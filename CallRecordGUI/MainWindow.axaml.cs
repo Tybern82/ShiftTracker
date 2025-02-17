@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CallRecordGUI.dialogs;
 using com.tybern.CallRecordCore;
@@ -18,6 +19,8 @@ using static com.tybern.CallRecordCore.UICallbacks;
 
 namespace CallRecordGUI {
     public partial class MainWindow : Window, UICallbacks {
+
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
         private static string ConfigFile = "CallRecordGUI.config";
 
@@ -78,6 +81,22 @@ namespace CallRecordGUI {
             btnEndBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
             btnEndShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
 
+            btnSetFile.Click += async (sender, args) => {
+                // Get top level from the current control. Alternatively, you can use Window reference instead.
+                var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel != null) {
+                    // Start async operation to open the dialog.
+                    var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
+                        Title = "Save Database File"
+                    });
+
+                    if (file is not null) {
+                        CallRecordCore.Instance.UIProperties.DBFile = file.Path.LocalPath;
+                    }
+                }
+            };
+            btnUpdateBreaks.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CCreateBreaks());
+
             CallRecordCore.Instance.CurrentCall.CurrentMode = CallDetails.CallMode.Disconnect;  // should set button states correctly
 
             this.Closing += (sender, args) => {
@@ -111,6 +130,9 @@ namespace CallRecordGUI {
             this.Width = width;
             this.Height = height;
 
+            string? _DBFile = configData.ContainsKey("DBFile") ? configData.Value<string>("DBFile") : "CallRecordGUI.db";
+            if (_DBFile != null) CallRecordCore.Instance.UIProperties.DBFile = _DBFile;
+
             if (configData.ContainsKey("SMTP")) {
                 JObject? smtpDetails = configData.Value<JObject>("SMTP");
                 if (smtpDetails != null) {
@@ -135,6 +157,7 @@ namespace CallRecordGUI {
                     if (breakDetails.ContainsKey("TrainingTime")) CallRecordCore.Instance.UIProperties.BreakTimes.TrainingBreak = TimeSpan.FromTicks(breakDetails.Value<long>("TrainingTime"));
                 }
             }
+            CallRecordCore.Instance.BreakTimesDB.LoadBreakTimes(DateTime.Now.Date, CallRecordCore.Instance.UIProperties.BreakTimes);
         }
 
         private JObject encodeJSON() {
@@ -143,6 +166,8 @@ namespace CallRecordGUI {
             _result.Add("PosY", this.Position.Y);
             _result.Add("Width", this.Width);
             _result.Add("Height", this.Height);
+
+            _result.Add("DBFile", CallRecordCore.Instance.UIProperties.DBFile);
 
             JObject smtpDetails = new JObject();
             smtpDetails.Add("Host", CallRecordCore.Instance.UIProperties.SMTPHost);
@@ -204,6 +229,11 @@ namespace CallRecordGUI {
                 case CallRecordDialog.CallNotesDialog:
                     CallNotes dlgNotes = new CallNotes();
                     dlgNotes.ShowDialog(this);
+                    break;
+
+                case CallRecordDialog.BreakTimesDialog:
+                    BreakTimes dlgBreakTimes = new BreakTimes();
+                    dlgBreakTimes.ShowDialog(this);
                     break;
 
                 default:

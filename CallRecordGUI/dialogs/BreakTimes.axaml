@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:com.tybern.CallRecordCore"
+        x:DataType="vm:UIProperties"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="600"
+        x:Class="CallRecordGUI.BreakTimes"
+        RequestedThemeVariant="Light"
+        Title="BreakTimes" Width="600" Height="600">
+  <Design.DataContext>
+    <vm:UIProperties />
+  </Design.DataContext>
+  <StackPanel>
+    <DatePicker SelectedDate="{Binding SelectedDate}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
+    <HeaderedContentControl Classes="GroupBox" Header="Break Times" Margin="10">
+      <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*,*,*,*">
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Shift Start: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="0" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.ShiftStart}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Shift End: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="1" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.ShiftEnd}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="First Break: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="2" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.FirstBreak}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Lunch Break: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="3" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.LunchBreak}" />
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Last Break: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="4" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.LastBreak}" />
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Meeting Time: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="5" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.MeetingBreak}" />
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Training Time: " Classes="MainWindowLabel" />
+        <TimePicker Grid.Row="6" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding SelectedBreakTimes.TrainingBreak}" />
+
+      </Grid>
+    </HeaderedContentControl>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Button Name="btnUpdateBreakTimes" Content="Update" Margin="10" Padding="10"/>
+      <Button Name="btnCancelBreakTimes" Content="Cancel" Margin="10" Padding="10" />
+      <Button Name="btnResetBreakTimes" Content="Reset Times" Margin="10" Padding="10" />
+    </StackPanel>
+  </StackPanel>
+</Window>
