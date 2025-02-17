@@ -84,6 +84,7 @@
       </StackPanel>
     </TabItem>
     <TabItem Header="Settings">
+      <ScrollViewer>
       <StackPanel>
 
         <HeaderedContentControl Classes="GroupBox" Header="App Settings">
@@ -93,6 +94,33 @@
             <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding DBFile}" />
             <Button Grid.Column="1" Grid.Row="2" Content="Set File" Name="btnSetFile" Margin="10" Padding="10" />
             <Button Grid.Column="1" Grid.Row="3" Content="Update Breaks" Name="btnUpdateBreaks" Margin="10" Padding="10" />
+          </Grid>
+        </HeaderedContentControl>
+
+        <HeaderedContentControl Classes="GroupBox" Header="Break Times Today">
+          <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*,*,*,*">
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Shift Start: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="0" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.ShiftStart}" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Shift End: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="1" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.ShiftEnd}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="First Break: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="2" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.FirstBreak}" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Lunch Break: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="3" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.LunchBreak}" />
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Last Break: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="4" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.LastBreak}" />
+
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Meeting Time: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="5" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.MeetingBreak}" />
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Training Time: " Classes="MainWindowLabel" />
+            <TimePicker Grid.Row="6" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.TrainingBreak}" />
+
           </Grid>
         </HeaderedContentControl>
 
@@ -125,35 +153,9 @@
             
           </Grid>
         </HeaderedContentControl>
-
-        <HeaderedContentControl Classes="GroupBox" Header="Break Times Today">
-          <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*,*,*,*">
-
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Shift Start: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="0" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.ShiftStart}" />
-
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Shift End: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="1" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.ShiftEnd}" />
-
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="First Break: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="2" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.FirstBreak}" />
-            
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="Lunch Break: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="3" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.LunchBreak}" />
-            
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="Last Break: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="4" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.LastBreak}" />
-
-            <TextBlock Grid.Row="5" Grid.Column="0" Text="Meeting Time: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="5" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.MeetingBreak}" />
-            
-            <TextBlock Grid.Row="6" Grid.Column="0" Text="Training Time: " Classes="MainWindowLabel" />
-            <TimePicker Grid.Row="6" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.TrainingBreak}" />
-                        
-          </Grid>
-        </HeaderedContentControl>
         
       </StackPanel>
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Call Records">
       <ScrollViewer>
