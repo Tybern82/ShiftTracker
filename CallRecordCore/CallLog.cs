@@ -18,16 +18,17 @@ namespace com.tybern.CallRecordCore {
             conn.CreateTable<CallRecord>();
         }
 
-        public void LoadCurrentDay() {
-            // preload any records from today
-            DateTime currTime = DateTime.Now;
+        public void LoadCurrentDay() => LoadDay(DateTime.Now);
+
+        public void LoadDay(DateTime currTime) {
             DateTime dayStart = CallRecordCore.fromCurrent(currTime, TimeSpan.Zero);
+            DateTime dayEnd = CallRecordCore.fromCurrent(currTime.AddDays(1), TimeSpan.Zero);
             try {
-                const string query = "SELECT * FROM callRecord WHERE startTime BETWEEN @dayStart AND @currTime";
+                const string query = "SELECT * FROM callRecord WHERE startTime BETWEEN @dayStart AND @dayEnd";
                 var cmd = new SQLiteCommand(conn);
                 cmd.CommandText = query;
                 cmd.Bind("@dayStart", dayStart.Ticks);
-                cmd.Bind("@currTime", currTime.Ticks);
+                cmd.Bind("@dayEnd", dayEnd.Ticks);
                 var data = cmd.ExecuteQuery<CallRecord>();
                 if (data != null) {
                     data.Sort(new Comparison<CallRecord>((item1, item2) => { return item1.startTime.CompareTo(item2.startTime); }));

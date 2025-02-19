@@ -52,30 +52,22 @@ namespace com.tybern.CallRecordCore.commands {
                 CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.EndBreakButton);
                 CallRecordCore.Instance.UICallbacks?.DisableButton(UICallbacks.UITriggerType.EndShiftButton);
             }
+        }
 
-            /*
-             * 
-							
-				report += "\nSurvey Records: " + currTimeText + "\n";
-				for (var i = 1, row; row = tblSurveyRecords.rows[i]; i++) {
-				    var number = row.cells[0].innerText;
-				    var prompted = row.cells[1].innerText;
-				    var detail = row.cells[2].innerText;
-				    
-				    var surveyRecord = number + ": " + prompted;
-				    if (prompted == "No") surveyRecord += " ";
-				    if ((detail != "") && (detail != "\n")) surveyRecord += " - " + detail;
-				    report += surveyRecord + "\n";
-				}
-				report += "\n";
-				
-				navigator.clipboard.writeText(report);
-				window.alert("Report copying to clipboard");
-				
-				if (txtEmailLog.value != "") {
-				    doMailRecord(txtEmailLog.value, encodeURI(report), "Call Records: " + currTimeText);
-			    }
-			*/
+        private DateTime? getNextShift() {
+            DateTime currDay = CallRecordCore.fromCurrent(DateTime.Now, TimeSpan.Zero);
+            BreakTimes _times = new BreakTimes();
+			// Only check a limited number of days - may have no shifts recorded in future already
+            for (int i = 1; i <= 14; i++) {
+                DateTime testDay = currDay.AddDays(i);
+                CallRecordCore.Instance.BreakTimesDB.LoadBreakTimes(testDay, _times);
+
+                if (_times.ShiftStart != TimeSpan.Zero) {
+					// Has a shift, return this date
+					return testDay;
+                }
+            }
+			return null;
         }
     }
 }
