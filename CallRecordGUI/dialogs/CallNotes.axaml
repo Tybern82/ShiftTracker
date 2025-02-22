@@ -15,7 +15,7 @@
           CornerRadius="3"
           Padding="10" Margin="15" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
       <StackPanel>
-        <RadioButton GroupName="rgpCallType" Name="rCallTypeSME" IsChecked="True" />
+        <RadioButton GroupName="rgpCallType" Name="rCallTypeSME" />
         <RadioButton GroupName="rgpCallType" Name="rCallTypeMobile" />
         <RadioButton GroupName="rgpCallType" Name="rCallTypeNBN" />
         <RadioButton GroupName="rgpCallType" Name="rCallTypeADSL" />

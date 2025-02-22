@@ -34,6 +34,8 @@ public partial class CallNotes : Window {
         setContent(rCallTypeOther, CallType.Other);
 
         txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
+        rCallTypeNBN.IsChecked = true;
+        updateChecked(rCallTypeNBN, CallType.NBN);
 
         rCallTypeSME.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeSME, CallType.Helpdesk);
         rCallTypeMobile.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeMobile, CallType.Mobile);
