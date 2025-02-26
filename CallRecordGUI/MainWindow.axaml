@@ -14,6 +14,7 @@
   </Design.DataContext>
   <TabControl>
     <TabItem Header="Today">
+      <ScrollViewer>
       <StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <TextBlock Name="fDayOfWeek" Margin="10" FontSize="24" FontFamily="Lato" TextAlignment="Center" Text="{Binding CurrentTime, StringFormat='dddd'}" />
@@ -79,9 +80,11 @@
         
         <StackPanel VerticalAlignment="Stretch">
           <TextBlock Margin="10" Padding="10" FontSize="24" FontFamily="Lato" TextAlignment="Center">Call Notes</TextBlock>
-          <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="250" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
-        </StackPanel>
+            <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="250" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+          </StackPanel>
       </StackPanel>
+
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Settings">
       <ScrollViewer>
