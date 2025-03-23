@@ -63,7 +63,7 @@ namespace com.tybern.CallRecordCore.dialogs {
 
         public enum CallType {
             Mobile, NBN, ADSL, eMail, Billing, PA, Prepaid, PSTN, Opticomm, FetchTV, HomeWireless, Platinum, Misrouted, Helpdesk, Other
-        }
+        } 
 
         public static string GetText(CallType option) {
             switch (option) {

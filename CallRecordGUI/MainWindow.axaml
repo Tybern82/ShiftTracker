@@ -3,15 +3,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:com.tybern.CallRecordCore"
+        xmlns:gui="using:CallRecordGUI"
         x:DataType="vm:UIProperties"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1024"
         x:Class="CallRecordGUI.MainWindow"
+        xmlns:local="clr-namespace:CallRecordGUI"
         RequestedThemeVariant="Light"
         Title="Call Record GUI" MinWidth="500" VerticalAlignment="Stretch">
 
   <Design.DataContext>
     <vm:UIProperties />
   </Design.DataContext>
+  <Window.Resources>
+    <local:EnumConverter x:Key="enumConverter" />
+  </Window.Resources>
   <TabControl>
     <TabItem Header="Today">
       <ScrollViewer>
@@ -46,6 +51,36 @@
           <Button Classes="MainWindowButton" Name="btnSMECall" Grid.Row="2" Grid.Column="1" Content="SME Chat" />
           <Button Classes="MainWindowButton" Name="btnMAECall" Grid.Row="2" Grid.Column="2" Content="Transfer" />
           <Button Classes="MainWindowButton" Name="btnAddNote" Grid.Row="2" Grid.Column="3" Content="Add Note" />
+        </Grid>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*" RowDefinitions="*">
+          <TextBlock Text="Call Type: " Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
+          <ComboBox SelectedIndex="2" Grid.Row="0" Grid.Column="1" Name="cmbCallType" SelectedItem="{Binding CurrentCallType}">
+
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+
+            <!--
+            <ComboBoxItem Name="cmbCallTypeSME" />
+            <ComboBoxItem Name="cmbCallTypeMobile" />
+            <ComboBoxItem Name="cmbCallTypeNBN" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeNBN" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeADSL" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeeMail" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeBilling" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypePA" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypePrepaid" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypePSTN" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeOpticomm" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeFetchTV" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeHomeWireless" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypePlatinum" />
+            <RadioButton GroupName="rgpCallType" Name="rCallTypeMisrouted" />
+            <ComboBoxItem Name="cmbCallTypeOther" />
+            -->
+          </ComboBox>
         </Grid>
         <Grid HorizontalAlignment="Center" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
           <TextBlock Grid.Row="0" Grid.Column="0" Classes="MainWindowDisplay" Text="In Call" Name="fIsInCall" />

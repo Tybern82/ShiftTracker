@@ -2,12 +2,15 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Metrics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -18,14 +21,31 @@ using Newtonsoft.Json.Linq;
 using static com.tybern.CallRecordCore.UICallbacks;
 
 namespace CallRecordGUI {
-    public partial class MainWindow : Window, UICallbacks {
+    public class EnumConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value == null) return string.Empty;
+            com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType option = (com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)value;
+            string _result = com.tybern.CallRecordCore.dialogs.CallNotesResult.GetText(option);
+            return _result;
+        }
 
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return string.Empty;
+        }
+    }
+
+    public partial class MainWindow : Window, UICallbacks {
+        
         protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
         private static string ConfigFile = "CallRecordGUI.config";
 
         public MainWindow() {
             InitializeComponent();
+            cmbCallType.ItemsSource = ItemCollection.GetOrCreate<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>(Enum.GetValues(typeof(com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)).Cast<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>());
 
             CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
             DataContext = CallRecordCore.Instance.UIProperties;
@@ -52,6 +72,14 @@ namespace CallRecordGUI {
                     if (!CallRecordCore.Instance.CurrentCall.IsInWrap) CallRecordCore.Instance.Messages.Enqueue(new CStartWrap());
                     if (!CallRecordCore.Instance.CurrentCall.IsSurveyRecorded) CallRecordCore.Instance.Messages.Enqueue(new CSkipSurvey());
                     CallRecordCore.Instance.Messages.Enqueue(new CStopCall());
+                }
+            };
+
+            cmbCallType.SelectionChanged += (sender, args) =>
+            {
+                if (cmbCallType.SelectedItem != null)
+                {
+                    CallRecordCore.Instance.UIProperties.CurrentCallType = (com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)cmbCallType.SelectedItem;
                 }
             };
 
@@ -107,6 +135,12 @@ namespace CallRecordGUI {
                 configWriter.Flush();
                 configWriter.Close();
             };
+        }
+
+        private void setContent(ComboBoxItem rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType option)
+        {
+            rControl.Content = com.tybern.CallRecordCore.dialogs.CallNotesResult.GetText(option);
+            ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.GetToolTip(option));
         }
 
         private void FSMTPPort_TextChanged(object? sender, TextChangedEventArgs e) {

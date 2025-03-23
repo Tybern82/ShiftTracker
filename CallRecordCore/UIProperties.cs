@@ -280,5 +280,17 @@ namespace com.tybern.CallRecordCore {
         }
 
         public BreakTimes SelectedBreakTimes { get; } = new BreakTimes();
+
+        private com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType _currentCallType = dialogs.CallNotesResult.CallType.NBN;
+        public com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType CurrentCallType { 
+            get { lock (this) return _currentCallType; }
+            set { 
+                lock(this)
+                {
+                    _currentCallType = value;
+                    OnPropertyChanged(nameof(CurrentCallType));
+                }
+            }        
+        }
     }
 }

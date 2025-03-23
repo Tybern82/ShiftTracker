@@ -11,7 +11,7 @@ namespace com.tybern.CallRecordCore.commands {
             LOG.Info("Starting Call");
             DateTime timeStamp = DateTime.Now;
             if (CallRecordCore.Instance.CurrentCall.IsInCall) {
-                (new CStopCall()).Process();        // Process Stop Call immediately, rather than in queue, this will queue the <stop> tasks before the following items
+                (new CStopCall(false)).Process();        // Process Stop Call immediately, rather than in queue, this will queue the <stop> tasks before the following items
                 CallRecordCore.Instance.Messages.Enqueue(new CSetCallback());
                 CallRecordCore.Instance.Messages.Enqueue(new CStartCall());
                 CallRecordCore.Instance.Messages.Enqueue(new CSetSurvey(CallRecordCore.Instance.CurrentCall.IsSurveyRecorded));
