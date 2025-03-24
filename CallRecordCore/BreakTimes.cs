@@ -106,7 +106,7 @@ namespace com.tybern.CallRecordCore {
         }
 
         private void addEntry(SortedList<TimeSpan, TimeSpan> lst, TimeSpan currTime, TimeSpan entry) {
-            if ((currTime <= entry) && (entry != TimeSpan.Zero)) lst.Add(entry, entry);
+            if ((currTime <= entry) && (entry != TimeSpan.Zero) && !lst.ContainsKey(entry)) lst.Add(entry, entry);
         }
 
         private bool isActive = false;
