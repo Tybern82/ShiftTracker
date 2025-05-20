@@ -22,6 +22,11 @@ namespace com.tybern.CallRecordCore {
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.EndCallButton);
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.SMECallButton);
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.MAECallButton);
+
+                            CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.ANGeneratedButton);
+                            CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.ANEditedButton);
+                            CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.ANSavedButton);
+                            CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.ANManualButton);
                             break;
 
                         case CallMode.InCall:
@@ -31,6 +36,9 @@ namespace com.tybern.CallRecordCore {
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.EndCallButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.SMECallButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.MAECallButton);
+
+                            CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.ANGeneratedButton);
+                            CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.ANManualButton);
                             break;
 
                         case CallMode.InWrap:
@@ -63,5 +71,11 @@ namespace com.tybern.CallRecordCore {
         public bool IsInSMECall { get; set; } = false;
         public bool IsInTransferCall { get; set; } = false;
         public bool IsSurveyRecorded { get; set; } = false;
+
+        // Auto-Notes
+        public bool IsANGenerated { get; set; } = false;
+        public bool IsANEdited { get; set; } = false;
+        public bool IsANSaved { get; set; } = false;
+        public bool HasManualNotes { get; set; } = false; 
     }
 }

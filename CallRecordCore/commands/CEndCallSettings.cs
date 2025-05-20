@@ -20,8 +20,9 @@ namespace com.tybern.CallRecordCore.commands {
             CallRecordCore.Instance.CurrentCall.IsCallback = false;
             CallRecordCore.Instance.CurrentCall.CurrentMode = CallDetails.CallMode.Disconnect;
 
-            if (resetType)
+            if (resetType) {
                 CallRecordCore.Instance.UIProperties.CurrentCallType = dialogs.CallNotesResult.CallType.NBN; // default type
+            }
         }
     }
 }

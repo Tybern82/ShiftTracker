@@ -37,7 +37,7 @@
             <TextBlock Name="fEOSTimer" Text="{Binding EOSTimerText}" FontSize="18" FontFamily="Lato" />
           </StackPanel>
         </Grid>
-        <Grid HorizontalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*">
+        <Grid HorizontalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*,*,*,*">
           <Button Classes="MainWindowButton" Name="btnStartCall" Grid.Row="0" Grid.Column="0" Content="{Binding StartCallButtonText}" />
           <Button Classes="MainWindowButton" Name="btnSurvey" Grid.Row="0" Grid.Column="1" Content="Survey" />
           <Button Classes="MainWindowButton" Name="btnSkipSurvey" Grid.Row="0" Grid.Column="2" Content="Skip Survey" />
@@ -51,6 +51,16 @@
           <Button Classes="MainWindowButton" Name="btnSMECall" Grid.Row="2" Grid.Column="1" Content="SME Chat" />
           <Button Classes="MainWindowButton" Name="btnMAECall" Grid.Row="2" Grid.Column="2" Content="Transfer" />
           <Button Classes="MainWindowButton" Name="btnAddNote" Grid.Row="2" Grid.Column="3" Content="Add Note" />
+
+
+          <HeaderedContentControl Classes="GroupBox" Header="Auto Notes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*">
+              <Button Classes="MainWindowButton" Name="btnIsANGenerated" Grid.Row="0" Grid.Column="0" Content="Generated" />
+              <Button Classes="MainWindowButton" Name="btnIsANEdited" Grid.Row="0" Grid.Column="1" Content="Edited" />
+              <Button Classes="MainWindowButton" Name="btnIsANSaved" Grid.Row="0" Grid.Column="2" Content="Saved" />
+              <Button Classes="MainWindowButton" Name="btnIsANManualSave" Grid.Row="0" Grid.Column="3" Content="Manual" />
+            </Grid>
+          </HeaderedContentControl>
         </Grid>
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*" RowDefinitions="*">
           <TextBlock Text="Call Type: " Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />

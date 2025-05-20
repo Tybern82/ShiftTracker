@@ -9,7 +9,7 @@ namespace com.tybern.CallRecordCore {
     public interface UICallbacks {
 
         public enum CallRecordDialog { SkipSurveyDialog, TransferRequestDialog, SMERequestDialog, MAERequestDialog, OutboundCallDialog, CallNotesDialog, BreakTimesDialog }
-        public enum UITriggerType { SurveyButtons, EndCallButton, SMECallButton, MAECallButton, StartCallButton, StartShiftButton, EndShiftButton, StartBreakButton, EndBreakButton }
+        public enum UITriggerType { SurveyButtons, EndCallButton, SMECallButton, MAECallButton, StartCallButton, StartShiftButton, EndShiftButton, StartBreakButton, EndBreakButton, ANGeneratedButton, ANEditedButton, ANSavedButton, ANManualButton }
 
         public void ShowDialog(CallRecordDialog dlgType);
         public void EnableButton(UITriggerType btnType);

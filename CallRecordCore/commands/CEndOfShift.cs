@@ -26,17 +26,32 @@ namespace com.tybern.CallRecordCore.commands {
 
 				// report += "MAE%: " + parseFloat(totalMAE/totalCalls*100).toFixed(2) + "%; Wrap%: " + Number(totalWrap / totalDuration).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2}) + "; AHT: " + toShortTimeString((totalDuration / (totalCalls))) + "\n";
 
+				int totalCallRecords = 0; int totalANGenerated = 0; int totalANEdited = 0; int totalANSaved = 0; int totalManualNotes = 0;
+
 				int i = 1;
 				foreach (CallRecord r in CallRecordCore.Instance.UIProperties.CallRecordsList) {
 					if (r.durationTicks == 0 && r.MAE == 0) {
 						report += "Additional Notes: " + r.notes + "\n";
 					} else {
 						report += "Call " + i + " - " + CallRecordCore.toShortTimeString(r.duration) + " (" + CallRecordCore.toShortTimeString(r.wrap) + "): MAE = " + r.MAE + "; " + r.notes + "\n";
+						totalCallRecords++;
+						if (r.isANGenerated) totalANGenerated++;
+						if (r.isANEdited) totalANEdited++;
+						if (r.isANSaved) totalANSaved++;
+						if (r.hasManualNotes) totalManualNotes++;
 						i++;
 					}
 				}
 				string callTypes = CallRecordCore.Instance.ShiftCounter.CallTypeCounter.ToString();
 				if (!string.IsNullOrWhiteSpace(callTypes)) report += callTypes + "\n";
+
+				string autoNotes = "\nAutoNotes:\n";
+				autoNotes += "Total Call Segments: " + totalCallRecords + "\n";
+				autoNotes += "Total Generated Notes: " + totalANGenerated + " (" + (totalANGenerated * 100.0 / totalCallRecords).ToString("0.#") + "%)\n";
+				autoNotes += "AutoNotes Edited: " + totalANEdited + " (" + (totalANEdited * 100.0 / totalANGenerated).ToString("0.#") + "%)\n";
+				autoNotes += "AutoNotes Saved: " + totalANSaved + " (" + (totalANSaved * 100.0 / totalANGenerated).ToString("0.#") + "%)\n";
+				autoNotes += "Manual Notes Added: " + totalManualNotes + " (" + (totalManualNotes * 100.0 / totalANGenerated).ToString("0.#") + "%)";
+				if (!string.IsNullOrWhiteSpace(autoNotes)) report += autoNotes + "\n";
 
 				report += "\n";
 				foreach (SurveyRecord r in CallRecordCore.Instance.UIProperties.SurveyRecordList) {

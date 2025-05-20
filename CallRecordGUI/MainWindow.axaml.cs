@@ -109,6 +109,11 @@ namespace CallRecordGUI {
             btnEndBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
             btnEndShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
 
+            btnIsANGenerated.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CGenerateAutoNotes());
+            btnIsANEdited.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEditAutoNotes());
+            btnIsANSaved.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSaveAutoNotes());
+            btnIsANManualSave.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CManualNotes());
+
             btnSetFile.Click += async (sender, args) => {
                 // Get top level from the current control. Alternatively, you can use Window reference instead.
                 var topLevel = TopLevel.GetTopLevel(this);
@@ -318,6 +323,22 @@ namespace CallRecordGUI {
 
                 case UITriggerType.EndBreakButton:
                     btnEndBreak.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.ANGeneratedButton:
+                    btnIsANGenerated.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.ANEditedButton:
+                    btnIsANEdited.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.ANSavedButton:
+                    btnIsANSaved.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.ANManualButton:
+                    btnIsANManualSave.IsEnabled = enabled;
                     break;
 
                 default:

@@ -26,6 +26,11 @@ namespace com.tybern.CallRecordCore.commands {
                 CallRecordCore.Instance.CurrentCall.IsInCall = true;
                 CallRecordCore.Instance.CurrentCall.IsInWrap = false;
 
+                CallRecordCore.Instance.CurrentCall.IsANGenerated = false;
+                CallRecordCore.Instance.CurrentCall.IsANEdited = false;
+                CallRecordCore.Instance.CurrentCall.IsANSaved = false;
+                CallRecordCore.Instance.CurrentCall.HasManualNotes = false;
+
                 CallRecordCore.Instance.CurrentCall.CurrentMode = CallDetails.CallMode.InCall;  // Update UI status to In-Call
             }
         }

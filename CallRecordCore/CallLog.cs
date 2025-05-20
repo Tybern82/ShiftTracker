@@ -94,9 +94,21 @@ namespace com.tybern.CallRecordCore {
         [MaxLength(2048), Column("notes")]
         public string notes { get; set; }
 
+        [Column("isANGenerated")]
+        public bool isANGenerated { get; set; }
+
+        [Column("isANEdited")]
+        public bool isANEdited { get; set; }
+
+        [Column("isANSaved")]
+        public bool isANSaved { get; set; }
+
+        [Column("hasManualNotes")]
+        public bool hasManualNotes { get; set; }
+
         public string AsString { get { return ToString(); } }
 
-        public CallRecord(DateTime startTime, DateTime endTime, TimeSpan duration, TimeSpan wrap, int MAE = 0, CallNotesResult.CallType type = CallNotesResult.CallType.Other, string notes = "") {
+        public CallRecord(DateTime startTime, DateTime endTime, TimeSpan duration, TimeSpan wrap, int MAE = 0, CallNotesResult.CallType type = CallNotesResult.CallType.Other, string notes = "", bool isANGenerated = false, bool isANEdited = false, bool isANSaved = false, bool hasManualNotes = false) {
             this.startTime = startTime;
             this.endTime = endTime;
             this.duration = duration;
@@ -104,6 +116,10 @@ namespace com.tybern.CallRecordCore {
             this.MAE = MAE;
             CallType = type;
             this.notes = notes;
+            this.isANGenerated = isANGenerated;
+            this.isANEdited = isANEdited;
+            this.isANSaved = isANSaved;
+            this.hasManualNotes = hasManualNotes;
         }
 
         public CallRecord() : this(DateTime.MinValue, DateTime.MinValue, TimeSpan.Zero, TimeSpan.Zero) { }
@@ -113,7 +129,35 @@ namespace com.tybern.CallRecordCore {
             _result += CallRecordCore.toShortTimeString(startTime.TimeOfDay) + " - " + CallRecordCore.toShortTimeString(endTime.TimeOfDay) + "\n";
             _result += "<" + CallRecordCore.toShortTimeString(duration) + " / " + CallRecordCore.toShortTimeString(wrap) + ">\n";
             _result += CallNotesResult.GetText(CallType) + "; Transfers: " + MAE + "\n";
+            _result += getAutoNotesStatus() + "\n";
             _result += notes;
+            return _result;
+        }
+
+        private string getAutoNotesStatus() {
+            string _result = "AutoNotes {";
+            bool hasEntry = false;
+            if (isANGenerated)
+            {
+                _result += (hasEntry) ? ", " : "";
+                hasEntry = true;
+                _result += "Generated";
+            }
+            if (isANEdited)
+            {
+                _result += (hasEntry) ? ", " : "";
+                hasEntry = true;
+                _result += "Edited";
+            }
+            if (isANSaved)
+            {
+                _result += (hasEntry) ? ", " : "";
+                hasEntry = true;
+                _result += "Saved";
+            }
+            if (!hasEntry) _result += "Not Generated";
+            _result += "}";
+            if (hasManualNotes) _result += "; Manual Notes Added";
             return _result;
         }
     }

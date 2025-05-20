@@ -46,7 +46,8 @@ namespace com.tybern.CallRecordCore.dialogs {
                 notes = GetText(Result) + "\n" + notes;
                 if (!string.IsNullOrWhiteSpace(Text)) notes += "\n" + Text;
 
-                CallRecord callRecord = new CallRecord(CallRecordCore.fromCurrent(endTime, CallRecordCore.Instance.CurrentCall.CallStartTime), endTime, duration, wrap, CallRecordCore.Instance.UIProperties.CallMAE, Result, formatNotes(notes));
+                CallRecord callRecord = new CallRecord(CallRecordCore.fromCurrent(endTime, CallRecordCore.Instance.CurrentCall.CallStartTime), endTime, duration, wrap, CallRecordCore.Instance.UIProperties.CallMAE, Result, formatNotes(notes), 
+                    CallRecordCore.Instance.CurrentCall.IsANGenerated, CallRecordCore.Instance.CurrentCall.IsANEdited, CallRecordCore.Instance.CurrentCall.IsANSaved, CallRecordCore.Instance.CurrentCall.HasManualNotes);
                 CallRecordCore.Instance.Messages.Enqueue(new AddCallRecord(callRecord));
 
                 CallRecordCore.Instance.UIProperties.CallMAE = 0;
