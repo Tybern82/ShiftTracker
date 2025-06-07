@@ -53,7 +53,7 @@
           <Button Classes="MainWindowButton" Name="btnAddNote" Grid.Row="2" Grid.Column="3" Content="Add Note" />
 
 
-          <HeaderedContentControl Classes="GroupBox" Header="Auto Notes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+          <HeaderedContentControl Classes="GroupBox" Header="Auto Notes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="10">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*">
               <Button Classes="MainWindowButton" Name="btnIsANGenerated" Grid.Row="0" Grid.Column="0" Content="Generated" />
               <Button Classes="MainWindowButton" Name="btnIsANEdited" Grid.Row="0" Grid.Column="1" Content="Edited" />
@@ -125,7 +125,7 @@
         
         <StackPanel VerticalAlignment="Stretch">
           <TextBlock Margin="10" Padding="10" FontSize="24" FontFamily="Lato" TextAlignment="Center">Call Notes</TextBlock>
-            <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="250" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+            <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="200" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
           </StackPanel>
       </StackPanel>
 

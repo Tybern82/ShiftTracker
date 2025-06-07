@@ -22,7 +22,7 @@ namespace com.tybern.CallRecordCore.dialogs {
         }
 
         public enum OptionSkipSurvey {
-            Callback, Transfer, Agent, NonTelstra, None, Other
+            Callback, Transfer, Agent, NonTelstra, None, Other, NonFaults
         }
 
         public static string GetText(OptionSkipSurvey reason) {
@@ -32,6 +32,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case OptionSkipSurvey.Transfer: return "Immediate Transfer";
                 case OptionSkipSurvey.NonTelstra: return "Non-Telstra Caller";
                 case OptionSkipSurvey.None: return "Survey Prompted";
+                case OptionSkipSurvey.NonFaults: return "Non-Faults Query";
 
                 default: return "Other";
             }
@@ -44,6 +45,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case OptionSkipSurvey.Transfer: return "Caller transferred to another department without assistance";
                 case OptionSkipSurvey.NonTelstra: return "Non-Telstra customer on the call";
                 case OptionSkipSurvey.None: return "Survey was prompted/submitted normally";
+                case OptionSkipSurvey.NonFaults: return "Non-Faults related query, no Natama WF started";
 
                 default: return "Other reason - please specify: ";
             }

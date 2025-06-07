@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="400"
         x:Class="CallRecordGUI.dialogs.SkipSurvey"
         RequestedThemeVariant="Light"
-        Title="Skip Survey" Width="350" Height="400">
+        Title="Skip Survey" Width="350" Height="430">
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
     <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Skip Survey</TextBlock>
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Identify reason for skipping survey prompt to customer:</TextBlock>
@@ -19,7 +19,8 @@
         <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyTransfer" />
         <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyAgent" />
         <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyNonTelstra" />
-        <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyPrompted" IsChecked="True" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyNonFaults" IsChecked="True" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyPrompted" />
         <StackPanel Orientation="Horizontal">
           <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyOther" />
           <TextBox Name="txtOther" Watermark="Enter other reason..." AcceptsReturn="False" TextWrapping="NoWrap" Width="200" Margin="5" />
