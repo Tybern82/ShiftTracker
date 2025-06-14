@@ -48,6 +48,7 @@
           <Button Classes="MainWindowButton" Name="btnEndBreak" Grid.Row="1" Grid.Column="2" Content="End Break" IsEnabled="false" />
           <Button Classes="MainWindowButton" Name="btnEndShift" Grid.Row="1" Grid.Column="3" Content="End Shift" IsEnabled="false" />
 
+          <Button Classes="MainWindowButton" Name="btnRequestName" Grid.Row="2" Grid.Column="0" Content="Pref. Name" />
           <Button Classes="MainWindowButton" Name="btnSMECall" Grid.Row="2" Grid.Column="1" Content="SME Chat" />
           <Button Classes="MainWindowButton" Name="btnMAECall" Grid.Row="2" Grid.Column="2" Content="Transfer" />
           <Button Classes="MainWindowButton" Name="btnAddNote" Grid.Row="2" Grid.Column="3" Content="Add Note" />

@@ -2,12 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="520"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="570"
         x:Class="CallRecordGUI.dialogs.TransferRequest"
         xmlns:vm="using:com.tybern.CallRecordCore"
         x:DataType="vm:UIProperties"
         RequestedThemeVariant="Light"
-        Title="Transfer Request" Width="350" Height="520">
+        Title="Transfer Request" Width="350" Height="570">
   <Design.DataContext>
     <vm:UIProperties />
   </Design.DataContext>
@@ -28,6 +28,7 @@
         <RadioButton GroupName="rgpTransferRequest" Name="rTransferBusiness" />
         <RadioButton GroupName="rgpTransferRequest" Name="rTransferFoxtel" />
         <RadioButton GroupName="rgpTransferRequest" Name="rTransferNFS" />
+        <RadioButton GroupName="rgpTransferRequest" Name="rTransferCOAT" />
         <StackPanel Orientation="Horizontal">
           <RadioButton GroupName="rgpTransferRequest" Name="rTransferOther" />
           <TextBox Name="txtOther" Watermark="Enter other reason..." AcceptsReturn="False" TextWrapping="NoWrap" Width="200" Margin="10" />

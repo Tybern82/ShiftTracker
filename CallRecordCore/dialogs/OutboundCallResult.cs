@@ -20,13 +20,14 @@ namespace com.tybern.CallRecordCore.dialogs {
         }
 
         public enum OptionOutboundCall {
-            Disconnect, ChangeNumber, Other
+            Disconnect, ChangeNumber, NetworkReset, Other
         }
 
         public static string GetText(OptionOutboundCall option) {
             switch (option) {
                 case OptionOutboundCall.Disconnect: return "Caller Disconnected";
                 case OptionOutboundCall.ChangeNumber: return "Change of Number";
+                case OptionOutboundCall.NetworkReset: return "Network Reset";
 
                 default: return "Other";
             }
@@ -36,6 +37,7 @@ namespace com.tybern.CallRecordCore.dialogs {
             switch (option) {
                 case OptionOutboundCall.Disconnect: return "Inbound call has dropped; calling customer back";
                 case OptionOutboundCall.ChangeNumber: return "Callback to alternate number to allow testing";
+                case OptionOutboundCall.NetworkReset: return "Network reset on device; calling customer back";
 
                 default: return "Other reason - please specify: ";
             }

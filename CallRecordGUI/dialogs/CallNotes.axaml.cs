@@ -11,12 +11,13 @@ namespace CallRecordGUI.dialogs;
 
 public partial class CallNotes : Window {
 
-    private CallType Result { get; set; } = CallType.Helpdesk;
+    private CallType Result { get; set; } = CallType.Note;
     private string Text { get; set; } = string.Empty;
 
     public CallNotes() {
         InitializeComponent();
 
+        /*
         setContent(rCallTypeSME, CallType.Helpdesk);
         setContent(rCallTypeMobile, CallType.Mobile);
         setContent(rCallTypeNBN, CallType.NBN);
@@ -37,21 +38,9 @@ public partial class CallNotes : Window {
         rCallTypeNBN.IsChecked = true;
         updateChecked(rCallTypeNBN, CallType.NBN);
 
-        rCallTypeSME.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeSME, CallType.Helpdesk);
-        rCallTypeMobile.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeMobile, CallType.Mobile);
-        rCallTypeNBN.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeNBN, CallType.NBN);
-        rCallTypeADSL.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeADSL, CallType.ADSL);
-        rCallTypeeMail.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeeMail, CallType.eMail);
-        rCallTypeBilling.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeBilling, CallType.Billing);
-        rCallTypePA.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePA, CallType.PA);
-        rCallTypePrepaid.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePrepaid, CallType.Prepaid);
-        rCallTypePSTN.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePSTN, CallType.PSTN);
-        rCallTypeOpticomm.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeOpticomm, CallType.Opticomm);
-        rCallTypeFetchTV.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeFetchTV, CallType.FetchTV);
-        rCallTypeHomeWireless.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeHomeWireless, CallType.HomeWireless);
-        rCallTypePlatinum.IsCheckedChanged += (sender, args) => updateChecked(rCallTypePlatinum, CallType.Platinum);
-        rCallTypeMisrouted.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeMisrouted, CallType.Misrouted);
-        rCallTypeOther.IsCheckedChanged += (sender, args) => updateChecked(rCallTypeOther, CallType.Other);
+        */
+
+        txtDetails.TextChanged += (sender, args) => { Text = (txtDetails != null && txtDetails.Text != null) ? txtDetails.Text : string.Empty; };
 
         btnSaveNotes.Click += (sender, args) => {
             CallRecordCore.Instance.Messages.Enqueue(new CallNotesResult(Result, Text));
@@ -62,6 +51,7 @@ public partial class CallNotes : Window {
     private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType option) {
         rControl.Content = com.tybern.CallRecordCore.dialogs.CallNotesResult.GetText(option);
         ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.GetToolTip(option));
+        rControl.IsCheckedChanged += (sender, args) => updateChecked(rControl, option);
     }
 
     private void updateChecked(RadioButton rControl, CallType value) {

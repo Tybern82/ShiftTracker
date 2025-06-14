@@ -15,10 +15,15 @@ namespace com.tybern.CallRecordCore.commands {
                 CallRecordCore.Instance.Messages.Enqueue(new CSetCallback());
                 CallRecordCore.Instance.Messages.Enqueue(new CStartCall());
                 CallRecordCore.Instance.Messages.Enqueue(new CSetSurvey(CallRecordCore.Instance.CurrentCall.IsSurveyRecorded));
-                CallRecordCore.Instance.Messages.Enqueue(new AppendNote("Callback / Outbound"));
+                // Remove duplicate: CallRecordCore.Instance.Messages.Enqueue(new AppendNote("Callback / Outbound"));
                 CallRecordCore.Instance.Messages.Enqueue(new COutboundCall());
             } else {
+                // If still in Break, end the break before starting new call
+                if (CallRecordCore.Instance.InBreak) (new CBreakEnd()).Process();
+
+                // Reset Call Markers for survey/preferred name
                 CallRecordCore.Instance.CurrentCall.IsSurveyRecorded = false;
+                CallRecordCore.Instance.CurrentCall.IsPrefNameRequested = false;
 
                 CallRecordCore.Instance.UIProperties.TotalCalls++;
                 CallRecordCore.Instance.CurrentCall.CallStartTime = timeStamp.TimeOfDay;

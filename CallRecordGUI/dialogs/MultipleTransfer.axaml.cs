@@ -22,12 +22,6 @@ public partial class MultipleTransfer : Window {
 
         txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        rMisrouted.IsCheckedChanged += (sender, args) => updateChecked(rMisrouted, OptionMultipleTransfer.Misrouted);
-        rDrop.IsCheckedChanged      += (sender, args) => updateChecked(rDrop, OptionMultipleTransfer.CallDrop);
-        rAgentDrop.IsCheckedChanged += (sender, args) => updateChecked(rAgentDrop, OptionMultipleTransfer.AgentDrop);
-        rIncorrect.IsCheckedChanged += (sender, args) => updateChecked(rIncorrect, OptionMultipleTransfer.Incorrect);
-        rMAEOther.IsCheckedChanged  += (sender, args) => updateChecked(rMAEOther, OptionMultipleTransfer.Other);
-
         btnSaveMAE.Click += (sender, args) => {
             CallRecordCore.Instance.Messages.Enqueue(new MultipleTransferResult(Result, Text));
             this.Close();
@@ -37,6 +31,7 @@ public partial class MultipleTransfer : Window {
     private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.MultipleTransferResult.OptionMultipleTransfer option) {
         rControl.Content = com.tybern.CallRecordCore.dialogs.MultipleTransferResult.GetText(option);
         ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.MultipleTransferResult.GetToolTip(option));
+        rControl.IsCheckedChanged += (sender, args) => updateChecked(rControl, option);
     }
 
     private void updateChecked(RadioButton rControl, OptionMultipleTransfer value) {

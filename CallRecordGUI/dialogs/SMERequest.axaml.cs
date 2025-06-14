@@ -22,9 +22,6 @@ public partial class SMERequest : Window {
 
         txtDetails.TextChanged += (sender, args) => { Text = (txtDetails != null && txtDetails.Text != null) ? txtDetails.Text : string.Empty; };
 
-        rSMETools.IsCheckedChanged += (sender, args) => updateChecked(rSMETools, OptionSMERequest.Tools);
-        rSMEQuery.IsCheckedChanged += (sender, args) => updateChecked(rSMEQuery, OptionSMERequest.Query);
-
         btnSaveSME.Click += (sender, args) => {
             CallRecordCore.Instance.Messages.Enqueue(new SMERequestResult(Result, Text));
             this.Close();
@@ -38,5 +35,6 @@ public partial class SMERequest : Window {
     private void setContent(RadioButton rControl, OptionSMERequest option) {
         rControl.Content = SMERequestResult.GetText(option);
         ToolTip.SetTip(rControl, SMERequestResult.GetToolTip(option));
+        rControl.IsCheckedChanged += (sender, args) => updateChecked(rControl, option);
     }
 }

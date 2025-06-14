@@ -19,6 +19,7 @@ namespace com.tybern.CallRecordCore {
                             CallRecordCore.Instance.UIProperties.StartCallButtonText = UIProperties.LabelStartCall;
                             CallRecordCore.Instance.UIProperties.IsInboundText = UIProperties.LabelWaiting;
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.SurveyButtons);
+                            CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.PrefNameButton);
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.EndCallButton);
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.SMECallButton);
                             CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.MAECallButton);
@@ -33,6 +34,7 @@ namespace com.tybern.CallRecordCore {
                             CallRecordCore.Instance.UIProperties.StartCallButtonText = UIProperties.LabelStartWrap;
                             CallRecordCore.Instance.UIProperties.IsInboundText = UIProperties.LabelInboundCall;
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.SurveyButtons);
+                            CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.PrefNameButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.EndCallButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.SMECallButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.MAECallButton);
@@ -48,6 +50,13 @@ namespace com.tybern.CallRecordCore {
                                 CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.SurveyButtons);
                             } else {
                                 CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.SurveyButtons);
+                            }
+                            if (CallRecordCore.Instance.CurrentCall.IsPrefNameRequested)
+                            {
+                                CallRecordCore.Instance.UICallbacks?.DisableButton(UITriggerType.PrefNameButton);
+                            } else
+                            {
+                                CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.PrefNameButton);
                             }
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.EndCallButton);
                             CallRecordCore.Instance.UICallbacks?.EnableButton(UITriggerType.SMECallButton);
@@ -76,6 +85,9 @@ namespace com.tybern.CallRecordCore {
         public bool IsANGenerated { get; set; } = false;
         public bool IsANEdited { get; set; } = false;
         public bool IsANSaved { get; set; } = false;
-        public bool HasManualNotes { get; set; } = false; 
+        public bool HasManualNotes { get; set; } = false;
+
+        // Preferred Name
+        public bool IsPrefNameRequested { get; set; } = false;
     }
 }

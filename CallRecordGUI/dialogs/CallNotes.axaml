@@ -2,19 +2,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="700"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="430"
         x:Class="CallRecordGUI.dialogs.CallNotes"
         RequestedThemeVariant="Light"
-        Title="Call Notes" Width="350" Height="700">
+        Title="Call Notes" Width="350" Height="430">
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
     <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Add Call Notes</TextBlock>
-    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Select primary call type for this contact: </TextBlock>
+    <!-- <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Select primary call type for this contact: </TextBlock> -->
     <Border Background="Gainsboro"
           BorderBrush="Black"
           BorderThickness="2"
           CornerRadius="3"
           Padding="10" Margin="15" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
       <StackPanel>
+        <TextBlock Margin="10 5" FontSize="16">Enter details to add to record: </TextBlock>
+        <TextBox Margin="15" Padding="5" AcceptsReturn="True" TextWrapping="Wrap" Name="txtDetails" Height="200" Watermark="Enter note..." />
+        <!--
         <RadioButton GroupName="rgpCallType" Name="rCallTypeSME" />
         <RadioButton GroupName="rgpCallType" Name="rCallTypeMobile" />
         <RadioButton GroupName="rgpCallType" Name="rCallTypeNBN" />
@@ -33,6 +36,7 @@
           <RadioButton GroupName="rgpCallType" Name="rCallTypeOther" />
           <TextBox Name="txtOther" Watermark="Enter other reason..." AcceptsReturn="False" TextWrapping="NoWrap" Width="200" Margin="10" />
         </StackPanel>
+        -->
       </StackPanel>
     </Border>
     <Button Margin="10" Padding="10" Grid.Row="3" Grid.Column="2" Name="btnSaveNotes">Save</Button>

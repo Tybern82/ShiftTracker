@@ -26,7 +26,7 @@ namespace com.tybern.CallRecordCore.dialogs {
         }
 
         public enum OptionTransferRequest {
-            Billing, FAST, ConnectionManagement, PSTN, Business, Foxtel, NFS, Other
+            Billing, FAST, ConnectionManagement, PSTN, Business, Foxtel, NFS, COAT, Other
         }
 
         public static string GetText(OptionTransferRequest option) {
@@ -38,6 +38,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case OptionTransferRequest.Business: return "Business Faults";
                 case OptionTransferRequest.Foxtel: return "Foxtel Faults";
                 case OptionTransferRequest.NFS: return "Need for Speed";
+                case OptionTransferRequest.COAT: return "COAT";
 
                 default: return "Other";
             }
@@ -52,6 +53,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case OptionTransferRequest.Business: return "Agent transfer to Business Faults team";
                 case OptionTransferRequest.Foxtel: return "Agent transfer to Foxtel Faults team";
                 case OptionTransferRequest.NFS: return "Agent transfer to Need for Speed (ADSL L2 Testers)";
+                case OptionTransferRequest.COAT: return "Agent transfer to Change-of-access-technology (COAT) team";
 
                 default: return "Other reason - please specify: ";
             }

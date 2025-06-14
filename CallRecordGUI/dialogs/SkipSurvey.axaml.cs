@@ -22,14 +22,6 @@ public partial class SkipSurvey : Window {
 
         txtOther.TextChanged += (sender, args) => { Text = (txtOther != null && txtOther.Text != null) ? txtOther.Text : string.Empty; };
 
-        rSurveyCallback.IsCheckedChanged += (sender, args) => { if (rSurveyCallback.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Callback; };
-        rSurveyAgent.IsCheckedChanged += (sender, args) => { if (rSurveyAgent.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Agent; };
-        rSurveyTransfer.IsCheckedChanged += (sender, args) => { if (rSurveyTransfer.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Transfer; };
-        rSurveyNonTelstra.IsCheckedChanged += (sender, args) => { if (rSurveyNonTelstra.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.NonTelstra; };
-        rSurveyNonFaults.IsCheckedChanged += (sender, args) => { if (rSurveyNonFaults.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.NonFaults; };
-        rSurveyPrompted.IsCheckedChanged += (sender, args) => { if (rSurveyPrompted.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.None; };
-        rSurveyOther.IsCheckedChanged += (sender, args) => { if (rSurveyOther.IsChecked == true) SelectedOption = SkipSurveyResult.OptionSkipSurvey.Other; };
-
         btnSaveSurvey.Click += (sender, args) => {
             SkipSurveyResult cmdResult = new SkipSurveyResult(SelectedOption, Text);
             CallRecordCore.Instance.Messages.Enqueue(cmdResult);    // Enqueue processing of the result
@@ -40,5 +32,6 @@ public partial class SkipSurvey : Window {
     private void setContent(RadioButton rControl, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.OptionSkipSurvey reason) {
         rControl.Content = com.tybern.CallRecordCore.dialogs.SkipSurveyResult.GetText(reason);
         ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.SkipSurveyResult.GetTooltip(reason));
+        rControl.IsCheckedChanged += (sender, args) => { if (rControl.IsChecked == true) SelectedOption = reason; };
     }
 }

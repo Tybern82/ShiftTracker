@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="300"
         x:Class="CallRecordGUI.dialogs.OutboundCall"
         RequestedThemeVariant="Light"
-        Title="Outbound Call" Width="350" Height="300">
+        Title="Outbound Call" Width="350" Height="350">
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
     <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">Outbound Call Reason</TextBlock>
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">Select reason for the outbound call: </TextBlock>
@@ -15,8 +15,9 @@
           CornerRadius="3"
           Padding="10" Margin="15" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
       <StackPanel>
-        <RadioButton GroupName="rgpOutbound" Name="rDisconnect" IsChecked="True" />
+        <RadioButton GroupName="rgpOutbound" Name="rDisconnect" />
         <RadioButton GroupName="rgpOutbound" Name="rChangeNumber" />
+        <RadioButton GroupName="rgpOutbound" Name="rNetworkReset" IsChecked="True" />
         <StackPanel Orientation="Horizontal">
           <RadioButton GroupName="rgpOutbound" Name="rOutboundOther" />
           <TextBox Name="txtOther" Watermark="Enter other reason..." AcceptsReturn="False" TextWrapping="NoWrap" Width="200" Margin="10" />

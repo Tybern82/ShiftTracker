@@ -63,7 +63,7 @@ namespace com.tybern.CallRecordCore.dialogs {
         }
 
         public enum CallType {
-            Mobile, NBN, ADSL, eMail, Billing, PA, Prepaid, PSTN, Opticomm, FetchTV, HomeWireless, Platinum, Misrouted, Helpdesk, Other
+            Mobile, NBN, ADSL, eMail, Billing, PA, Prepaid, PSTN, Opticomm, FetchTV, HomeWireless, Platinum, Misrouted, Helpdesk, Other, Note
         } 
 
         public static string GetText(CallType option) {
@@ -82,6 +82,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case CallType.Platinum: return "Platinum Support";
                 case CallType.Misrouted: return "Misrouted / Invalid Call";
                 case CallType.Helpdesk: return "SME Helpdesk";
+                case CallType.Note: return "Additional Information";
 
                 default: return "Other";
             }
@@ -103,6 +104,7 @@ namespace com.tybern.CallRecordCore.dialogs {
                 case CallType.Platinum: return "Platinum Support";
                 case CallType.Misrouted: return "Misrouted Agent / Non-Faults Team / SME Customer Call";
                 case CallType.Helpdesk: return "SME Helpdesk";
+                case CallType.Note: return "Additional Information";
 
                 default: return "Other reason - please specify: ";
             }

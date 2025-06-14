@@ -99,6 +99,7 @@ namespace CallRecordGUI {
                 else spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Increase | ValidSpinDirections.Decrease;
             };
 
+            btnRequestName.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CRequestName());
             btnSMECall.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSMERequest());
             btnSurvey.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSurvey());
             btnSkipSurvey.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSkipSurvey());
@@ -339,6 +340,10 @@ namespace CallRecordGUI {
 
                 case UITriggerType.ANManualButton:
                     btnIsANManualSave.IsEnabled = enabled;
+                    break;
+
+                case UITriggerType.PrefNameButton:
+                    btnRequestName.IsEnabled = enabled;
                     break;
 
                 default:
