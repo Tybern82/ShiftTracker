@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.CallRecordCore.dialogs;
-using SQLite;
+using SQLite.Net2;
 using static com.tybern.CallRecordCore.dialogs.SkipSurveyResult;
 
 namespace com.tybern.CallRecordCore {
@@ -13,7 +14,7 @@ namespace com.tybern.CallRecordCore {
 
         public SQLiteConnection conn;
 
-        public SurveyLog(string dbPath) : this(new SQLiteConnection(dbPath, true)) {}
+        public SurveyLog(string dbPath) : this(new SQLiteConnection(dbPath)) {}
         public SurveyLog(SQLiteConnection conn) {
             this.conn = conn;
 
@@ -27,12 +28,13 @@ namespace com.tybern.CallRecordCore {
             DateTime dayStart = CallRecordCore.fromCurrent(currTime, TimeSpan.Zero);
             DateTime dayEnd = CallRecordCore.fromCurrent(currTime.AddDays(1), TimeSpan.Zero);
             try {
-                const string query = "SELECT * FROM surveyRecord WHERE startTime BETWEEN @dayStart AND @dayEnd";
-                var cmd = new SQLiteCommand(conn);
-                cmd.CommandText = query;
-                cmd.Bind("@dayStart", dayStart.Ticks);
-                cmd.Bind("@dayEnd", dayEnd.Ticks);
-                var data = cmd.ExecuteQuery<SurveyRecord>();
+                var data = conn.Table<SurveyRecord>().Where(record => (record.CallTime >= dayStart) && (record.CallTime <= dayEnd)).ToList<SurveyRecord>();
+                // const string query = "SELECT * FROM surveyRecord WHERE startTime BETWEEN @dayStart AND @dayEnd";
+                // var cmd = new SQLiteCommand(conn);
+                // cmd.CommandText = query;
+                // cmd.Bind("@dayStart", dayStart.Ticks);
+                // cmd.Bind("@dayEnd", dayEnd.Ticks);
+                // var data = cmd.ExecuteQuery<SurveyRecord>();
                 if (data != null) {
                     data.Sort(new Comparison<SurveyRecord>((item1, item2) => { return item1.CallTime.CompareTo(item2.CallTime); }));
                     int maxCallNumber = 0;

@@ -3,6 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:com.tybern.CallRecordCore"
+        xmlns:panels="clr-namespace:com.tybern.CallRecordGUI.panels;assembly=CallRecordGUI"
+        xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
         xmlns:gui="using:CallRecordGUI"
         x:DataType="vm:UIProperties"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1024"
@@ -15,7 +17,7 @@
     <vm:UIProperties />
   </Design.DataContext>
   <Window.Resources>
-    <local:EnumConverter x:Key="enumConverter" />
+    <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
   </Window.Resources>
   <TabControl>
     <TabItem Header="Today">
@@ -233,6 +235,12 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
+    </TabItem>
+    <TabItem Header="Break Panel">
+      <Grid ColumnDefinitions="*" RowDefinitions="auto,*">
+        <panels:ShiftButtons Name="fShiftButtons" Grid.Row="0" Grid.Column="0" />
+        <panels:ShiftTimePanel Name="fBreakPanel" Grid.Row="1" Grid.Column="0" IsDateEnabled="false" />
+      </Grid>      
     </TabItem>
   </TabControl>
 </Window>

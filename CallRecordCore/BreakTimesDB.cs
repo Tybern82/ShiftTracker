@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using com.tybern.CallRecordCore.commands;
-using SQLite;
+using SQLite.Net2;
 
 namespace com.tybern.CallRecordCore {
     public class BreakTimesDB {
@@ -19,11 +20,12 @@ namespace com.tybern.CallRecordCore {
 
         public void LoadBreakTimes(DateTime date, BreakTimes breakTimes) {
             try {
-                const string query = "SELECT * FROM breakTimes WHERE date IS @date";
-                var cmd = new SQLiteCommand(conn);
-                cmd.CommandText = query;
-                cmd.Bind("@date", date.Date.Ticks);
-                var data = cmd.ExecuteQuery<BreakTimeRecord>();
+                var data = conn.Table<BreakTimeRecord>().Where(record => record.Date == date).ToList();
+                // const string query = "SELECT * FROM breakTimes WHERE date IS @date";
+                // var cmd = new SQLiteCommand(conn);
+                // cmd.CommandText = query;
+                // cmd.Bind("@date", date.Date.Ticks);
+                // var data = cmd.ExecuteQuery<BreakTimeRecord>();
                 bool updated = false;
                 if (data != null) {
                     data.Sort(new Comparison<BreakTimeRecord>((item1, item2) => { return item1.Date.CompareTo(item2.Date); }));
@@ -36,6 +38,21 @@ namespace com.tybern.CallRecordCore {
                 if (!updated) breakTimes.Update(new BreakTimeRecord()); // no record found, set to default
             } catch (SQLiteException e) {
                 LOG.Error(e.ToString());
+            }
+        }
+
+        public List<BreakTimeRecord> LoadAllBreakTimes() {
+            try {
+                return conn.Query<BreakTimeRecord>("SELECT * FROM breakTimes").ToList<BreakTimeRecord>() ?? new List<BreakTimeRecord>();
+                // return conn.Table<BreakTimeRecord>().ToList() ?? new List<BreakTimeRecord>();
+                // const string query = "SELECT * FROM breakTimes";
+                // var cmd = new SQLiteCommand(conn);
+                // cmd.CommandText = query;
+                // var data = cmd.ExecuteQuery<BreakTimeRecord>();
+                // return data ?? new List<BreakTimeRecord>();
+            } catch (SQLiteException e) {
+                LOG.Error(e.ToString());
+                return new List<BreakTimeRecord>();
             }
         }
 

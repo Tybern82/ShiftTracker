@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using com.tybern.CMDProcessor;
-using SQLite;
+using SQLite.Net2;
 
 namespace com.tybern.CallRecordCore {
     /// <summary>
@@ -51,9 +51,9 @@ namespace com.tybern.CallRecordCore {
 
 
         private SQLiteConnection? _conn;
-        private SQLiteConnection Connection {
+        public SQLiteConnection Connection {
             get {
-                if (_conn == null) _conn = new SQLiteConnection(UIProperties.DBFile, true);
+                if (_conn == null) _conn = new SQLiteConnection(UIProperties.DBFile);
                 return _conn;
             }
         }

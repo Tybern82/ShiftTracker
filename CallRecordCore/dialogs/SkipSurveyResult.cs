@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.CallRecordCore.old;
-using static SQLite.SQLite3;
 
 namespace com.tybern.CallRecordCore.dialogs {
     public class SkipSurveyResult : CMDProcessor.Command {

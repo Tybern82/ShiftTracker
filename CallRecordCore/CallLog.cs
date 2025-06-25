@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.CallRecordCore.dialogs;
-using SQLite;
+using SQLite.Net2;
 
 namespace com.tybern.CallRecordCore {
     public class CallLog {
@@ -10,7 +11,7 @@ namespace com.tybern.CallRecordCore {
 
         public SQLiteConnection conn;
 
-        public CallLog(string dbPath) : this(new SQLiteConnection(dbPath, true)) { }
+        public CallLog(string dbPath) : this(new SQLiteConnection(dbPath)) { }
         public CallLog(SQLiteConnection conn) { 
             this.conn = conn;
 
@@ -24,12 +25,13 @@ namespace com.tybern.CallRecordCore {
             DateTime dayStart = CallRecordCore.fromCurrent(currTime, TimeSpan.Zero);
             DateTime dayEnd = CallRecordCore.fromCurrent(currTime.AddDays(1), TimeSpan.Zero);
             try {
-                const string query = "SELECT * FROM callRecord WHERE startTime BETWEEN @dayStart AND @dayEnd";
-                var cmd = new SQLiteCommand(conn);
-                cmd.CommandText = query;
-                cmd.Bind("@dayStart", dayStart.Ticks);
-                cmd.Bind("@dayEnd", dayEnd.Ticks);
-                var data = cmd.ExecuteQuery<CallRecord>();
+                var data = conn.Table<CallRecord>().Where(record => (record.startTime >= dayStart) && (record.startTime <= dayEnd)).ToList<CallRecord>();
+                // const string query = "SELECT * FROM callRecord WHERE startTime BETWEEN @dayStart AND @dayEnd";
+                // var cmd = new SQLiteCommand(conn);
+                // cmd.CommandText = query;
+                // cmd.Bind("@dayStart", dayStart.Ticks);
+                // cmd.Bind("@dayEnd", dayEnd.Ticks);
+                // var data = cmd.ExecuteQuery<CallRecord>();
                 if (data != null) {
                     data.Sort(new Comparison<CallRecord>((item1, item2) => { return item1.startTime.CompareTo(item2.startTime); }));
                     foreach (var record in data) {

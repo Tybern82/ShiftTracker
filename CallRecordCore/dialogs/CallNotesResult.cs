@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using com.tybern.CallRecordCore.commands;
@@ -63,7 +64,53 @@ namespace com.tybern.CallRecordCore.dialogs {
         }
 
         public enum CallType {
-            Mobile, NBN, ADSL, eMail, Billing, PA, Prepaid, PSTN, Opticomm, FetchTV, HomeWireless, Platinum, Misrouted, Helpdesk, Other, Note
+            [Description("Mobile Voice / Data")]
+            Mobile,
+
+            [Description("NBN Voice / Data")]
+            NBN,
+
+            [Description("ADSL Internet")]
+            ADSL,
+
+            [Description("eMail / Bigpond")]
+            eMail,
+
+            [Description("Billing / Accounts / Sales")]
+            Billing,
+
+            [Description("Priority Assistance")]
+            PA,
+
+            [Description("Prepaid")]
+            Prepaid,
+
+            [Description("PSTN Voice")]
+            PSTN,
+
+            [Description("Opticomm / Velocity")]
+            Opticomm,
+
+            [Description("Fetch TV / Telstra TV")]
+            FetchTV,
+
+            [Description("4G Fixed / 5G Home Wireless")]
+            HomeWireless,
+
+            [Description("Platinum Support (discontinued)")]
+            Platinum,
+
+            [Description("Misrouted / Invalid Call")]
+            Misrouted,
+
+            [Description("SME Helpdesk")]
+            Helpdesk,
+
+            [Description("Additional Information")]
+            Note,
+
+            [Description("Other / Unknown")]
+            Other
         } 
 
         public static string GetText(CallType option) {

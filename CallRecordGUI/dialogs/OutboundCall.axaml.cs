@@ -5,7 +5,6 @@ using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.dialogs;
 using static com.tybern.CallRecordCore.dialogs.OutboundCallResult;
 using static com.tybern.CallRecordCore.dialogs.TransferRequestResult;
-using static SQLite.SQLite3;
 
 namespace CallRecordGUI.dialogs;
 

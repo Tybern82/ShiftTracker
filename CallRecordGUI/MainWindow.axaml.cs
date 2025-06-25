@@ -17,6 +17,8 @@ using Avalonia.Threading;
 using CallRecordGUI.dialogs;
 using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.commands;
+using com.tybern.ShiftTracker;
+using com.tybern.ShiftTracker.db;
 using Newtonsoft.Json.Linq;
 using static com.tybern.CallRecordCore.UICallbacks;
 
@@ -45,6 +47,14 @@ namespace CallRecordGUI {
 
         public MainWindow() {
             InitializeComponent();
+
+            fBreakPanel.View.doAddBreak(new DBBreakRecord());
+            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+
             cmbCallType.ItemsSource = ItemCollection.GetOrCreate<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>(Enum.GetValues(typeof(com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)).Cast<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>());
 
             CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
@@ -114,6 +124,12 @@ namespace CallRecordGUI {
             btnIsANEdited.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEditAutoNotes());
             btnIsANSaved.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSaveAutoNotes());
             btnIsANManualSave.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CManualNotes());
+
+            fShiftButtons.ShiftStart += () => CallRecordCore.Instance.Messages.Enqueue(new CShiftStart());
+            fShiftButtons.ShiftEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
+            fShiftButtons.BreakStart += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakStart());
+            fShiftButtons.BreakEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
+            // fBreakPanel.enableDate(false);
 
             btnSetFile.Click += async (sender, args) => {
                 // Get top level from the current control. Alternatively, you can use Window reference instead.

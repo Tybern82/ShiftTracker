@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="120"
+             x:Class="com.tybern.CallRecordGUI.panels.ShiftButtons">
+  <HeaderedContentControl Classes="GroupBox" Header="Shift">
+    <Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="*" HorizontalAlignment="Center">
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="0" Content="Start" Name="btnStartShift" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="1" Content="Start Break" Name="btnStartBreak" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="2" Content="End Break" Name="btnEndBreak" />    
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="3" Content="End" Name="btnEndShift" />
+    </Grid>
+  </HeaderedContentControl>
+  </UserControl>

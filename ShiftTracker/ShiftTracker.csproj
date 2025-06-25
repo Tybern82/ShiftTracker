@@ -12,9 +12,11 @@
     <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CallRecordCore\CallRecordCore.csproj" />
     <ProjectReference Include="..\CommandProcessor\CMDProcessor.csproj" />
   </ItemGroup>
 

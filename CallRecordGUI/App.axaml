@@ -6,6 +6,9 @@
 
     <Application.Styles>
         <FluentTheme />
+
+      <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+      
       <StyleInclude Source="/Styles/HeaderedContentControlGroupBoxStyle.axaml" />
       <StyleInclude Source="/Styles/StandardStyles.axaml" />
     </Application.Styles>

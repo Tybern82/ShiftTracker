@@ -14,7 +14,7 @@ namespace com.tybern.CallRecordCore.commands {
                 (new CStopCall(false)).Process();        // Process Stop Call immediately, rather than in queue, this will queue the <stop> tasks before the following items
                 CallRecordCore.Instance.Messages.Enqueue(new CSetCallback());
                 CallRecordCore.Instance.Messages.Enqueue(new CStartCall());
-                CallRecordCore.Instance.Messages.Enqueue(new CSetSurvey(CallRecordCore.Instance.CurrentCall.IsSurveyRecorded));
+                CallRecordCore.Instance.Messages.Enqueue(new CCopyState(CallRecordCore.Instance.CurrentCall.IsSurveyRecorded, CallRecordCore.Instance.CurrentCall.IsPrefNameRequested));
                 // Remove duplicate: CallRecordCore.Instance.Messages.Enqueue(new AppendNote("Callback / Outbound"));
                 CallRecordCore.Instance.Messages.Enqueue(new COutboundCall());
             } else {

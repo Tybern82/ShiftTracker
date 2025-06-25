@@ -9,6 +9,8 @@ namespace CallRecordGUI {
         }
 
         public override void OnFrameworkInitializationCompleted() {
+            SQLitePCL.Batteries.Init();
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
                 desktop.MainWindow = new MainWindow();
             }

@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:com.tybern.ShiftTracker.shifts"
+             xmlns:vmtype="using:com.tybern.ShiftTracker.db"
+             xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="com.tybern.CallRecordGUI.panels.ShiftTimePanel"
+             x:DataType="vm:WorkShift">
+
+  <Design.DataContext>
+    <vm:WorkShift />
+  </Design.DataContext>
+  <UserControl.Resources>
+    <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
+  </UserControl.Resources>
+  <Grid ColumnDefinitions="*,2*,*" RowDefinitions="auto,auto,auto,*">
+
+    <TextBlock Classes="MainWindowTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">Shift Times</TextBlock>
+    
+    <DatePicker Name="fDateSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" SelectedDate="{Binding Date}" />
+
+    <Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center">
+      <TextBlock Classes="MainWindowLabel" Grid.Column="0" Grid.Row="0">Start Time:</TextBlock>
+      <TimePicker Classes="MainWindowTimeSpan" Grid.Column="1" Grid.Row="0" SelectedTime="{Binding StartTime}" Name="fStartTime" />
+      
+      <TextBlock Classes="MainWindowLabel" Grid.Column="0" Grid.Row="1">End Time:</TextBlock>
+      <TimePicker Classes="MainWindowTimeSpan" Grid.Column="1" Grid.Row="1" MinuteIncrement="1" SelectedTime="{Binding EndTime}" Name="fEndTime"/>
+    </Grid>
+
+    <Grid ColumnDefinitions="*,*" RowDefinitions="auto" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="0" Content="+ 7:50" Name="btnStandardShift" />
+      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="+ 7:55" Name="btnExtendedShift" />
+    </Grid>
+
+    <HeaderedContentControl Classes="GroupBox" Header="Breaks" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
+      <Grid ColumnDefinitions="*,auto,auto,auto,auto" RowDefinitions="auto,*">
+        <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="Add" Name="btnAddBreak" />
+        <Button Classes="MainWindowButton" Grid.Column="2" Grid.Row="0" Content="Add Standard" Name="btnAddStandardBreaks" />
+        <Button Classes="MainWindowButton" Grid.Column="3" Grid.Row="0" Content="Remove" Name="btnRemoveBreak"/>
+        <Button Classes="MainWindowButton" Grid.Column="4" Grid.Row="0" Content="Clear All" Name="btnClearBreaks" />
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1"
+          Margin="20" ItemsSource="{Binding Breaks}"
+          IsReadOnly="False"
+          CanUserReorderColumns="True"
+          CanUserResizeColumns="True"
+          CanUserSortColumns="True"
+          GridLinesVisibility="All"
+          BorderThickness="1" BorderBrush="Gray" Name="dataBreakList">
+          <DataGrid.Columns>
+            <DataGridTemplateColumn Header="Break Type">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <ComboBox Name="cmbBreakTypes" Width="200" Margin="5" ItemsSource="{Binding Models}" SelectedItem="{Binding Type}" VerticalAlignment="Center">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="Break Start">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding StartTime}" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="Break End">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding EndTime}" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </HeaderedContentControl>
+  </Grid>
+</UserControl>

@@ -5,6 +5,11 @@
       <!-- Add Controls for Previewer Here -->
       <StackPanel>
         <Button Classes="MainWindowButton" Content="Sample Button" />
+        <TextBlock Classes="MainWindowLabel">Sample Label</TextBlock>
+        <TextBlock Classes="MainWindowDisplay">Sample Display</TextBlock>
+        <TextBox Classes="MainWindowEntry" Watermark="Sample Entry" />
+        <TextBlock Classes="MainWindowTitle">Sample Title</TextBlock>
+        <TimePicker Classes="MainWindowTimePicker" />
       </StackPanel>
     </Border>
   </Design.PreviewWith>
@@ -18,7 +23,7 @@
     <Setter Property="FontSize" Value="16" />
 
     <!-- Margin="10" -->
-    <Setter Property="Margin" Value="8" />
+    <Setter Property="Margin" Value="10" />
     
     <!-- Padding="10" -->
     <Setter Property="Padding" Value="10" />
@@ -43,6 +48,15 @@
     <Setter Property="Margin" Value="10" />
     <Setter Property="Padding" Value="5" />
     <Setter Property="Width" Value="250" />
+  </Style>
+
+  <Style Selector="TextBlock.MainWindowTitle">
+    <!-- Margin="10" FontSize="24" FontFamily="Lato" TextAlignment="Center" -->
+    <Setter Property="Margin" Value="10" />
+    <Setter Property="Padding" Value="5" />
+    <Setter Property="FontSize" Value="24" />
+    <Setter Property="FontFamily" Value="Lato" />
+    <Setter Property="TextAlignment" Value="Center" />
   </Style>
 
   <Style Selector="TimePicker.MainWindowTimeSpan">
