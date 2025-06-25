@@ -19,6 +19,7 @@ using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.shifts;
 using Newtonsoft.Json.Linq;
 using static com.tybern.CallRecordCore.UICallbacks;
 
@@ -48,12 +49,7 @@ namespace CallRecordGUI {
         public MainWindow() {
             InitializeComponent();
 
-            fBreakPanel.View.doAddBreak(new DBBreakRecord());
-            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
-            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
-            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
-            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
-            fBreakPanel.View.doAddBreak(new DBBreakRecord(DateTime.Now.Date, BreakType.Training, TimeSpan.FromHours(6) + TimeSpan.FromMinutes(30), TimeSpan.FromHours(7) + TimeSpan.FromMinutes(5)));
+            fBreakPanel.View = WorkShift.LoadToday();
 
             cmbCallType.ItemsSource = ItemCollection.GetOrCreate<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>(Enum.GetValues(typeof(com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)).Cast<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>());
 
