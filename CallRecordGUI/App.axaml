@@ -12,4 +12,12 @@
       <StyleInclude Source="/Styles/HeaderedContentControlGroupBoxStyle.axaml" />
       <StyleInclude Source="/Styles/StandardStyles.axaml" />
     </Application.Styles>
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <!-- Don't miss this line -->
+        <ResourceInclude Source="/panels/NotesControl.axaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
 </Application>

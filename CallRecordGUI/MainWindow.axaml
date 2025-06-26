@@ -126,9 +126,13 @@
           </TextBlock>
         </Grid>
         
-        <StackPanel VerticalAlignment="Stretch">
+        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+          <panels:NotesControl Name="txtNotes" Notes="{Binding Notes}"/>
+          <!--
           <TextBlock Margin="10" Padding="10" FontSize="24" FontFamily="Lato" TextAlignment="Center">Call Notes</TextBlock>
             <TextBox Name="txtNotes" Text="{Binding Notes}" Margin="10" Padding="10" MinHeight="200" MinWidth="350" TextWrapping="Wrap" AcceptsReturn="True" Watermark="Enter notes..." VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+            
+          -->
           </StackPanel>
       </StackPanel>
 

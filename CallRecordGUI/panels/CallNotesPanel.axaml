@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:panels="clr-namespace:com.tybern.CallRecordGUI.panels;assembly=CallRecordGUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="com.tybern.CallRecordGUI.panels.CallNotesPanel">
+  <UserControl.Template>
+    <ControlTemplate>
+  <Grid ColumnDefinitions="*" RowDefinitions="auto,*">
+    <TextBlock 
+      Grid.Row="0" Grid.Column="1" 
+      Margin="10" Padding="10" 
+      FontSize="24" FontFamily="Lato" 
+      TextAlignment="Center">
+      Call Notes
+    </TextBlock>
+    <TextBox 
+      Grid.Row="1" Grid.Column="0" 
+      Name="txtNotes" 
+      Text="{TemplateBinding Notes, Mode=TwoWay}" 
+      Margin="10" Padding="10" 
+      MinHeight="200" MinWidth="350" 
+      TextWrapping="Wrap" 
+      AcceptsReturn="True" 
+      Watermark="Enter notes..." 
+      VerticalAlignment="Stretch" 
+      VerticalContentAlignment="Stretch" 
+      />
+  </Grid>
+    </ControlTemplate>
+  </UserControl.Template>
+</UserControl>

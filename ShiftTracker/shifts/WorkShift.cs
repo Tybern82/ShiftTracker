@@ -52,10 +52,24 @@ namespace com.tybern.ShiftTracker.shifts {
 
         public DBBreakRecord? NextBreak { get; private set; }
 
-        public WorkShift() { }
+        public DBBreakRecord? LastBreak { get; private set; }
+
+
+        // <TextBlock Text="{Binding BreakCountdown, StringFormat='hh\\:mm\\:ss'}" />
+        private TimeSpan _BreakCountdown = TimeSpan.Zero;
+        public TimeSpan BreakCountdown {
+            get { return _BreakCountdown; }
+            set { if (_BreakCountdown != value) { _BreakCountdown = value; OnPropertyChanged(nameof(BreakCountdown)); } }
+        }
+
+        public WorkShift() {
+            ClockTimer.GlobalTimer.ClockUpdate += (currTime) => {
+                BreakCountdown = TimeUntilBreak(currTime);
+            };
+        }
 
         // Used when converting over from old format
-        public WorkShift(DateTime date, TimeSpan startTime, TimeSpan endTime, TimeSpan firstBreak, TimeSpan lunchBreak, TimeSpan lastBreak, TimeSpan meetingBreak, SortedSet<DBBreakRecord> extraBreaks) {
+        public WorkShift(DateTime date, TimeSpan startTime, TimeSpan endTime, TimeSpan firstBreak, TimeSpan lunchBreak, TimeSpan lastBreak, TimeSpan meetingBreak, SortedSet<DBBreakRecord> extraBreaks) : this() {
             this.Date = date;
             this.StartTime = startTime;
             this.EndTime = endTime;
@@ -66,16 +80,16 @@ namespace com.tybern.ShiftTracker.shifts {
             if (meetingBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.Meeting, meetingBreak, meetingBreak + MEET_LENGTH));
             foreach (DBBreakRecord rec in extraBreaks) BreakSet.Add(rec);
             foreach (DBBreakRecord rec in BreakSet) Breaks.Add(rec);
-            this.NextBreak = GetNextBreak(null);
+            this.NextBreak = GetNextBreak(LastBreak);
         }
 
-        public WorkShift(DBShiftRecord shift, List<DBBreakRecord> breaks) {
+        public WorkShift(DBShiftRecord shift, List<DBBreakRecord> breaks) : this() {
             this.Date = shift.Date;
             this.StartTime = shift.StartTime;
             this.EndTime = shift.EndTime;
             foreach (DBBreakRecord rec in breaks) BreakSet.Add(rec);
             foreach (DBBreakRecord rec in BreakSet) Breaks.Add(rec);
-            this.NextBreak = GetNextBreak(null);
+            this.NextBreak = GetNextBreak(LastBreak);
         }
 
         public void Save(SQLiteConnection dbConnection) => Save(new DBShift(dbConnection), new DBBreaks(dbConnection));
@@ -103,9 +117,9 @@ namespace com.tybern.ShiftTracker.shifts {
             return (NextBreak != null);
         }
 
-        public TimeSpan TimeUntilBreak() {
+        public TimeSpan TimeUntilBreak(DateTime currTime) {
             if (NextBreak == null) return TimeSpan.Zero;                                // default 0 if no break
-            TimeSpan timeUntilBreak = NextBreak.StartTime - DateTime.Now.TimeOfDay;     // calculate difference between now and break start
+            TimeSpan timeUntilBreak = NextBreak.StartTime - currTime.TimeOfDay;     // calculate difference between now and break start
             return (timeUntilBreak < TimeSpan.Zero) ? TimeSpan.Zero : timeUntilBreak;   // return time until break; default to 0 if already past
         }
 
@@ -116,6 +130,7 @@ namespace com.tybern.ShiftTracker.shifts {
 
             DBBreakRecord? lastFound = NextBreak;
             TimeSpan breakLength = (NextBreak is null) ? TimeSpan.Zero : NextBreak.Length();
+            LastBreak = NextBreak;
             if (!(NextBreak is null)) _result.Add(NextBreak);
 
             while (lastFound != null) {
@@ -126,11 +141,12 @@ namespace com.tybern.ShiftTracker.shifts {
                         // found extra break to add
                         _result.Add(nextBreak);
                         breakLength += nextBreak.Length();
+                        LastBreak = lastFound;
                         lastFound = nextBreak;
                     }
                 }
             }
-            // NextBreak should be left set to the last break identified, that was not added into the list (or null if no more breaks left)
+            // NextBreak should be left set to the last break identified, that was not added into the list (or null if no more breaks left); LastBreak should be left with either previous NextBreak, or the last break of that block (if more than one) 
 
             return _result;
         }
@@ -157,6 +173,7 @@ namespace com.tybern.ShiftTracker.shifts {
         public bool doAddBreak(DBBreakRecord newBreak) {
             bool _result = BreakSet.Add(newBreak);
             if (_result) Breaks.Add(newBreak);
+            this.NextBreak = GetNextBreak(LastBreak);
             return _result;
         }
 
@@ -167,12 +184,14 @@ namespace com.tybern.ShiftTracker.shifts {
         public bool doRemoveBreak(DBBreakRecord breakToRemove) {
             bool _result = BreakSet.Remove(breakToRemove);
             if (_result) Breaks.Remove(breakToRemove);
+            this.NextBreak = GetNextBreak(LastBreak);
             return _result;
         }
 
         public void doClearBreaks() {
             BreakSet.Clear();
             Breaks.Clear();
+            LastBreak = null; NextBreak = null;
         }
 
         public static TimeSpan GetTotalLength(List<DBBreakRecord> breaks) {
