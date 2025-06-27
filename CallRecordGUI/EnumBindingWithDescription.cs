@@ -6,31 +6,11 @@ using Avalonia.Data.Converters;
 
 namespace EnumBindingWithDescription {
     public class EnumDescriptionConverter : IValueConverter {
-        private string GetEnumDescription(Enum enumObj) {
-            FieldInfo? fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
-            object[] attribArray = fieldInfo?.GetCustomAttributes(false) ?? [];
-
-            if (attribArray.Length == 0)
-                return enumObj.ToString();
-            else {
-                DescriptionAttribute? attrib = null;
-
-                foreach (var att in attribArray) {
-                    if (att is DescriptionAttribute)
-                        attrib = att as DescriptionAttribute;
-                }
-
-                if (attrib != null)
-                    return attrib.Description;
-
-                return enumObj.ToString();
-            }
-        }
 
         object? IValueConverter.Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
             if (value == null) return string.Empty;
             Enum myEnum = (Enum)value;
-            string description = GetEnumDescription(myEnum);
+            string description = com.tybern.ShiftTracker.EnumConverter.GetEnumDescription(myEnum);
             return description;
         }
 

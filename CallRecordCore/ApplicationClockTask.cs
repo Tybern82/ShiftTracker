@@ -27,8 +27,8 @@ namespace com.tybern.CallRecordCore {
                 DateTime currTime = DateTime.Now;
                 CallRecordCore.Instance.UIProperties.CurrentTime = currTime;
 
-                DateTime breakTime = CallRecordCore.fromCurrent(currTime, CallRecordCore.Instance.UIProperties.BreakTimer);
-                CallRecordCore.Instance.UIProperties.BreakTimerText = (breakTime <= currTime ? "BREAK" : CallRecordCore.toShortTimeString(breakTime - currTime));
+                // DateTime breakTime = CallRecordCore.fromCurrent(currTime, CallRecordCore.Instance.UIProperties.BreakTimer);
+                // CallRecordCore.Instance.UIProperties.BreakTimerText = (breakTime <= currTime ? "BREAK" : CallRecordCore.toShortTimeString(breakTime - currTime));
 
                 if (CallRecordCore.Instance.InBreak) {
                     CallRecordCore.Instance.UIProperties.CurrentBreakText = CallRecordCore.toShortTimeString(DateTime.Now.TimeOfDay - CallRecordCore.Instance.BreakStartTime);

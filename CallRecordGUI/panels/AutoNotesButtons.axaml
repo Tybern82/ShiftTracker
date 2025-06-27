@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="com.tybern.CallRecordGUI.panels.AutoNotesButtons">
+
+  <HeaderedContentControl Classes="GroupBox" Header="Auto Notes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="10">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*">
+      <Button Classes="MainWindowButton" Name="btnIsANGenerated" Grid.Row="0" Grid.Column="0" Content="Generated" />
+      <Button Classes="MainWindowButton" Name="btnIsANEdited" Grid.Row="0" Grid.Column="1" Content="Edited" />
+      <Button Classes="MainWindowButton" Name="btnIsANSaved" Grid.Row="0" Grid.Column="2" Content="Saved" />
+      <Button Classes="MainWindowButton" Name="btnIsANManualSave" Grid.Row="0" Grid.Column="3" Content="Manual" />
+    </Grid>
+  </HeaderedContentControl>
+</UserControl>

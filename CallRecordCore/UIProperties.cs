@@ -253,7 +253,6 @@ namespace com.tybern.CallRecordCore {
         public BreakTimes BreakTimes { get; } = new BreakTimes(true);
 
 
-
         private string _DBFile = "CallRecordGUI.db";
         public string DBFile {
             get { lock (_DBFile) { return _DBFile; } }

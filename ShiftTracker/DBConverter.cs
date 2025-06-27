@@ -28,7 +28,7 @@ namespace com.tybern.ShiftTracker {
             List<BreakTimeRecord> oldBreaks = oldDB.LoadAllBreakTimes();
             foreach (BreakTimeRecord record in oldBreaks) {
                 // Convert from the old format to new format; as training breaks are flexible length, default to no length
-                WorkShift shift = new WorkShift(record.Date, record.ShiftStart, record.ShiftEnd, record.FirstBreak, record.LunchBreak, record.LastBreak, record.MeetingBreak,
+                WorkShift shift = new WorkShift(record.Date.ToLocalTime(), record.ShiftStart, record.ShiftEnd, record.FirstBreak, record.LunchBreak, record.LastBreak, record.MeetingBreak,
                     (record.TrainingBreak != TimeSpan.Zero) ? new SortedSet<DBBreakRecord>(new []{ new DBBreakRecord(record.Date, BreakType.Training, record.TrainingBreak, record.TrainingBreak) }) : new SortedSet<DBBreakRecord>());
                 if (record.TrainingBreak != TimeSpan.Zero) {
                     // LOG that a training break needs to be checked

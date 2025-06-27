@@ -12,6 +12,8 @@ namespace com.tybern.CallRecordCore {
     /// </summary>
     public class CallRecordCore {
 
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Generate the application-wide static instance - all requests should pass through a single instance.
         /// </summary>
@@ -53,7 +55,10 @@ namespace com.tybern.CallRecordCore {
         private SQLiteConnection? _conn;
         public SQLiteConnection Connection {
             get {
-                if (_conn == null) _conn = new SQLiteConnection(UIProperties.DBFile);
+                if (_conn == null) {
+                    LOG.Info("Loading DB: <" + UIProperties.DBFile + ">");
+                    _conn = new SQLiteConnection(UIProperties.DBFile);
+                }
                 return _conn;
             }
         }

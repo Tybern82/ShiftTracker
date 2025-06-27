@@ -7,7 +7,7 @@
         xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
         xmlns:gui="using:CallRecordGUI"
         x:DataType="vm:UIProperties"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1024"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1224"
         x:Class="CallRecordGUI.MainWindow"
         xmlns:local="clr-namespace:CallRecordGUI"
         RequestedThemeVariant="Light"
@@ -45,10 +45,13 @@
           <Button Classes="MainWindowButton" Name="btnSkipSurvey" Grid.Row="0" Grid.Column="2" Content="Skip Survey" />
           <Button Classes="MainWindowButton" Name="btnEndCall" Grid.Row="0" Grid.Column="3" Content="End Call" />
 
+          <panels:ShiftButtons Name="pShiftControls" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
+          <!--
           <Button Classes="MainWindowButton" Name="btnStartShift" Grid.Row="1" Grid.Column="0" Content="Start Shift" />
           <Button Classes="MainWindowButton" Name="btnStartBreak" Grid.Row="1" Grid.Column="1" Content="Start Break" IsEnabled="false" />
           <Button Classes="MainWindowButton" Name="btnEndBreak" Grid.Row="1" Grid.Column="2" Content="End Break" IsEnabled="false" />
           <Button Classes="MainWindowButton" Name="btnEndShift" Grid.Row="1" Grid.Column="3" Content="End Shift" IsEnabled="false" />
+          -->
 
           <Button Classes="MainWindowButton" Name="btnRequestName" Grid.Row="2" Grid.Column="0" Content="Pref. Name" />
           <Button Classes="MainWindowButton" Name="btnSMECall" Grid.Row="2" Grid.Column="1" Content="SME Chat" />
@@ -56,14 +59,7 @@
           <Button Classes="MainWindowButton" Name="btnAddNote" Grid.Row="2" Grid.Column="3" Content="Add Note" />
 
 
-          <HeaderedContentControl Classes="GroupBox" Header="Auto Notes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="10">
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*,*,*" RowDefinitions="*">
-              <Button Classes="MainWindowButton" Name="btnIsANGenerated" Grid.Row="0" Grid.Column="0" Content="Generated" />
-              <Button Classes="MainWindowButton" Name="btnIsANEdited" Grid.Row="0" Grid.Column="1" Content="Edited" />
-              <Button Classes="MainWindowButton" Name="btnIsANSaved" Grid.Row="0" Grid.Column="2" Content="Saved" />
-              <Button Classes="MainWindowButton" Name="btnIsANManualSave" Grid.Row="0" Grid.Column="3" Content="Manual" />
-            </Grid>
-          </HeaderedContentControl>
+          <panels:AutoNotesButtons Name="pAutoNotes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="10" />
         </Grid>
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="*,*" RowDefinitions="*">
           <TextBlock Text="Call Type: " Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
@@ -153,6 +149,8 @@
         </HeaderedContentControl>
 
         <HeaderedContentControl Classes="GroupBox" Header="Break Times Today">
+          <panels:ShiftTimePanel Name="pCurrentShift" IsDateEnabled="False" />
+          <!--
           <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto" RowDefinitions="*,*,*,*,*,*,*">
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Shift Start: " Classes="MainWindowLabel" />
@@ -177,37 +175,10 @@
             <TimePicker Grid.Row="6" Grid.Column="1" Classes="MainWindowTimeSpan" SelectedTime="{Binding BreakTimes.TrainingBreak}" />
 
           </Grid>
+          -->
         </HeaderedContentControl>
 
-        <HeaderedContentControl Classes="GroupBox" Header="EMail Settings">
-          <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto, Auto" RowDefinitions="*,*,*,*,*,*">
-            
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="SMTP Host: " Classes="MainWindowLabel" />
-            <TextBox Grid.Column="1" Grid.Row="0" Watermark="Enter SMTP hostname..." Text="{Binding SMTPHost}" Classes="MainWindowEntry"/>
-
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="SMTP Port: " Classes="MainWindowLabel" />
-            <ButtonSpinner Grid.Column="1" Grid.Row="1" ButtonSpinnerLocation="Right" BorderBrush="Gainsboro" Content="{Binding SMTPPort}" Name="spinSMTPPort">
-              <ButtonSpinner.ContentTemplate>
-                <DataTemplate>
-                  <TextBox Text="{Binding .}" TextChanged="FSMTPPort_TextChanged" TextAlignment="Right" />
-                </DataTemplate>
-              </ButtonSpinner.ContentTemplate>              
-            </ButtonSpinner>
-            
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="SMTP Username: " Classes="MainWindowLabel" />
-            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding SMTPUsername}" Classes="MainWindowEntry" Watermark="Login username..." />
-
-            <TextBlock Grid.Column="0" Grid.Row="3" Text="SMTP Password: " Classes="MainWindowLabel" />
-            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding SMTPPassword}" Classes="MainWindowEntry" Watermark="Login password..." PasswordChar="•" />
-
-            <TextBlock Grid.Column="0" Grid.Row="4" Text="Sender Address: " Classes="MainWindowLabel" />
-            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding SenderAddress}" Classes="MainWindowEntry" Watermark="Sender email address..." />
-
-            <TextBlock Grid.Column="0" Grid.Row="5" Text="Destination Email: " Classes="MainWindowLabel" />
-            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding DestinationAddress}" Classes="MainWindowEntry" Watermark="Leave blank to skip sending..." />
-            
-          </Grid>
-        </HeaderedContentControl>
+        <panels:SMTPPanel Name="pSMTPSettings" />
         
       </StackPanel>
       </ScrollViewer>
@@ -239,12 +210,6 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
-    </TabItem>
-    <TabItem Header="Break Panel">
-      <Grid ColumnDefinitions="*" RowDefinitions="auto,*">
-        <panels:ShiftButtons Name="fShiftButtons" Grid.Row="0" Grid.Column="0" />
-        <panels:ShiftTimePanel Name="fBreakPanel" Grid.Row="1" Grid.Column="0" IsDateEnabled="false" />
-      </Grid>      
     </TabItem>
   </TabControl>
 </Window>

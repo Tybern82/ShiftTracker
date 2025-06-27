@@ -66,7 +66,9 @@ namespace com.tybern.ShiftTracker.db {
             List<T> _result = new List<T>();
 
             try {
-                var data = this.dbConnection.Query<T>("SELECT * FROM " + dbTable + " WHERE date IS ?", dt.Date.Ticks).ToList<T>();
+                DateTime dayStart = fromCurrent(dt, TimeSpan.Zero);
+                DateTime dayEnd = fromCurrent(dt.AddDays(1), TimeSpan.Zero);
+                var data = this.dbConnection.Query<T>("SELECT * FROM " + dbTable + " WHERE date BETWEEN ? AND ?", dayStart.Ticks, dayEnd.Ticks).ToList<T>();
                 // string query = "SELECT * FROM " + dbTable + " WHERE date IS @date";
                 // var cmd = new SQLiteCommand(dbConnection);
                 // cmd.CommandText = query;
@@ -77,6 +79,20 @@ namespace com.tybern.ShiftTracker.db {
                 }
             } catch (SQLiteException e) {
                 LOG.Error(e.ToString());    // log any error identified
+            }
+            _result.Sort(LoadComparison());
+            return _result;
+        }
+        private static DateTime fromCurrent(DateTime currDay, TimeSpan timeOffset) => new DateTime(currDay.Year, currDay.Month, currDay.Day, timeOffset.Hours, timeOffset.Minutes, timeOffset.Seconds);
+
+        public List<T> LoadAll() {
+            List<T> _result = new List<T>();
+            try {
+                var data = this.dbConnection.Query<T>("SELECT * FROM " + dbTable).ToList<T>();
+                if (data != null)
+                    foreach (var record in data) _result.Add(record);
+            } catch (SQLiteException e) {
+                LOG.Error(e.ToString());
             }
             _result.Sort(LoadComparison());
             return _result;

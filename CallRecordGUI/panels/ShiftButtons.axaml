@@ -6,10 +6,10 @@
              x:Class="com.tybern.CallRecordGUI.panels.ShiftButtons">
   <HeaderedContentControl Classes="GroupBox" Header="Shift">
     <Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="*" HorizontalAlignment="Center">
-      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="0" Content="Start" Name="btnStartShift" />
-      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="1" Content="Start Break" Name="btnStartBreak" />
-      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="2" Content="End Break" Name="btnEndBreak" />    
-      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="3" Content="End" Name="btnEndShift" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="0" IsEnabled="True" Content="Start" Name="btnStartShift" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="1" IsEnabled="False" Content="Start Break" Name="btnStartBreak" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="2" IsEnabled="False" Content="End Break" Name="btnEndBreak" />    
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="3" IsEnabled="False" Content="End" Name="btnEndShift" />
     </Grid>
   </HeaderedContentControl>
   </UserControl>

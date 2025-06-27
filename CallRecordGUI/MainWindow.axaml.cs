@@ -19,6 +19,7 @@ using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.ops;
 using com.tybern.ShiftTracker.shifts;
 using Newtonsoft.Json.Linq;
 using static com.tybern.CallRecordCore.UICallbacks;
@@ -49,8 +50,6 @@ namespace CallRecordGUI {
         public MainWindow() {
             InitializeComponent();
 
-            fBreakPanel.View = WorkShift.LoadToday();
-
             cmbCallType.ItemsSource = ItemCollection.GetOrCreate<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>(Enum.GetValues(typeof(com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType)).Cast<com.tybern.CallRecordCore.dialogs.CallNotesResult.CallType>());
 
             CallRecordCore.Instance.UICallbacks = this; // link this instance to the UICallbacks
@@ -64,6 +63,16 @@ namespace CallRecordGUI {
                 decodeJSON(configData);
             }
             CallRecordCore.Instance.Messages.Enqueue(new CLoadDB());    // trigger loading existing call records from today
+
+            /*
+            DBShift dbShift = new DBShift();
+            System.Collections.Generic.List<DBShiftRecord> allShifts = dbShift.LoadAll();
+            foreach (DBShiftRecord r in allShifts) {
+                LOG.Info(r);
+            }
+            */
+
+            pCurrentShift.View = WorkShift.LoadToday();
 
             btnStartCall.Click += (sender, args) => {
                 if (CallRecordCore.Instance.CurrentCall.CurrentMode == CallDetails.CallMode.InCall) {
@@ -89,21 +98,21 @@ namespace CallRecordGUI {
                 }
             };
 
-            spinSMTPPort.Spin += (sender, args) => {
-                SpinEventArgs spinArgs = args as SpinEventArgs;
-                switch (spinArgs.Direction) {
-                    case SpinDirection.Increase:
-                        CallRecordCore.Instance.UIProperties.SMTPPort++;
-                        break;
+            pSMTPSettings.SMTP = new SMTPRecord(
+                CallRecordCore.Instance.UIProperties.SMTPHost,
+                CallRecordCore.Instance.UIProperties.SMTPPort,
+                CallRecordCore.Instance.UIProperties.SMTPUsername,
+                CallRecordCore.Instance.UIProperties.SMTPPassword,
+                CallRecordCore.Instance.UIProperties.SenderAddress,
+                CallRecordCore.Instance.UIProperties.DestinationAddress
+                );
+            pSMTPSettings.UpdateHost += () => CallRecordCore.Instance.UIProperties.SMTPHost = pSMTPSettings.SMTP.Host;
+            pSMTPSettings.UpdatePort += () => CallRecordCore.Instance.UIProperties.SMTPPort = pSMTPSettings.SMTP.Port;
+            pSMTPSettings.UpdateUsername += () => CallRecordCore.Instance.UIProperties.SMTPUsername = pSMTPSettings.SMTP.Username;
+            pSMTPSettings.UpdatePassword += () => CallRecordCore.Instance.UIProperties.SMTPPassword = pSMTPSettings.SMTP.Password;
+            pSMTPSettings.UpdateSender += () => CallRecordCore.Instance.UIProperties.SenderAddress = pSMTPSettings.SMTP.SenderAddress;
+            pSMTPSettings.UpdateDestination += () => CallRecordCore.Instance.UIProperties.DestinationAddress = pSMTPSettings.SMTP.DestinationAddress;
 
-                    case SpinDirection.Decrease:
-                        CallRecordCore.Instance.UIProperties.SMTPPort--;
-                        break;
-                }
-                if (CallRecordCore.Instance.UIProperties.SMTPPort == 1) spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Increase;
-                else if (CallRecordCore.Instance.UIProperties.SMTPPort == 65535) spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Decrease;
-                else spinSMTPPort.ValidSpinDirection = ValidSpinDirections.Increase | ValidSpinDirections.Decrease;
-            };
 
             btnRequestName.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CRequestName());
             btnSMECall.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSMERequest());
@@ -111,21 +120,22 @@ namespace CallRecordGUI {
             btnSkipSurvey.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSkipSurvey());
             btnAddNote.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CCallNotes());
             btnMAECall.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CMAERequest());
-            btnStartShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CShiftStart());
-            btnStartBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakStart());
-            btnEndBreak.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
-            btnEndShift.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
 
-            btnIsANGenerated.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CGenerateAutoNotes());
-            btnIsANEdited.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CEditAutoNotes());
-            btnIsANSaved.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CSaveAutoNotes());
-            btnIsANManualSave.Click += (sender, args) => CallRecordCore.Instance.Messages.Enqueue(new CManualNotes());
+            WorkShift currentShift = pCurrentShift.View;
 
-            fShiftButtons.ShiftStart += () => CallRecordCore.Instance.Messages.Enqueue(new CShiftStart());
-            fShiftButtons.ShiftEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
-            fShiftButtons.BreakStart += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakStart());
-            fShiftButtons.BreakEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
-            // fBreakPanel.enableDate(false);
+            pShiftControls.ShiftStart += () => CallRecordCore.Instance.Messages.Enqueue(new StartWorkShift(currentShift, pShiftControls));
+            pShiftControls.BreakStart += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakStart());
+            pShiftControls.BreakEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CBreakEnd());
+            pShiftControls.ShiftEnd += () => CallRecordCore.Instance.Messages.Enqueue(new CEndOfShift());
+
+            ClockTimer.GlobalTimer.ClockUpdate += (DateTime currTime) => {
+                CallRecordCore.Instance.UIProperties.BreakTimerText = (currentShift.BreakCountdown == TimeSpan.Zero) ? "BREAK" : CallRecordCore.toShortTimeString(currentShift.BreakCountdown);
+            };
+
+            pAutoNotes.Generated += () => CallRecordCore.Instance.Messages.Enqueue(new CGenerateAutoNotes());
+            pAutoNotes.Edited += () => CallRecordCore.Instance.Messages.Enqueue(new CEditAutoNotes());
+            pAutoNotes.Saved += () => CallRecordCore.Instance.Messages.Enqueue(new CSaveAutoNotes());
+            pAutoNotes.Manual += () => CallRecordCore.Instance.Messages.Enqueue(new CManualNotes());
 
             btnSetFile.Click += async (sender, args) => {
                 // Get top level from the current control. Alternatively, you can use Window reference instead.
@@ -147,6 +157,8 @@ namespace CallRecordGUI {
 
             this.Closing += (sender, args) => {
                 CallRecordCore.Instance.Messages.Terminate();     // make sure to terminate the processing thread when the main window closes
+                currentShift.Save(CallRecordCore.Instance.Connection);
+                CallRecordCore.Instance.Connection.Close();
                 FileStream configFile = File.Open(ConfigFile, FileMode.Create);
                 StreamWriter configWriter = new StreamWriter(configFile);
                 configWriter.Write(encodeJSON().ToString());
@@ -159,17 +171,6 @@ namespace CallRecordGUI {
         {
             rControl.Content = com.tybern.CallRecordCore.dialogs.CallNotesResult.GetText(option);
             ToolTip.SetTip(rControl, com.tybern.CallRecordCore.dialogs.CallNotesResult.GetToolTip(option));
-        }
-
-        private void FSMTPPort_TextChanged(object? sender, TextChangedEventArgs e) {
-            try {
-                if (sender == null) return;
-                TextBox fSMTPPort = (TextBox)sender;
-                if (fSMTPPort.Text != null) {
-                    int val = int.Parse(fSMTPPort.Text);
-                    CallRecordCore.Instance.UIProperties.SMTPPort = val;
-                }
-            } catch (Exception) { }
         }
 
         private void decodeJSON(JObject configData) {
@@ -323,35 +324,43 @@ namespace CallRecordGUI {
                     break;
 
                 case UITriggerType.StartShiftButton:
-                    btnStartShift.IsEnabled = enabled;
+                    pShiftControls.EnableShiftStart = enabled;
+                    // btnStartShift.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.EndShiftButton:
-                    btnEndShift.IsEnabled = enabled;
+                    pShiftControls.EnableShiftEnd = enabled;
+                    // btnEndShift.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.StartBreakButton:
-                    btnStartBreak.IsEnabled = enabled;
+                    pShiftControls.EnableBreakStart = enabled;
+                    // btnStartBreak.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.EndBreakButton:
-                    btnEndBreak.IsEnabled = enabled;
+                    pShiftControls.EnableBreakEnd = enabled;
+                    // btnEndBreak.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.ANGeneratedButton:
-                    btnIsANGenerated.IsEnabled = enabled;
+                    pAutoNotes.EnableGenerated = enabled;
+                    // btnIsANGenerated.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.ANEditedButton:
-                    btnIsANEdited.IsEnabled = enabled;
+                    pAutoNotes.EnableEdited = enabled;
+                    // btnIsANEdited.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.ANSavedButton:
-                    btnIsANSaved.IsEnabled = enabled;
+                    pAutoNotes.EnableSaved = enabled;
+                    // btnIsANSaved.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.ANManualButton:
-                    btnIsANManualSave.IsEnabled = enabled;
+                    pAutoNotes.EnableManual = enabled;
+                    // btnIsANManualSave.IsEnabled = enabled;
                     break;
 
                 case UITriggerType.PrefNameButton:

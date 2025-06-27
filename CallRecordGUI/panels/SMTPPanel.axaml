@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:db="clr-namespace:com.tybern.ShiftTracker.db;assembly=ShiftTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="db:SMTPRecord"
+             x:Class="com.tybern.CallRecordGUI.panels.SMTPPanel">
+
+  <Design.DataContext>
+    <db:SMTPRecord />
+  </Design.DataContext>
+  <HeaderedContentControl Classes="GroupBox" Header="EMail Settings">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" ColumnDefinitions="Auto, Auto" RowDefinitions="*,*,*,*,*,*">
+
+      <TextBlock Grid.Column="0" Grid.Row="0" Text="SMTP Host: " Classes="MainWindowLabel" />
+      <TextBox Name="txtHost" Grid.Column="1" Grid.Row="0" Watermark="Enter SMTP hostname..." Text="{Binding Host}" Classes="MainWindowEntry"/>
+
+      <TextBlock Grid.Column="0" Grid.Row="1" Text="SMTP Port: " Classes="MainWindowLabel" />
+      <ButtonSpinner Grid.Column="1" Grid.Row="1" ButtonSpinnerLocation="Right" BorderBrush="Gainsboro" Content="{Binding Port}" Name="spinSMTPPort">
+        <ButtonSpinner.ContentTemplate>
+          <DataTemplate>
+            <TextBox Text="{Binding .}" TextChanged="FSMTPPort_TextChanged" TextAlignment="Right" />
+          </DataTemplate>
+        </ButtonSpinner.ContentTemplate>
+      </ButtonSpinner>
+
+      <TextBlock Grid.Column="0" Grid.Row="2" Text="SMTP Username: " Classes="MainWindowLabel" />
+      <TextBox Name="txtUsername" Grid.Column="1" Grid.Row="2" Text="{Binding Username}" Classes="MainWindowEntry" Watermark="Login username..." />
+
+      <TextBlock Grid.Column="0" Grid.Row="3" Text="SMTP Password: " Classes="MainWindowLabel" />
+      <TextBox Name="txtPassword" Grid.Column="1" Grid.Row="3" Text="{Binding Password}" Classes="MainWindowEntry" Watermark="Login password..." PasswordChar="•" />
+
+      <TextBlock Grid.Column="0" Grid.Row="4" Text="Sender Address: " Classes="MainWindowLabel" />
+      <TextBox Name="txtSender" Grid.Column="1" Grid.Row="4" Text="{Binding SenderAddress}" Classes="MainWindowEntry" Watermark="Sender email address..." />
+
+      <TextBlock Grid.Column="0" Grid.Row="5" Text="Destination Email: " Classes="MainWindowLabel" />
+      <TextBox Name="txtDestination" Grid.Column="1" Grid.Row="5" Text="{Binding DestinationAddress}" Classes="MainWindowEntry" Watermark="Leave blank to skip sending..." />
+
+    </Grid>
+  </HeaderedContentControl>
+</UserControl>

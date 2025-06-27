@@ -62,20 +62,26 @@ namespace com.tybern.ShiftTracker.shifts {
             set { if (_BreakCountdown != value) { _BreakCountdown = value; OnPropertyChanged(nameof(BreakCountdown)); } }
         }
 
+        public ShiftStatus Status { get; } = new ShiftStatus();
+
         public WorkShift() {
             ClockTimer.GlobalTimer.ClockUpdate += (currTime) => {
-                BreakCountdown = TimeUntilBreak(currTime);
+                if (Status.CurrentShiftState == ShiftState.Offline) {
+                    BreakCountdown = (StartTime <= currTime.TimeOfDay) ? TimeSpan.Zero : StartTime - currTime.TimeOfDay;
+                } else {
+                    BreakCountdown = (NextBreak is null) ? TimeSpan.Zero : ((NextBreak.StartTime <= currTime.TimeOfDay) ? TimeSpan.Zero : (NextBreak.StartTime - currTime.TimeOfDay));
+                }
             };
         }
 
         // Used when converting over from old format
         public WorkShift(DateTime date, TimeSpan startTime, TimeSpan endTime, TimeSpan firstBreak, TimeSpan lunchBreak, TimeSpan lastBreak, TimeSpan meetingBreak, SortedSet<DBBreakRecord> extraBreaks) : this() {
-            this.Date = date;
+            this.Date = date.Date;
             this.StartTime = startTime;
             this.EndTime = endTime;
 
             if (firstBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.ShiftBreak, firstBreak, firstBreak + BREAK_LENGTH));
-            if (lunchBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.ShiftBreak, lunchBreak, lunchBreak + LUNCH_LENGTH));
+            if (lunchBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.LunchBreak, lunchBreak, lunchBreak + LUNCH_LENGTH));
             if (lastBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.ShiftBreak, lastBreak, lastBreak + BREAK_LENGTH));
             if (meetingBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.Meeting, meetingBreak, meetingBreak + MEET_LENGTH));
             foreach (DBBreakRecord rec in extraBreaks) BreakSet.Add(rec);

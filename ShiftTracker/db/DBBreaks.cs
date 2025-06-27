@@ -110,6 +110,10 @@ namespace com.tybern.ShiftTracker.db {
             return (EndTime - StartTime);
         }
 
+        public override string ToString() {
+            return Date + " <" + StartTime + ">:<" + EndTime + "> (" + EnumConverter.GetEnumDescription(Type) + ")";
+        }
+
         public int CompareTo(DBBreakRecord other) {
             DBBase<DBBreakRecord>.ValidateCompare(other);
             int _result = Date.CompareTo(other.Date);

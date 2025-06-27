@@ -20,6 +20,9 @@ namespace com.tybern.ShiftTracker.db {
         [Column("startTime")] public TimeSpan StartTime { get; set; } = TimeSpan.Zero;
         [Column("endTime")] public TimeSpan EndTime { get; set; } = TimeSpan.Zero;
 
+        public override string ToString() {
+            return "SHIFT: " + Date.ToString("dd-MM-yyyy") + " <" + StartTime + ">:<" + EndTime + ">";
+        }
 
         public int CompareTo(DBShiftRecord other) {
             DBBase<DBShiftRecord>.ValidateCompare(other);
