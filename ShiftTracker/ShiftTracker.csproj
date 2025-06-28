@@ -16,8 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CallRecordCore\CallRecordCore.csproj" />
     <ProjectReference Include="..\CommandProcessor\CMDProcessor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ops\" />
+    <Folder Include="shifts\" />
   </ItemGroup>
 
 </Project>

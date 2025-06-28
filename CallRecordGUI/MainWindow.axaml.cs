@@ -18,7 +18,7 @@ using CallRecordGUI.dialogs;
 using com.tybern.CallRecordCore;
 using com.tybern.CallRecordCore.commands;
 using com.tybern.ShiftTracker;
-using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.ops;
 using com.tybern.ShiftTracker.shifts;
 using Newtonsoft.Json.Linq;

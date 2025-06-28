@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using SQLite.Net2;
 
-namespace com.tybern.ShiftTracker.db {
+namespace com.tybern.ShiftTracker.data {
     public class DBBreaks : DBBase<DBBreakRecord> {
 
         public const string DBTableName = "breakTimesv2";

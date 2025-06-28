@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.shifts;
 using com.tybern.CallRecordCore;
 using SQLite.Net2;

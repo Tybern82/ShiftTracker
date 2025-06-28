@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.data;
 using SQLite.Net2;
 
 namespace com.tybern.ShiftTracker.shifts {

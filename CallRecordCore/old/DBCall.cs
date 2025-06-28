@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SQLite.Net2;
 
-namespace com.tybern.ShiftTracker.db {
+namespace com.tybern.ShiftTracker.data {
     public class DBCall : DBBase<DBCallRecord> {
 
         public const string DBTableName = "callRecordv2";

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SQLite.Net2;
 
-namespace com.tybern.ShiftTracker.db {
+namespace com.tybern.ShiftTracker.data {
 
     [Table("dbVersion")]
     public class DBMarkerTable {

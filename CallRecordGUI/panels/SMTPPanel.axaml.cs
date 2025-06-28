@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
-using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.data;
 
 namespace com.tybern.CallRecordGUI.panels {
 
