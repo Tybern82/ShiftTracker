@@ -50,7 +50,8 @@ namespace com.tybern.ShiftTracker.db {
         public bool AddRecord(T record) {
             try {
                 dbConnection.BeginTransaction();
-                dbConnection.InsertOrReplace(record);
+                int i = dbConnection.InsertOrReplace(record);
+                LOG.Info("InsertOrReplace <" + i + ">");
                 dbConnection.Commit();
                 return true;
             } catch (SQLiteException e) {
@@ -66,9 +67,10 @@ namespace com.tybern.ShiftTracker.db {
             List<T> _result = new List<T>();
 
             try {
+                LOG.Info("Loading Records for: " + dt);
                 DateTime dayStart = fromCurrent(dt, TimeSpan.Zero);
                 DateTime dayEnd = fromCurrent(dt.AddDays(1), TimeSpan.Zero);
-                var data = this.dbConnection.Query<T>("SELECT * FROM " + dbTable + " WHERE date BETWEEN ? AND ?", dayStart.Ticks, dayEnd.Ticks).ToList<T>();
+                var data = this.dbConnection.Query<T>("SELECT * FROM " + dbTable + " WHERE startTime BETWEEN ? AND ?", dayStart.Ticks, dayEnd.Ticks-1).ToList<T>();
                 // string query = "SELECT * FROM " + dbTable + " WHERE date IS @date";
                 // var cmd = new SQLiteCommand(dbConnection);
                 // cmd.CommandText = query;

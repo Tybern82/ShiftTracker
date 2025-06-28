@@ -62,10 +62,10 @@ namespace com.tybern.ShiftTracker.db {
 
         [Ignore] public IEnumerable<BreakType> Models => MODELS;
 
-        [PrimaryKey, Indexed, Column("date")] public DateTime Date { get; set; } = DateTime.Now.Date;
+        [Ignore] public DateTime Date { get { return StartTime.Date; } }
 
-        private TimeSpan _StartTime = TimeSpan.Zero;
-        [PrimaryKey, Column("startTime")] public TimeSpan StartTime { 
+        private DateTime _StartTime = DateTime.Now;
+        [PrimaryKey, Indexed, Column("startTime")] public DateTime StartTime { 
             get { return _StartTime; }
             set { 
                 _StartTime = value; OnPropertyChanged(nameof(StartTime)); 
@@ -84,8 +84,8 @@ namespace com.tybern.ShiftTracker.db {
             }
         }
 
-        private TimeSpan _EndTime = TimeSpan.Zero;
-        [Column("endTime")] public TimeSpan EndTime { 
+        private DateTime _EndTime = DateTime.Now;
+        [Column("endTime")] public DateTime EndTime { 
             get { return _EndTime; }
             set { _EndTime = value; OnPropertyChanged(nameof(EndTime)); }
         }
@@ -99,8 +99,7 @@ namespace com.tybern.ShiftTracker.db {
 
         public DBBreakRecord() { }
 
-        public DBBreakRecord(DateTime date, BreakType type, TimeSpan startTime, TimeSpan endTime) {
-            Date = date;
+        public DBBreakRecord(BreakType type, DateTime startTime, DateTime endTime) {
             Type = type;
             StartTime = startTime;
             EndTime = endTime;
@@ -111,7 +110,7 @@ namespace com.tybern.ShiftTracker.db {
         }
 
         public override string ToString() {
-            return Date + " <" + StartTime + ">:<" + EndTime + "> (" + EnumConverter.GetEnumDescription(Type) + ")";
+            return Date + " <" + StartTime.TimeOfDay + ">:<" + EndTime.TimeOfDay + "> (" + EnumConverter.GetEnumDescription(Type) + ")";
         }
 
         public int CompareTo(DBBreakRecord other) {

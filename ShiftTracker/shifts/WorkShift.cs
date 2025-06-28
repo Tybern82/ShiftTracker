@@ -11,6 +11,8 @@ using SQLite.Net2;
 namespace com.tybern.ShiftTracker.shifts {
     public class WorkShift : INotifyPropertyChanged {
 
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+
         /// <inheritdoc cref="INotifyPropertyChanged.PropertyChanged"/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -69,30 +71,31 @@ namespace com.tybern.ShiftTracker.shifts {
                 if (Status.CurrentShiftState == ShiftState.Offline) {
                     BreakCountdown = (StartTime <= currTime.TimeOfDay) ? TimeSpan.Zero : StartTime - currTime.TimeOfDay;
                 } else {
-                    BreakCountdown = (NextBreak is null) ? TimeSpan.Zero : ((NextBreak.StartTime <= currTime.TimeOfDay) ? TimeSpan.Zero : (NextBreak.StartTime - currTime.TimeOfDay));
+                    BreakCountdown = (NextBreak is null) ? TimeSpan.Zero : ((NextBreak.StartTime.TimeOfDay <= currTime.TimeOfDay) ? TimeSpan.Zero : (NextBreak.StartTime.TimeOfDay - currTime.TimeOfDay));
                 }
             };
         }
 
         // Used when converting over from old format
         public WorkShift(DateTime date, TimeSpan startTime, TimeSpan endTime, TimeSpan firstBreak, TimeSpan lunchBreak, TimeSpan lastBreak, TimeSpan meetingBreak, SortedSet<DBBreakRecord> extraBreaks) : this() {
-            this.Date = date.Date;
+            LOG.Info("Creating WorkShift: " + date + " <" + startTime + ">:<" + endTime + ">");
+            this.Date = date;
             this.StartTime = startTime;
             this.EndTime = endTime;
 
-            if (firstBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.ShiftBreak, firstBreak, firstBreak + BREAK_LENGTH));
-            if (lunchBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.LunchBreak, lunchBreak, lunchBreak + LUNCH_LENGTH));
-            if (lastBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.ShiftBreak, lastBreak, lastBreak + BREAK_LENGTH));
-            if (meetingBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(date, BreakType.Meeting, meetingBreak, meetingBreak + MEET_LENGTH));
+            if (firstBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(BreakType.ShiftBreak, date + firstBreak, date + firstBreak + BREAK_LENGTH));
+            if (lunchBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(BreakType.LunchBreak, date + lunchBreak, date + lunchBreak + LUNCH_LENGTH));
+            if (lastBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(BreakType.ShiftBreak, date + lastBreak, date + lastBreak + BREAK_LENGTH));
+            if (meetingBreak != TimeSpan.Zero) BreakSet.Add(new DBBreakRecord(BreakType.Meeting, date + meetingBreak, date + meetingBreak + MEET_LENGTH));
             foreach (DBBreakRecord rec in extraBreaks) BreakSet.Add(rec);
             foreach (DBBreakRecord rec in BreakSet) Breaks.Add(rec);
             this.NextBreak = GetNextBreak(LastBreak);
         }
 
         public WorkShift(DBShiftRecord shift, List<DBBreakRecord> breaks) : this() {
-            this.Date = shift.Date;
-            this.StartTime = shift.StartTime;
-            this.EndTime = shift.EndTime;
+            this.Date = shift.StartTime.Date;
+            this.StartTime = shift.StartTime.TimeOfDay;
+            this.EndTime = shift.EndTime.TimeOfDay;
             foreach (DBBreakRecord rec in breaks) BreakSet.Add(rec);
             foreach (DBBreakRecord rec in BreakSet) Breaks.Add(rec);
             this.NextBreak = GetNextBreak(LastBreak);
@@ -102,9 +105,9 @@ namespace com.tybern.ShiftTracker.shifts {
 
         public void Save(DBShift shiftDB, DBBreaks breaksDB) {
             DBShiftRecord shiftRecord = new DBShiftRecord();
-            shiftRecord.Date = Date.Date;
-            shiftRecord.StartTime = StartTime;
-            shiftRecord.EndTime = EndTime;
+            shiftRecord.StartTime = Date.Date + StartTime;
+            shiftRecord.EndTime = Date.Date + EndTime;
+            LOG.Info("Saving " + shiftRecord);
             shiftDB.AddRecord(shiftRecord);
             foreach (DBBreakRecord breakRecord in BreakSet) breaksDB.AddRecord(breakRecord);
         }
@@ -125,7 +128,7 @@ namespace com.tybern.ShiftTracker.shifts {
 
         public TimeSpan TimeUntilBreak(DateTime currTime) {
             if (NextBreak == null) return TimeSpan.Zero;                                // default 0 if no break
-            TimeSpan timeUntilBreak = NextBreak.StartTime - currTime.TimeOfDay;     // calculate difference between now and break start
+            TimeSpan timeUntilBreak = NextBreak.StartTime.TimeOfDay - currTime.TimeOfDay;     // calculate difference between now and break start
             return (timeUntilBreak < TimeSpan.Zero) ? TimeSpan.Zero : timeUntilBreak;   // return time until break; default to 0 if already past
         }
 
@@ -143,7 +146,7 @@ namespace com.tybern.ShiftTracker.shifts {
                 DBBreakRecord? nextBreak = GetNextBreak(lastFound);
                 lastFound = null; NextBreak = nextBreak;
                 if (nextBreak != null) {
-                    if (nextBreak.StartTime <= (currTime + breakLength + TimeSpan.FromMinutes(5))) {    // automatically merge breaks when consecutive, or within 5 minutes of each other
+                    if (nextBreak.StartTime.TimeOfDay <= (currTime + breakLength + TimeSpan.FromMinutes(5))) {    // automatically merge breaks when consecutive, or within 5 minutes of each other
                         // found extra break to add
                         _result.Add(nextBreak);
                         breakLength += nextBreak.Length();
@@ -166,14 +169,14 @@ namespace com.tybern.ShiftTracker.shifts {
         }
 
         public void doAddStandardBreaks() {
-            doAddBreak(new DBBreakRecord(Date.Date, BreakType.ShiftBreak, StartTime, StartTime + TimeSpan.FromMinutes(15)));   // First Break
-            doAddBreak(new DBBreakRecord(Date.Date, BreakType.LunchBreak, StartTime + TimeSpan.FromMinutes(15), StartTime + TimeSpan.FromMinutes(30)));   // Lunch Break
-            doAddBreak(new DBBreakRecord(Date.Date, BreakType.ShiftBreak, StartTime + TimeSpan.FromMinutes(45), StartTime + TimeSpan.FromMinutes(15)));  // Last Break
-            doAddBreak(new DBBreakRecord(Date.Date, BreakType.Meeting, StartTime + TimeSpan.FromMinutes(60), StartTime + TimeSpan.FromMinutes(15)));
+            doAddBreak(new DBBreakRecord(BreakType.ShiftBreak, Date.Date+StartTime, Date.Date + StartTime + TimeSpan.FromMinutes(15)));   // First Break
+            doAddBreak(new DBBreakRecord(BreakType.LunchBreak, Date.Date + StartTime + TimeSpan.FromMinutes(15), Date.Date + StartTime + TimeSpan.FromMinutes(30)));   // Lunch Break
+            doAddBreak(new DBBreakRecord(BreakType.ShiftBreak, Date.Date + StartTime + TimeSpan.FromMinutes(45), Date.Date + StartTime + TimeSpan.FromMinutes(15)));  // Last Break
+            doAddBreak(new DBBreakRecord(BreakType.Meeting, Date.Date + StartTime + TimeSpan.FromMinutes(60), Date.Date + StartTime + TimeSpan.FromMinutes(15)));
         }
 
         public void doAddBreak() {
-            doAddBreak(new DBBreakRecord(Date.Date, BreakType.ShiftBreak, TimeSpan.Zero, TimeSpan.Zero));
+            doAddBreak(new DBBreakRecord(BreakType.ShiftBreak, Date.Date, Date.Date));
         }
 
         public bool doAddBreak(DBBreakRecord newBreak) {

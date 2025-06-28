@@ -16,17 +16,24 @@ namespace com.tybern.ShiftTracker.db {
     [Table(DBShift.DBTableName)]
     public class DBShiftRecord : IComparable<DBShiftRecord> {
 
+        [PrimaryKey, Indexed, Column("startTime")] public DateTime StartTime { get; set; } = DateTime.Now;
+        [Column("endTime")] public DateTime EndTime { get; set; } = DateTime.Now;
+
+        [Ignore] public DateTime Date { get { return StartTime.Date; } }
+
+        /*
         [PrimaryKey, Indexed, Column("date")] public DateTime Date { get; set; } = DateTime.Now.Date;
         [Column("startTime")] public TimeSpan StartTime { get; set; } = TimeSpan.Zero;
         [Column("endTime")] public TimeSpan EndTime { get; set; } = TimeSpan.Zero;
+        */
 
         public override string ToString() {
-            return "SHIFT: " + Date.ToString("dd-MM-yyyy") + " <" + StartTime + ">:<" + EndTime + ">";
+            return "SHIFT: <" + StartTime + ">:<" + EndTime + ">";
         }
 
         public int CompareTo(DBShiftRecord other) {
             DBBase<DBShiftRecord>.ValidateCompare(other);
-            return Date.CompareTo(other.Date);
+            return StartTime.CompareTo(other.StartTime);
         }
     }
 }
