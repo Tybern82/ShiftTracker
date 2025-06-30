@@ -41,21 +41,25 @@ namespace com.tybern.ShiftTracker {
         }
 
         public void loadConfigFile() {
-            FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate);
-            StreamReader configReader = new StreamReader(configFile);
-            string configJSON = configReader.ReadToEnd();
-            if (!string.IsNullOrWhiteSpace(configJSON)) {
-                JObject configData = JObject.Parse(configJSON);
-                decodeJSON(configData);
+            using (FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate)) {
+                using (StreamReader configReader = new StreamReader(configFile)) {
+                    string configJSON = configReader.ReadToEnd();
+                    if (!string.IsNullOrWhiteSpace(configJSON)) {
+                        JObject configData = JObject.Parse(configJSON);
+                        decodeJSON(configData);
+                    }
+                }
             }
         }
 
         public void saveConfigFile() {
-            FileStream configFile = File.Open(ConfigFile, FileMode.Create);
-            StreamWriter configWriter = new StreamWriter(configFile);
-            configWriter.Write(encodeJSON().ToString());
-            configWriter.Flush();
-            configWriter.Close();
+            using (FileStream configFile = File.Open(ConfigFile, FileMode.Create)) {
+                using (StreamWriter configWriter = new StreamWriter(configFile)) {
+                    configWriter.Write(encodeJSON().ToString());
+                    configWriter.Flush();
+                    configWriter.Close();
+                }
+            }
         }
 
         private void decodeJSON(JObject configData) {

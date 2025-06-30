@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:ShiftTrackerGUI.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        MinWidth="720" MinHeight="520"
         x:Class="ShiftTrackerGUI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"        
         RequestedThemeVariant="Light"
