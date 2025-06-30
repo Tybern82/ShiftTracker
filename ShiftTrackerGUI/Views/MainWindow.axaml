@@ -6,7 +6,8 @@
         xmlns:views="clr-namespace:ShiftTrackerGUI.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ShiftTrackerGUI.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/avalonia-logo.ico"        
+        RequestedThemeVariant="Light"
         Title="ShiftTrackerGUI">
         <views:MainView />
 </Window>

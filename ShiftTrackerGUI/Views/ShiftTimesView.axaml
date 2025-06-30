@@ -2,29 +2,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:com.tybern.ShiftTracker.shifts"
-             xmlns:vmtype="using:com.tybern.ShiftTracker.db"
+             xmlns:vm="clr-namespace:com.tybern.ShiftTracker.data;assembly=ShiftTracker"
              xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="com.tybern.CallRecordGUI.panels.ShiftTimePanel"
-             x:DataType="vm:WorkShift">
-
-  <Design.DataContext>
-    <vm:WorkShift />
-  </Design.DataContext>
+             x:DataType="vm:WorkShift"
+             x:Class="ShiftTrackerGUI.ShiftTimesView">
   <UserControl.Resources>
     <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
   </UserControl.Resources>
+  <Design.DataType>
+    <vm:WorkShift />
+  </Design.DataType>
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="auto,auto,auto,*">
 
     <TextBlock Classes="MainWindowTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0">Shift Times</TextBlock>
-    
-    <DatePicker Name="fDateSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" SelectedDate="{Binding Date}" />
+
+    <DatePicker Name="fDateSelector" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" SelectedDate="{Binding CurrentDateOffset}" />
 
     <Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center">
       <TextBlock Classes="MainWindowLabel" Grid.Column="0" Grid.Row="0">Start Time:</TextBlock>
       <TimePicker Classes="MainWindowTimeSpan" Grid.Column="1" Grid.Row="0" SelectedTime="{Binding StartTime}" Name="fStartTime" />
-      
+
       <TextBlock Classes="MainWindowLabel" Grid.Column="0" Grid.Row="1">End Time:</TextBlock>
       <TimePicker Classes="MainWindowTimeSpan" Grid.Column="1" Grid.Row="1" MinuteIncrement="1" SelectedTime="{Binding EndTime}" Name="fEndTime"/>
     </Grid>
@@ -52,13 +50,13 @@
             <DataGridTemplateColumn Header="Break Type">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                    <ComboBox Name="cmbBreakTypes" Width="200" Margin="5" ItemsSource="{Binding Models}" SelectedItem="{Binding Type}" VerticalAlignment="Center">
-                      <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                          <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
-                        </DataTemplate>
-                      </ComboBox.ItemTemplate>
-                    </ComboBox>
+                  <ComboBox Name="cmbBreakTypes" Width="200" Margin="5" ItemsSource="{Binding Models}" SelectedItem="{Binding Type}" VerticalAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

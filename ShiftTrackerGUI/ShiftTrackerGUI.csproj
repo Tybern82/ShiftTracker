@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.2" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
@@ -21,5 +22,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShiftTracker\ShiftTracker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Styles\HeaderedContentControlGroupBoxStyle.axaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,6 @@ using System.Text;
 namespace com.tybern.ShiftTracker {
 
     public delegate void DataUpdate();
-
     public delegate void CommandEvent();
 
     public class EnumConverter {
