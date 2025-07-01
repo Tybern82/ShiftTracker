@@ -10,5 +10,5 @@
         Icon="/Assets/avalonia-logo.ico"        
         RequestedThemeVariant="Light"
         Title="ShiftTrackerGUI">
-        <views:MainView />
+        <views:MainView Name="pMainView" />
 </Window>

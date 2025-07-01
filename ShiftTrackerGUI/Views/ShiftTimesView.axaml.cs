@@ -4,19 +4,20 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
+using ShiftTrackerGUI.Views;
 
 namespace ShiftTrackerGUI;
 
 public partial class ShiftTimesView : UserControl {
 
-    public delegate void DateChangedEvent(DateTime newDate);
+    public delegate void DateChangedEvent(DateTime oldDate, DateTime newDate);
 
     public ShiftTimesView() {
         InitializeComponent();
 
         DataContext = ActiveShift;
 
-        fDateSelector.SelectedDateChanged += (sender, args) => onSelectDate?.Invoke(args.NewDate?.Date ?? DateTime.MinValue);
+        fDateSelector.SelectedDateChanged += (sender, args) => onSelectDate?.Invoke(args.OldDate?.Date ?? DateTime.MinValue, args.NewDate?.Date ?? DateTime.Now);
 
         btnStandardShift.Click += (sender, args) => onTriggerStandardShift?.Invoke();
         btnExtendedShift.Click += (sender, args) => onTriggerExtendedShift?.Invoke();
@@ -25,6 +26,17 @@ public partial class ShiftTimesView : UserControl {
         btnRemoveBreak.Click += (sender, args) => onRemoveBreak?.Invoke();
         btnClearBreaks.Click += (sender, args) => onClearBreaks?.Invoke();
         btnAddStandardBreaks.Click += (sender, args) => onAddStandardBreaks?.Invoke();
+    }
+
+    public void addDefaultHandlers() {
+        // These handlers link to operations under the ActiveShift
+        onTriggerStandardShift += () => ActiveShift.EndTime = ActiveShift.StartTime + TimeSpan.FromHours(7) + TimeSpan.FromMinutes(50);
+        onTriggerExtendedShift += () => ActiveShift.EndTime = ActiveShift.StartTime + TimeSpan.FromHours(7) + TimeSpan.FromMinutes(55);
+
+        onAddStandardBreaks += () => ActiveShift.doAddStandardBreaks();
+        onClearBreaks += () => ActiveShift.Breaks.Clear();
+        onAddBreak += () => ActiveShift.doAddBreak();
+        onRemoveBreak += () => ActiveShift.doRemoveBreak((WorkBreak)dataBreakList.SelectedItem);
     }
 
     public static readonly StyledProperty<WorkShift> ActiveShiftProperty = AvaloniaProperty.Register<ShiftTimesView, WorkShift>(name: "ActiveShift", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);

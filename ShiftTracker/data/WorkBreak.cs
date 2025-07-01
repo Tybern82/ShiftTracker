@@ -32,7 +32,7 @@ namespace com.tybern.ShiftTracker.data {
         PublicHoliday
     };
 
-    public class WorkBreak : INotifyPropertyChanged {
+    public class WorkBreak : INotifyPropertyChanged, IComparable<WorkBreak> {
 
         private static IEnumerable<BreakType> MODELS = Enum.GetValues(typeof(BreakType)).Cast<BreakType>();
         public IEnumerable<BreakType> Models => MODELS;
@@ -97,5 +97,10 @@ namespace com.tybern.ShiftTracker.data {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void onPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        public int CompareTo(WorkBreak other) {
+            int _result = _CurrentDate.CompareTo(other._CurrentDate);
+            return (_result == 0) ? _StartTime.CompareTo(other._StartTime) : _result;
+        }
     }
 }

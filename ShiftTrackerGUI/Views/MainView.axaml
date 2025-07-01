@@ -13,7 +13,7 @@
     <vm:MainViewModel />
   </Design.DataContext>
   <StackPanel>
-    <view:ShiftControlsView Width="450" Height="120" />
-    <view:ShiftTimesView />
+    <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
+    <view:ShiftTimesView Name="pShiftTimes" />
   </StackPanel>
 </UserControl>
