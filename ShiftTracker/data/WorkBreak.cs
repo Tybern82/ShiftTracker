@@ -29,7 +29,10 @@ namespace com.tybern.ShiftTracker.data {
         PersonalLeave,
 
         [Description("Public Holiday")]
-        PublicHoliday
+        PublicHoliday,
+
+        [Description("Annual Leave")]
+        AnnualLeave
     };
 
     public class WorkBreak : INotifyPropertyChanged, IComparable<WorkBreak> {

@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:view="clr-namespace:ShiftTrackerGUI"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="800"
+             x:Class="ShiftTrackerGUI.ShiftWeekView">
+  <StackPanel>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+      <TextBlock Classes="MainWindowLabel">Date from week:</TextBlock>
+      <DatePicker Margin="10" Padding="10" Name="dtSelectWeek" />
+      <Button Name="btnCloseDialog" Content="Close" />
+    </StackPanel>
+    <TabControl>
+      <TabItem Header="Monday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftMonday" />
+      </TabItem>
+      <TabItem Header="Tuesday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftTuesday" />
+      </TabItem>
+      <TabItem Header="Wednesday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftWednesday" />
+      </TabItem>
+      <TabItem Header="Thursday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftThursday" />
+      </TabItem>
+      <TabItem Header="Friday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftFriday" />
+      </TabItem>
+      <TabItem Header="Saturday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSaturday" />
+      </TabItem>
+      <TabItem Header="Sunday">
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSunday" />
+      </TabItem>
+    </TabControl>
+  </StackPanel>
+</UserControl>

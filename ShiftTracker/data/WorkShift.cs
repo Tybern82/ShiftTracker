@@ -55,6 +55,10 @@ namespace com.tybern.ShiftTracker.data {
             Breaks.Add(new WorkBreak() { Type = BreakType.Meeting, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(45), EndTime = this.StartTime + TimeSpan.FromMinutes(60) });
         }
 
+        public void doAddAllDayBreak() {
+            Breaks.Add(new WorkBreak() { Type = BreakType.PersonalLeave, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.EndTime });
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void onPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

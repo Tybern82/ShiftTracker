@@ -27,18 +27,22 @@
       <TimePicker Classes="MainWindowTimeSpan" Grid.Column="1" Grid.Row="1" MinuteIncrement="1" SelectedTime="{Binding EndTime}" Name="fEndTime"/>
     </Grid>
 
-    <Grid ColumnDefinitions="*,*" RowDefinitions="auto" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="0" Content="+ 7:50" Name="btnStandardShift" />
-      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="+ 7:55" Name="btnExtendedShift" />
+    <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="0" Content="Clear" Name="btnClearDay" />
+      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="Week" Name="btnEditWeek" />
+      
+      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="1" Content="+ 7:50" Name="btnStandardShift" />
+      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="1" Content="+ 7:55" Name="btnExtendedShift" />
     </Grid>
 
     <HeaderedContentControl Classes="GroupBox" Header="Breaks" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
-      <Grid ColumnDefinitions="*,auto,auto,auto,auto" RowDefinitions="auto,*">
+      <Grid ColumnDefinitions="*,auto,auto,auto,auto,auto" RowDefinitions="auto,*">
         <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="Add" Name="btnAddBreak" />
         <Button Classes="MainWindowButton" Grid.Column="2" Grid.Row="0" Content="Add Standard" Name="btnAddStandardBreaks" />
         <Button Classes="MainWindowButton" Grid.Column="3" Grid.Row="0" Content="Remove" Name="btnRemoveBreak"/>
-        <Button Classes="MainWindowButton" Grid.Column="4" Grid.Row="0" Content="Clear All" Name="btnClearBreaks" />
-        <DataGrid Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="1"
+        <Button Classes="MainWindowButton" Grid.Column="4" Grid.Row="0" Content="Clear Breaks" Name="btnClearBreaks" />
+        <Button Classes="MainWindowButton" Grid.Column="5" Grid.Row="0" Content="Leave" Name="btnAllDayBreak" />
+        <DataGrid Grid.Column="0" Grid.ColumnSpan="6" Grid.Row="1"
           Margin="20" ItemsSource="{Binding Breaks}"
           IsReadOnly="False"
           CanUserReorderColumns="True"
@@ -63,14 +67,14 @@
             <DataGridTemplateColumn Header="Break Start">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding StartTime}" />
+                  <TimePicker Classes="MainWindowTimeSpan" MinuteIncrement="1" SelectedTime="{Binding StartTime}" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTemplateColumn Header="Break End">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding EndTime}" />
+                  <TimePicker Classes="MainWindowTimeSpan" MinuteIncrement="1" SelectedTime="{Binding EndTime}" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

@@ -22,10 +22,14 @@ public partial class ShiftTimesView : UserControl {
         btnStandardShift.Click += (sender, args) => onTriggerStandardShift?.Invoke();
         btnExtendedShift.Click += (sender, args) => onTriggerExtendedShift?.Invoke();
 
+        btnClearDay.Click += (sender, args) => onClearDay?.Invoke();
+        btnEditWeek.Click += (sender, args) => onEditWeek?.Invoke();
+
         btnAddBreak.Click += (sender, args) => onAddBreak?.Invoke();
         btnRemoveBreak.Click += (sender, args) => onRemoveBreak?.Invoke();
         btnClearBreaks.Click += (sender, args) => onClearBreaks?.Invoke();
         btnAddStandardBreaks.Click += (sender, args) => onAddStandardBreaks?.Invoke();
+        btnAllDayBreak.Click += (sender, args) => onAddAllDayBreak?.Invoke();
     }
 
     public void addDefaultHandlers() {
@@ -37,20 +41,32 @@ public partial class ShiftTimesView : UserControl {
         onClearBreaks += () => ActiveShift.Breaks.Clear();
         onAddBreak += () => ActiveShift.doAddBreak();
         onRemoveBreak += () => ActiveShift.doRemoveBreak((WorkBreak)dataBreakList.SelectedItem);
+        onAddAllDayBreak += () => ActiveShift.doAddAllDayBreak();
+
+        onClearDay += () => {
+            onClearBreaks?.Invoke();
+            ActiveShift.StartTime = TimeSpan.Zero;
+            ActiveShift.EndTime = TimeSpan.Zero;
+        };
     }
 
     public static readonly StyledProperty<WorkShift> ActiveShiftProperty = AvaloniaProperty.Register<ShiftTimesView, WorkShift>(name: "ActiveShift", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
     public static readonly StyledProperty<bool> EditDateProperty = AvaloniaProperty.Register<ShiftTimesView, bool>(name: "EditDate", defaultValue: true);
+    public static readonly StyledProperty<bool> EditWeekVisibleProperty = AvaloniaProperty.Register<ShiftTimesView, bool>(name: "EditWeekVisible", defaultValue: true);
 
     public event DateChangedEvent? onSelectDate;
 
     public event CommandEvent? onTriggerStandardShift;
     public event CommandEvent? onTriggerExtendedShift;
 
+    public event CommandEvent? onClearDay;
+    public event CommandEvent? onEditWeek;
+
     public event CommandEvent? onAddBreak;
     public event CommandEvent? onRemoveBreak;
     public event CommandEvent? onClearBreaks;
     public event CommandEvent? onAddStandardBreaks;
+    public event CommandEvent? onAddAllDayBreak;
 
     public WorkShift ActiveShift {
         get {
@@ -74,6 +90,14 @@ public partial class ShiftTimesView : UserControl {
         set {
             SetValue(EditDateProperty, value);
             fDateSelector.IsEnabled = value;
+        }
+    }
+
+    public bool EditWeekVisible {
+        get => GetValue(EditWeekVisibleProperty);
+        set {
+            SetValue(EditWeekVisibleProperty, value);
+            btnEditWeek.IsVisible = value;
         }
     }
 }

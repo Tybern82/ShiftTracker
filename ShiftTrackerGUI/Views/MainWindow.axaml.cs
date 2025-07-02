@@ -27,6 +27,14 @@ public partial class MainWindow : Window {
             DBShiftTracker.Instance.save(currShift);
         };
 
+        pMainView.pShiftTimes.onEditWeek += () => {
+            DateTime currentDate = pMainView.pShiftTimes.fDateSelector.SelectedDate.HasValue ? pMainView.pShiftTimes.fDateSelector.SelectedDate.Value.Date : DateTime.Now.Date;
+            ShiftWeekWindow dlgEditWeek = new(currentDate);
+            // Reload the date from the current page once the dialog is closed
+            dlgEditWeek.Closed += (sender, args) => pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(currentDate) ?? new WorkShift(currentDate);
+            dlgEditWeek.ShowDialog(this);
+        };
+
         pMainView.pShiftTimes.addDefaultHandlers(); // add the standard commands that operate with the ActiveShift
 
         this.Closing += (sender, args) => {
