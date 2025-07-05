@@ -28,6 +28,9 @@ namespace com.tybern.ShiftTracker.data {
         [Description("Personal / Sick Leave")]
         PersonalLeave,
 
+        [Description("Unpaid Leave")]
+        UnpaidLeave,
+
         [Description("Public Holiday")]
         PublicHoliday,
 
@@ -90,9 +93,22 @@ namespace com.tybern.ShiftTracker.data {
 
                     case BreakType.SystemIssue:
                     case BreakType.PersonalLeave:
+                    case BreakType.UnpaidLeave:
                     case BreakType.PublicHoliday:
                     default:
                         return false;
+                }
+            }
+        }
+
+        public TimeSpan Length {
+            get {
+                if (EndTime < StartTime) {
+                    DateTime sdt = fromCurrent(CurrentDate, StartTime);
+                    DateTime edt = fromCurrent(CurrentDate + TimeSpan.FromDays(1), EndTime);
+                    return edt - sdt;
+                } else {
+                    return EndTime - StartTime;
                 }
             }
         }
@@ -104,6 +120,14 @@ namespace com.tybern.ShiftTracker.data {
         public int CompareTo(WorkBreak other) {
             int _result = _CurrentDate.CompareTo(other._CurrentDate);
             return (_result == 0) ? _StartTime.CompareTo(other._StartTime) : _result;
+        }
+
+        public static DateTime fromCurrent(DateTime currDay, TimeSpan timeOffset) => new DateTime(currDay.Year, currDay.Month, currDay.Day, timeOffset.Hours, timeOffset.Minutes, timeOffset.Seconds);
+
+        public static TimeSpan GetTotalLength(SortedSet<WorkBreak> breaks) {
+            TimeSpan _result = TimeSpan.Zero;
+            foreach (WorkBreak brk in breaks) _result += brk.Length;
+            return _result;
         }
     }
 }

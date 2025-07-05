@@ -39,34 +39,42 @@ public partial class ShiftWeekView : UserControl {
     }
 
     private void loadDate(DateTime dt) {
+        // Loads the week containing the requested date, and switches to the tab for that day
         DayOfWeek day = dt.DayOfWeek;
         switch (day) {
             case DayOfWeek.Monday:
                 loadMonday(dt);
+                tabDays.SelectedItem = tMonday;
                 break;
 
             case DayOfWeek.Tuesday:
                 loadMonday(dt - TimeSpan.FromDays(1));
+                tabDays.SelectedItem = tTuesday;
                 break;
 
             case DayOfWeek.Wednesday:
                 loadMonday(dt - TimeSpan.FromDays(2));
+                tabDays.SelectedItem = tWednesday;
                 break;
 
             case DayOfWeek.Thursday:
                 loadMonday(dt - TimeSpan.FromDays(3));
+                tabDays.SelectedItem = tThursday;
                 break;
 
             case DayOfWeek.Friday:
                 loadMonday(dt - TimeSpan.FromDays(4));
+                tabDays.SelectedItem = tFriday;
                 break;
 
             case DayOfWeek.Saturday:
                 loadMonday(dt - TimeSpan.FromDays(5));
+                tabDays.SelectedItem = tSaturday;
                 break;
 
             case DayOfWeek.Sunday:
                 loadMonday(dt - TimeSpan.FromDays(6));
+                tabDays.SelectedItem = tSunday;
                 break;
         }
     }

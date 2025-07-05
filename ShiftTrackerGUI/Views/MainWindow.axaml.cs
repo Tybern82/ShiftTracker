@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
+using ShiftTrackerGUI.ViewModels;
 
 namespace ShiftTrackerGUI.Views;
 
@@ -18,24 +20,19 @@ public partial class MainWindow : Window {
         this.Width = TrackerSettings.Instance.MainWindowPosition.Width;
         this.Height = TrackerSettings.Instance.MainWindowPosition.Height;
 
-        pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(DateTime.Now.Date) ?? new WorkShift(DateTime.Now);
-        pMainView.pShiftTimes.onSelectDate += (oldDate, newDate) => {
-            // Save the current date to the DB and load the new date record
-            WorkShift currShift = pMainView.pShiftTimes.ActiveShift;
-            pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(newDate) ?? new WorkShift(newDate);
-            currShift.CurrentDate = oldDate;
-            DBShiftTracker.Instance.save(currShift);
-        };
+        statusBarText.Text = TrackerSettings.Instance.VersionString;
 
         pMainView.pShiftTimes.onEditWeek += () => {
             DateTime currentDate = pMainView.pShiftTimes.fDateSelector.SelectedDate.HasValue ? pMainView.pShiftTimes.fDateSelector.SelectedDate.Value.Date : DateTime.Now.Date;
+            DBShiftTracker.Instance.save(pMainView.pShiftTimes.ActiveShift);    // save any current edits before trying to load
             ShiftWeekWindow dlgEditWeek = new(currentDate);
             // Reload the date from the current page once the dialog is closed
-            dlgEditWeek.Closed += (sender, args) => pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(currentDate) ?? new WorkShift(currentDate);
+            dlgEditWeek.Closed += (sender, args) => {
+                pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(currentDate) ?? new WorkShift(currentDate);
+                pMainView.ViewModel.ActiveShift = pMainView.pShiftTimes.ActiveShift;
+            };
             dlgEditWeek.ShowDialog(this);
         };
-
-        pMainView.pShiftTimes.addDefaultHandlers(); // add the standard commands that operate with the ActiveShift
 
         this.Closing += (sender, args) => {
             // Save the current date to the DB before we close

@@ -15,7 +15,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <!-- Don't miss this line -->
-        <!-- <ResourceInclude Source="/Controls/ShiftTimesControl.axaml" /> -->
+        <ResourceInclude Source="/Controls/NotesControl.axaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

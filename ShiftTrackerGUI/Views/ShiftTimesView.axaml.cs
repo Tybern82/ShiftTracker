@@ -12,6 +12,8 @@ public partial class ShiftTimesView : UserControl {
 
     public delegate void DateChangedEvent(DateTime oldDate, DateTime newDate);
 
+    public int MinuteIncrement { get; set; } = 5;
+
     public ShiftTimesView() {
         InitializeComponent();
 
@@ -80,6 +82,7 @@ public partial class ShiftTimesView : UserControl {
         }
 
         set {
+            value.matchState(ActiveShift);
             SetValue(ActiveShiftProperty, value);
             DataContext = value;
         }

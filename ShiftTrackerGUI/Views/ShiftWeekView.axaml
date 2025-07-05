@@ -11,26 +11,26 @@
       <DatePicker Margin="10" Padding="10" Name="dtSelectWeek" />
       <Button Name="btnCloseDialog" Content="Close" />
     </StackPanel>
-    <TabControl>
-      <TabItem Header="Monday">
+    <TabControl Name="tabDays">
+      <TabItem Header="Monday" Name="tMonday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftMonday" />
       </TabItem>
-      <TabItem Header="Tuesday">
+      <TabItem Header="Tuesday" Name="tTuesday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftTuesday" />
       </TabItem>
-      <TabItem Header="Wednesday">
+      <TabItem Header="Wednesday" Name="tWednesday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftWednesday" />
       </TabItem>
-      <TabItem Header="Thursday">
+      <TabItem Header="Thursday" Name="tThursday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftThursday" />
       </TabItem>
-      <TabItem Header="Friday">
+      <TabItem Header="Friday" Name="tFriday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftFriday" />
       </TabItem>
-      <TabItem Header="Saturday">
+      <TabItem Header="Saturday" Name="tSaturday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSaturday" />
       </TabItem>
-      <TabItem Header="Sunday">
+      <TabItem Header="Sunday" Name="tSunday">
         <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSunday" />
       </TabItem>
     </TabControl>

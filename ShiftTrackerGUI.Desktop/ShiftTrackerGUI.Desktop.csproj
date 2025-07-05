@@ -7,7 +7,11 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>ShiftTracker.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ShiftTracker.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />

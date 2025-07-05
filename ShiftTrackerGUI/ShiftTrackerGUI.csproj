@@ -29,8 +29,4 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </AvaloniaXaml>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
 </Project>

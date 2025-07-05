@@ -14,6 +14,8 @@ namespace com.tybern.ShiftTracker {
 
         public static TrackerSettings Instance = new TrackerSettings();
 
+        public string VersionString { get; } = "v2.0-pre1";
+
         private string _DBFile = DefaultDBFile;
         public string DBFile { 
             get {
@@ -31,6 +33,8 @@ namespace com.tybern.ShiftTracker {
 
         public SMTPRecord SMTP { get; set; } = new SMTPRecord();
         public WindowPosition MainWindowPosition { get; set; } = new WindowPosition();
+
+        public TimeSpan MeetingTime { get; set; } = TimeSpan.Zero;
 
         private SQLiteConnection? _DBConnection = null;
         public SQLiteConnection DBConnection {
@@ -76,6 +80,11 @@ namespace com.tybern.ShiftTracker {
                 JObject? windowPosition = configData.Value<JObject>(CONFIGKEY_WPOS);
                 if (windowPosition != null) MainWindowPosition = new WindowPosition(windowPosition);
             }
+
+            if (configData.ContainsKey(CONFIGKEY_MEET)) {
+                string? meetTime = configData.Value<string>(CONFIGKEY_MEET);
+                if (meetTime != null) MeetingTime = TimeSpan.Parse(meetTime);
+            }
         }
 
         private JObject encodeJSON() {
@@ -85,6 +94,7 @@ namespace com.tybern.ShiftTracker {
             _result.Add(CONFIGKEY_DBFILE, DBFile);
             _result.Add(CONFIGKEY_SMTP, SMTP.toJSON());
             _result.Add(CONFIGKEY_WPOS, MainWindowPosition.toJSON());
+            _result.Add(CONFIGKEY_MEET, MeetingTime.ToString(@"hh\:mm"));
 
             return _result;
         }
@@ -92,5 +102,6 @@ namespace com.tybern.ShiftTracker {
         private static readonly string CONFIGKEY_DBFILE = "DBFile";
         private static readonly string CONFIGKEY_SMTP = "SMTP";
         private static readonly string CONFIGKEY_WPOS = "WindowPosition";
+        private static readonly string CONFIGKEY_MEET = "MeetingTime";
     }
 }

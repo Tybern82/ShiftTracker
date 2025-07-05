@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.12.1" />
+    <PackageReference Include="MailKit" Version="4.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.5.0" />
+    <PackageReference Include="NLog" Version="6.0.1" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
     <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommandProcessor\CMDProcessor.csproj" />
+    <ProjectReference Include="..\StateMachine\StateMachine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

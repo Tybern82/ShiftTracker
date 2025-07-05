@@ -10,5 +10,12 @@
         Icon="/Assets/avalonia-logo.ico"        
         RequestedThemeVariant="Light"
         Title="ShiftTrackerGUI">
-        <views:MainView Name="pMainView" />
+  <Grid RowDefinitions="*,auto" ColumnDefinitions="*">
+    <ScrollViewer>
+      <views:MainView Name="pMainView" Grid.Row="0" Grid.Column="0" />
+    </ScrollViewer>
+    <Grid Name="statusPanel" RowDefinitions="*" ColumnDefinitions="*" Grid.Row="1" Grid.Column="0">
+      <TextBox Name="statusBarText" IsEnabled="False" Height="20" TextAlignment="Right" Grid.Row="0" Grid.Column="0" /> 
+    </Grid>
+  </Grid>
 </Window>

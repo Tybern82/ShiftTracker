@@ -1,10 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 
 namespace com.tybern.ShiftTracker.data {
+    public enum WorkShiftState {
+        [Description("Offline")]
+        Offline,
+
+        [Description("In Calls")]
+        InCalls,
+
+        [Description("In Break")]
+        OnBreak 
+    }
+
     public class WorkShift : INotifyPropertyChanged, IComparable<WorkShift> {
 
         public static readonly TimeSpan BREAK_LENGTH = TimeSpan.FromMinutes(15);
@@ -38,6 +50,78 @@ namespace com.tybern.ShiftTracker.data {
 
         public WorkShift(DateTime dt) {
             CurrentDate = dt;
+
+            NextBreak = GetNextBreak(LastBreak);
+        }
+
+        public WorkBreak? NextBreak { get; private set; }
+        public WorkBreak? LastBreak { get; private set; }
+
+        public WorkShiftState Status { get; private set; } = WorkShiftState.Offline;
+
+        public void doStartShift() {
+            Status = WorkShiftState.InCalls;
+            if (NextBreak == null) NextBreak = GetNextBreak(LastBreak);
+        }
+
+        public void doEndShift() {
+            Status = WorkShiftState.Offline;
+        }
+
+        public void doEndBreak() {
+            Status = WorkShiftState.InCalls;
+        }
+
+        public void matchState(WorkShift other) {
+            this.LastBreak = other.LastBreak;
+            this.Status = other.Status;
+            this.NextBreak = GetNextBreak(LastBreak);
+        }
+
+        public SortedSet<WorkBreak> doStartBreak() {
+            Status = WorkShiftState.OnBreak;
+            SortedSet<WorkBreak> _result = new SortedSet<WorkBreak>();
+
+            TimeSpan currTime = DateTime.Now.TimeOfDay;
+
+            WorkBreak? lastFound = NextBreak;
+            TimeSpan breakLength = (NextBreak is null) ? TimeSpan.Zero : NextBreak.Length;
+            LastBreak = NextBreak;
+            if (!(NextBreak is null)) _result.Add(NextBreak);
+
+            while (lastFound != null) {
+                WorkBreak? nextBreak = GetNextBreak(lastFound);
+                lastFound = null; NextBreak = nextBreak;
+                if (nextBreak != null) {
+                    if (nextBreak.StartTime <= (currTime + breakLength + TimeSpan.FromMinutes(5))) {    // automatically merge breaks when consecutive, or within 5 minutes of each other
+                        // found extra break to add
+                        _result.Add(nextBreak);
+                        breakLength += nextBreak.Length;
+                        LastBreak = lastFound;
+                        lastFound = nextBreak;
+                    }
+                }
+            }
+            // NextBreak should be left set to the last break identified, that was not added into the list (or null if no more breaks left); LastBreak should be left with either previous NextBreak, or the last break of this block (if more than one) 
+
+            return _result;
+        }
+
+        private WorkBreak? GetNextBreak(WorkBreak? currBreak) {
+            SortedSet<WorkBreak> BreakSet = new SortedSet<WorkBreak>();
+            foreach (WorkBreak brk in Breaks) if (typeIn(brk.Type, new[] { BreakType.ShiftBreak, BreakType.LunchBreak, BreakType.Coaching, BreakType.Training })) BreakSet.Add(brk);
+            if (BreakSet.Count == 0) return null;         // no breaks in list - nothing to return
+            var breakSet = BreakSet.ToImmutableSortedSet<WorkBreak>();
+            if (currBreak == null) return breakSet[0];  // no current break, just return the first
+            int currIndex = breakSet.IndexOf(currBreak);
+            if (currIndex < 0) return null;             // current break not found in set
+            return (currIndex + 1 < breakSet.Count) ? breakSet[currIndex + 1] : null;   // return the next break if there is one
+        }
+
+        private bool typeIn(BreakType type, BreakType[] list) {
+            foreach (BreakType t in list)
+                if (type == t) return true;
+            return false;
         }
 
         public void doAddBreak() {
@@ -52,7 +136,9 @@ namespace com.tybern.ShiftTracker.data {
             Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.StartTime + TimeSpan.FromMinutes(15) });
             Breaks.Add(new WorkBreak() { Type = BreakType.LunchBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(15), EndTime = this.StartTime + TimeSpan.FromMinutes(30) });
             Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(30), EndTime = this.StartTime + TimeSpan.FromMinutes(45) });
-            Breaks.Add(new WorkBreak() { Type = BreakType.Meeting, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(45), EndTime = this.StartTime + TimeSpan.FromMinutes(60) });
+
+            if (!(CurrentDate.DayOfWeek == DayOfWeek.Saturday || CurrentDate.DayOfWeek == DayOfWeek.Sunday))    // only add Meeting to shifts on Mon-Fri (ie not Sat/Sun)
+                Breaks.Add(new WorkBreak() { Type = BreakType.Meeting, CurrentDate = this.CurrentDate, StartTime = TrackerSettings.Instance.MeetingTime, EndTime = TrackerSettings.Instance.MeetingTime + TimeSpan.FromMinutes(15) });
         }
 
         public void doAddAllDayBreak() {

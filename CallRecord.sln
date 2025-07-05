@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrackerGUI", "ShiftTra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrackerGUI.Desktop", "ShiftTrackerGUI.Desktop\ShiftTrackerGUI.Desktop.csproj", "{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMachine", "StateMachine\StateMachine.csproj", "{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
