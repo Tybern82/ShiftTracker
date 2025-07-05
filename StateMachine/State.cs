@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StateMachineCore {
+namespace StateMachine {
     public class State {
 
         public delegate void StateEvent(State s, object? param);
 
         public event StateEvent? inState;
+        public event StateEvent? enterState;
+        public event StateEvent? leaveState;
 
         private static int NEXT_ID = 0;
         private static Dictionary<string,State> states = new Dictionary<string,State>();
@@ -16,6 +18,14 @@ namespace StateMachineCore {
 
         private State(string stateName) {
             StateName = stateName;
+        }
+
+        public void doEnterState() {
+            enterState?.Invoke(this, null);
+        }
+
+        public void doLeaveState() {
+            leaveState?.Invoke(this, null);
         }
 
         public void triggerEvent(object? param) {

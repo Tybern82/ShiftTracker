@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
 using ShiftTrackerGUI.ViewModels;
-using StateMachineCore;
+using StateMachine;
 
 namespace ShiftTrackerGUI.Views;
 
@@ -31,24 +31,24 @@ public partial class MainView : UserControl {
 
         pShiftTimes.addDefaultHandlers(); // add the standard commands that operate with the ActiveShift
 
-        pShiftControls.onShiftStart += () => {
-            ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_INCALLS));
+        pShiftControls.onShiftStart += () => ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_INCALLS));
+        State.getState(MainViewModel.SHIFT_INCALLS).enterState += (s, param) => {
             pShiftTimes.ActiveShift.doStartShift();
             pShiftControls.EnableButtons(pShiftTimes.ActiveShift.NextBreak != null ? ShiftControlsView.ShiftControls.InCalls : ShiftControlsView.ShiftControls.ShiftEnd);
         };
 
-        pShiftControls.onShiftEnd += () => {
-            ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_OFFLINE));
+        pShiftControls.onShiftEnd += () => ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_OFFLINE));
+        State.getState(MainViewModel.SHIFT_OFFLINE).enterState += (s, param) => {
             pShiftTimes.ActiveShift.doEndShift();
             pShiftControls.EnableButtons(ShiftControlsView.ShiftControls.Initial);
         };
 
-        pShiftControls.onBreakStart += () => {
+        pShiftControls.onBreakStart += () => ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_INBREAK));
+        State.getState(MainViewModel.SHIFT_INBREAK).enterState += (s, param) => {
             ViewModel.CurrentBreak.Clear();
             ViewModel.BreakStartTime = DateTime.Now.TimeOfDay;
             SortedSet<WorkBreak> breaks = pShiftTimes.ActiveShift.doStartBreak();
             foreach (WorkBreak b in breaks) ViewModel.CurrentBreak.Add(b);
-            ViewModel.shiftState.gotoState(State.getState(MainViewModel.SHIFT_INBREAK));
             pShiftControls.EnableButtons(ShiftControlsView.ShiftControls.InBreak);
         };
 

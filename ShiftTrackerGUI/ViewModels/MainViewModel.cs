@@ -4,7 +4,7 @@ using System.ComponentModel;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
-using StateMachineCore;
+using StateMachine;
 
 namespace ShiftTrackerGUI.ViewModels;
 
@@ -31,7 +31,9 @@ public class MainViewModel : ViewModelBase, INotifyPropertyChanged {
     public SortedSet<WorkBreak> CurrentBreak = new SortedSet<WorkBreak>();
     public TimeSpan BreakStartTime = TimeSpan.Zero;
 
-    public StateMachine shiftState { get; private set; }
+    public StateManager shiftState { get; private set; }
+
+    public WorkShift ActiveShift { get; set; } = new WorkShift(DateTime.Now);
 
     public static readonly string SHIFT_OFFLINE = "Shift-Offline";
     public static readonly string SHIFT_INCALLS = "Shift-InCalls";
@@ -43,7 +45,7 @@ public class MainViewModel : ViewModelBase, INotifyPropertyChanged {
         State inBreak = State.getState(SHIFT_INBREAK);
 
         // Offline <-> InCalls <=> InBreak
-        shiftState = new StateMachine(offline)
+        shiftState = new StateManager(offline)
             .add(offline, inCalls, false)
             .add(inCalls, inBreak, false);
 
@@ -89,8 +91,6 @@ public class MainViewModel : ViewModelBase, INotifyPropertyChanged {
     private TimeSpan decodeStateParam(object? param) => (param == null) ? DateTime.Now.TimeOfDay : ((DateTime)param).TimeOfDay;
 
     public static string toShortTimeString(TimeSpan timeSpan) => (timeSpan.TotalHours > 1) ? timeSpan.ToString(@"hh\:mm\:ss") : timeSpan.ToString(@"mm\:ss");
-
-    public WorkShift ActiveShift { get; set; } = new WorkShift(DateTime.Now);
 
     public new event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void onPropertyChanged(string propertyName) =>

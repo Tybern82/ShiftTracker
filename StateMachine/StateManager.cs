@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace StateMachineCore {
-    public class StateMachine {
+namespace StateMachine {
+    public class StateManager {
 
         protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
-        public delegate void StateMachineEvent(StateMachine m, object? obj);
+        public delegate void StateMachineEvent(StateManager m, object? obj);
 
         public event StateMachineEvent? SMEvent;
 
@@ -26,7 +26,7 @@ namespace StateMachineCore {
         private static int NEXTID = 0;
         private int SMID = NEXTID++;
 
-        public StateMachine(State initialState, bool addDefault = true) {
+        public StateManager(State initialState, bool addDefault = true) {
             this.CurrentState = initialState;
             this.States.Add(initialState);
             if (addDefault) addDefaultEvent();
@@ -36,7 +36,7 @@ namespace StateMachineCore {
             SMEvent += _callStateEvent;
         }
 
-        private void _callStateEvent(StateMachine sm, object? param) {
+        private void _callStateEvent(StateManager sm, object? param) {
             sm.CurrentState.triggerEvent(param);
         }
 
@@ -47,7 +47,7 @@ namespace StateMachineCore {
             }
         }
 
-        public StateMachine add(State initial, State final, bool directional = true) {
+        public StateManager add(State initial, State final, bool directional = true) {
             // Add the given states if they're not already present in the set
             if (!States.Contains(initial)) States.Add(initial);
             if (!States.Contains(final)) States.Add(final);
@@ -62,8 +62,10 @@ namespace StateMachineCore {
             isTransition = true;
             Transition? t = getTransition(CurrentState, newState);
             if (t != null) {
+                CurrentState.doLeaveState();
                 CurrentState = newState;
                 t.triggerTransition();
+                newState.doEnterState();
             }
             isTransition = false;
             return (t != null);

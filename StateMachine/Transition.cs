@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace StateMachineCore {
+namespace StateMachine {
     public class Transition {
 
         public delegate void TransitionEvent(State initial, State final);
