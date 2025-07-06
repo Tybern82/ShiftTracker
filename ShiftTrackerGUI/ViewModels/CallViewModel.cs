@@ -26,8 +26,9 @@ namespace ShiftTrackerGUI.ViewModels {
             callState = new StateManager(callWaiting)
                 .add(callWaiting, callActive)           // Waiting  => Active
                 .add(callActive, callInWrap, false)     // Active  <=> Wrap
-                .add(callActive, callTransfer)          // Active   => Transfer
                 .add(callTransfer, callInWrap)          // Transfer => Wrap
+                .add(callActive, callTransfer)          // Active   => Transfer
+                .add(callWaiting, callSME)              // Waiting  => SME
                 .add(callActive, callSME, false)        // Active  <=> SME
                 .add(callInWrap, callSME, false);       // Wrap    <=> SME
         }

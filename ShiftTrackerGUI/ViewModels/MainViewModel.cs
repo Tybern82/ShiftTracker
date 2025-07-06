@@ -79,7 +79,9 @@ public class MainViewModel : ViewModelBase, INotifyPropertyChanged {
             : ((currTime < ActiveShift.NextBreak.StartTime) ? toShortTimeString(ActiveShift.NextBreak.StartTime - currTime) : ("<" + toShortTimeString(currTime - ActiveShift.NextBreak.StartTime) + ">"));
 
     private string offlineEOSTimerText(TimeSpan currTime) => (currTime < ActiveShift.EndTime) ? toShortTimeString(ActiveShift.EndTime - currTime) : "OFFLINE";
-    private string onlineEOSTimerText(TimeSpan currTime) => (currTime < ActiveShift.EndTime) ? toShortTimeString(ActiveShift.EndTime - currTime) : "EOS";
+    private string onlineEOSTimerText(TimeSpan currTime) => ((ActiveShift.NextBreak == null) && (currTime >= ActiveShift.StartTime)) 
+        ? "EOS" // mark as EOS if after start of shift, and no further breaks present on shift
+        : ((currTime < ActiveShift.EndTime) ? toShortTimeString(ActiveShift.EndTime - currTime) : "EOS");
 
     private string breakText(TimeSpan currTime) {
         TimeSpan breakRemaining = (CurrentBreak.Count == 0) ? TimeSpan.Zero : (WorkBreak.GetTotalLength(CurrentBreak) - (currTime - BreakStartTime));

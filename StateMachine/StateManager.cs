@@ -29,6 +29,7 @@ namespace StateMachine {
         public StateManager(State initialState, bool addDefault = true) {
             this.CurrentState = initialState;
             this.States.Add(initialState);
+            initialState.doEnterState();
             if (addDefault) addDefaultEvent();
         }
 
