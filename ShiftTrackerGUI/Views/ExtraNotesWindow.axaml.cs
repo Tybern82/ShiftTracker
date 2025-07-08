@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
+using com.tybern.ShiftTracker.data;
 using ShiftTrackerGUI.ViewModels;
 
 namespace ShiftTrackerGUI;

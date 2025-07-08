@@ -26,4 +26,46 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <PropertyGroup Label="UserDefinedVariables">
+
+    <!-- Get Windows SDK root folder-->
+
+    <WindowsKitsRoot>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots', 'KitsRoot10', null, RegistryView.Registry32, RegistryView.Default))</WindowsKitsRoot>
+    <WindowsKitsRoot Condition="'$(WindowsKitsRoot)' == ''">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots', 'KitsRoot81', null, RegistryView.Registry32, RegistryView.Default))</WindowsKitsRoot>
+    <WindowsKitsRoot Condition="'$(WindowsKitsRoot)' == ''">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots', 'KitsRoot', null, RegistryView.Registry32, RegistryView.Default))</WindowsKitsRoot>
+
+    <!-- Evaluates the most recent Windows SDK folder containing SignTool.exe -->
+
+    <!-- add new versions here, duplicating following line -->
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.26100.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.26100.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.22621.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.22621.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.18362.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.18362.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.17763.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.17763.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.17134.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.17134.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.16299.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.16299.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.15063.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.15063.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And exists('$(WindowsKitsRoot)bin\10.0.14393.0\x64\Signtool.exe')">$(WindowsKitsRoot)bin\10.0.14393.0\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == '' And '$(Platform)' == 'AnyCPU' ">$(WindowsKitsRoot)bin\x64\</SignToolFolder>
+    <SignToolFolder Condition="'$(SignToolFolder)' == ''">$(WindowsKitsRoot)bin\$(Platform)\</SignToolFolder>
+
+    <!-- Now we should be able to calculate SignTool.exe fullpath -->
+
+    <SignToolExe Condition=" '$(SignToolFolder)' != '' ">$(SignToolFolder)SignTool.exe</SignToolExe>
+
+  </PropertyGroup>
+
+
+  <!-- Finally, I would suggest you add the following lines to your project file because they will be quite usefull when things go wrong (and they will) -->
+
+  <!-- Send indivual compile bessages to MSBuild output so you check the value of each variable -->
+  <Target Name="ShowUserDefinedVariables" BeforeTargets="BeforeBuild" Condition="$(ConfigurationName) == Release">
+    <Message Importance="high" Text="Platform = $(Platform)" />
+    <Message Importance="High" Text="WindowsKitsRoot = $(WindowsKitsRoot)" />
+    <Message Importance="High" Text="SignToolFolder = $(SignToolFolder)" />
+    <Message Importance="High" Text="SignToolExe = $(SignToolExe)" />
+  </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(SignToolExe)&quot; sign /a /t http://timestamp.sectigo.com /fd SHA384 &quot;$(TargetPath)&quot;"  Condition="$(ConfigurationName) == Release"/>
+    <!-- <Exec Command="&quot;$(SignToolExe)&quot; sign /n &quot;Jeff Sweeney&quot; /a /t http://timestamp.sectigo.com /fd SHA384 &quot;$(TargetPath)&quot;"  Condition="$(ConfigurationName) == Release"/> -->
+  </Target>
 </Project>

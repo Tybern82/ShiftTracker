@@ -20,12 +20,12 @@ namespace StateMachine {
             StateName = stateName;
         }
 
-        public void doEnterState() {
-            enterState?.Invoke(this, null);
+        public void doEnterState(State? oldState) {
+            enterState?.Invoke(this, oldState);
         }
 
-        public void doLeaveState() {
-            leaveState?.Invoke(this, null);
+        public void doLeaveState(State? newState) {
+            leaveState?.Invoke(this, newState);
         }
 
         public void triggerEvent(object? param) {

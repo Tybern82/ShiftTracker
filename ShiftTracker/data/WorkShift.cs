@@ -75,7 +75,7 @@ namespace com.tybern.ShiftTracker.data {
         public void matchState(WorkShift other) {
             this.LastBreak = other.LastBreak;
             this.Status = other.Status;
-            this.NextBreak = GetNextBreak(LastBreak);
+            this.NextBreak = GetNextBreak(LastBreak);   // recalculate NextBreak as this may have changed
         }
 
         public SortedSet<WorkBreak> doStartBreak() {
@@ -109,7 +109,7 @@ namespace com.tybern.ShiftTracker.data {
 
         private WorkBreak? GetNextBreak(WorkBreak? currBreak) {
             SortedSet<WorkBreak> BreakSet = new SortedSet<WorkBreak>();
-            foreach (WorkBreak brk in Breaks) if (typeIn(brk.Type, new[] { BreakType.ShiftBreak, BreakType.LunchBreak, BreakType.Coaching, BreakType.Training })) BreakSet.Add(brk);
+            foreach (WorkBreak brk in Breaks) if (typeIn(brk.Type, new[] { BreakType.ShiftBreak, BreakType.LunchBreak, BreakType.Meeting, BreakType.Coaching, BreakType.Training })) BreakSet.Add(brk);
             if (BreakSet.Count == 0) return null;         // no breaks in list - nothing to return
             var breakSet = BreakSet.ToImmutableSortedSet<WorkBreak>();
             if (currBreak == null) return breakSet[0];  // no current break, just return the first
@@ -126,19 +126,23 @@ namespace com.tybern.ShiftTracker.data {
 
         public void doAddBreak() {
             Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.StartTime });
+            this.NextBreak = GetNextBreak(LastBreak);   // recalculate NextBreak as this may have changed
         }
 
         public void doRemoveBreak(WorkBreak brk) {
             Breaks.Remove(brk);
+            this.NextBreak = GetNextBreak(LastBreak);   // recalculate NextBreak as this may have changed
         }
 
         public void doAddStandardBreaks() {
-            Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.StartTime + TimeSpan.FromMinutes(15) });
-            Breaks.Add(new WorkBreak() { Type = BreakType.LunchBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(15), EndTime = this.StartTime + TimeSpan.FromMinutes(30) });
-            Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromMinutes(30), EndTime = this.StartTime + TimeSpan.FromMinutes(45) });
+            Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.StartTime + BREAK_LENGTH });
+            Breaks.Add(new WorkBreak() { Type = BreakType.LunchBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + BREAK_LENGTH, EndTime = this.StartTime + BREAK_LENGTH + LUNCH_LENGTH });
+            Breaks.Add(new WorkBreak() { Type = BreakType.ShiftBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + BREAK_LENGTH + LUNCH_LENGTH, EndTime = this.StartTime + BREAK_LENGTH + LUNCH_LENGTH + BREAK_LENGTH });
 
             if (!(CurrentDate.DayOfWeek == DayOfWeek.Saturday || CurrentDate.DayOfWeek == DayOfWeek.Sunday))    // only add Meeting to shifts on Mon-Fri (ie not Sat/Sun)
-                Breaks.Add(new WorkBreak() { Type = BreakType.Meeting, CurrentDate = this.CurrentDate, StartTime = TrackerSettings.Instance.MeetingTime, EndTime = TrackerSettings.Instance.MeetingTime + TimeSpan.FromMinutes(15) });
+                if ((this.StartTime <= TrackerSettings.Instance.MeetingTime) && (this.EndTime >= TrackerSettings.Instance.MeetingTime + MEET_LENGTH))  // only add Meeting if it will fall within the current shift
+                    Breaks.Add(new WorkBreak() { Type = BreakType.Meeting, CurrentDate = this.CurrentDate, StartTime = TrackerSettings.Instance.MeetingTime, EndTime = TrackerSettings.Instance.MeetingTime + MEET_LENGTH });
+            this.NextBreak = GetNextBreak(LastBreak);   // recalculate NextBreak as this may have changed
         }
 
         public void doAddAllDayBreak() {

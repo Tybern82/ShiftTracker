@@ -1,0 +1,23 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:ShiftTrackerGUI.Controls">  
+  <Design.PreviewWith>
+    <StackPanel Width="150" Spacing="10">      
+        <StackPanel Background="{DynamicResource SystemRegionBrush}">
+          <controls:SegmentTimer />
+        </StackPanel>
+    </StackPanel>
+  </Design.PreviewWith>
+ 
+  <ControlTheme x:Key="{x:Type controls:SegmentTimer}" TargetType="controls:SegmentTimer">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <TextBlock 
+            FontSize="24" 
+            HorizontalAlignment="Center" 
+            Text="{Binding TimerText, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, StringFormat='hh\\:mm\\:ss'}" 
+        />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

@@ -22,5 +22,7 @@ namespace com.tybern.ShiftTracker {
         public ClockTimer() {
             _clockTimer = new Timer(doClockUpdate, this, 2000, 1000);
         }
+
+        public static string toShortTimeString(TimeSpan timeSpan) => (timeSpan.TotalHours > 1) ? timeSpan.ToString(@"hh\:mm\:ss") : timeSpan.ToString(@"mm\:ss");
     }
 }

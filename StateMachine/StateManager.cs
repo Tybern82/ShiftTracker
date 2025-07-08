@@ -29,7 +29,7 @@ namespace StateMachine {
         public StateManager(State initialState, bool addDefault = true) {
             this.CurrentState = initialState;
             this.States.Add(initialState);
-            initialState.doEnterState();
+            initialState.doEnterState(null);
             if (addDefault) addDefaultEvent();
         }
 
@@ -43,7 +43,6 @@ namespace StateMachine {
 
         public void triggerEvent(object? param) {
             if (!isTransition) {
-                LOG.Info("Invoking <" + SMID + ">: " + CurrentState);
                 SMEvent?.Invoke(this, param);
             }
         }
@@ -63,10 +62,11 @@ namespace StateMachine {
             isTransition = true;
             Transition? t = getTransition(CurrentState, newState);
             if (t != null) {
-                CurrentState.doLeaveState();
+                State oldState = CurrentState;
+                CurrentState.doLeaveState(newState);
                 CurrentState = newState;
                 t.triggerTransition();
-                newState.doEnterState();
+                newState.doEnterState(oldState);
             }
             isTransition = false;
             return (t != null);

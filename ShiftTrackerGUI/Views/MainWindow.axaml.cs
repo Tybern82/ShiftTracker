@@ -5,6 +5,7 @@ using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
 using ShiftTrackerGUI.ViewModels;
+using StateMachine;
 
 namespace ShiftTrackerGUI.Views;
 
@@ -16,9 +17,7 @@ public partial class MainWindow : Window {
 
         TrackerSettings.Instance.loadConfigFile();
 
-        this.Position = new Avalonia.PixelPoint(TrackerSettings.Instance.MainWindowPosition.PositionX, TrackerSettings.Instance.MainWindowPosition.PositionY);
-        this.Width = TrackerSettings.Instance.MainWindowPosition.Width;
-        this.Height = TrackerSettings.Instance.MainWindowPosition.Height;
+        Utility.setPosition(this, TrackerSettings.Instance.MainWindowPosition);
 
         statusBarText.Text = TrackerSettings.Instance.VersionString;
 
@@ -29,9 +28,21 @@ public partial class MainWindow : Window {
             // Reload the date from the current page once the dialog is closed
             dlgEditWeek.Closed += (sender, args) => {
                 pMainView.pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(currentDate) ?? new WorkShift(currentDate);
-                pMainView.ViewModel.ActiveShift = pMainView.pShiftTimes.ActiveShift;
+                pMainView.ViewModel.ShiftState.ActiveShift = pMainView.pShiftTimes.ActiveShift;
             };
             dlgEditWeek.ShowDialog(this);
+        };
+
+        State.getState(CallSM.CALL_SME).enterState += (s, param) => {
+            SMECallWindow wndSMECall = new SMECallWindow(pMainView.ViewModel.CallState);    // link to common notes
+
+            State nextState = ((param != null) && (param is State)) ? (State)param : State.getState(CallSM.CALL_WAITING);   // should always be non-null, but default return to Waiting
+
+            wndSMECall.Closed += (sender, args) => {
+                pMainView.ViewModel.CallState.callState.gotoState(nextState);   // change state when closing SME call window
+            };
+
+            wndSMECall.ShowDialog(this);
         };
 
         this.Closing += (sender, args) => {

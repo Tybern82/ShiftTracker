@@ -34,6 +34,8 @@ namespace com.tybern.ShiftTracker {
         public SMTPRecord SMTP { get; set; } = new SMTPRecord();
         public WindowPosition MainWindowPosition { get; set; } = new WindowPosition();
 
+        private Dictionary<string, WindowPosition> savedWindows { get; set; } = new Dictionary<string, WindowPosition>();
+
         public TimeSpan MeetingTime { get; set; } = TimeSpan.Zero;
 
         private SQLiteConnection? _DBConnection = null;
@@ -42,6 +44,16 @@ namespace com.tybern.ShiftTracker {
                 if (_DBConnection == null) _DBConnection = new SQLiteConnection(DBFile, storeDateTimeAsTicks: false);
                 return _DBConnection;
             }
+        }
+
+        public void saveWindow(string name, WindowPosition position) {
+            savedWindows[name] = position;
+        }
+
+        public WindowPosition? loadWindow(string name) {
+            try {
+                return savedWindows[name];
+            } catch (KeyNotFoundException) { return null; }
         }
 
         public void loadConfigFile() {
@@ -81,6 +93,19 @@ namespace com.tybern.ShiftTracker {
                 if (windowPosition != null) MainWindowPosition = new WindowPosition(windowPosition);
             }
 
+            if (configData.ContainsKey(CONFIGKEY_AWPS)) {
+                JArray? additionalWindows = configData.Value<JArray>(CONFIGKEY_AWPS);
+                if (additionalWindows != null) {
+                    foreach (JObject wnd in additionalWindows) {
+                        WindowPosition wPos = new WindowPosition(wnd);
+                        string? name = wnd.Value<string>(CONFIGKEY_WPOS_NAME);
+                        if (name != null) {
+                            savedWindows[name] = wPos;
+                        }
+                    }
+                }
+            }
+
             if (configData.ContainsKey(CONFIGKEY_MEET)) {
                 string? meetTime = configData.Value<string>(CONFIGKEY_MEET);
                 if (meetTime != null) MeetingTime = TimeSpan.Parse(meetTime);
@@ -96,12 +121,25 @@ namespace com.tybern.ShiftTracker {
             _result.Add(CONFIGKEY_WPOS, MainWindowPosition.toJSON());
             _result.Add(CONFIGKEY_MEET, MeetingTime.ToString(@"hh\:mm"));
 
+            if (savedWindows.Count > 0) {
+                JArray additionalWindows = new JArray();
+                foreach (string s in savedWindows.Keys) {
+                    WindowPosition wPos = savedWindows[s];
+                    JObject wnd = wPos.toJSON();
+                    wnd.Add(CONFIGKEY_WPOS_NAME, s);
+                    additionalWindows.Add(wnd);
+                }
+                _result.Add(CONFIGKEY_AWPS, additionalWindows);
+            }
+
             return _result;
         }
 
         private static readonly string CONFIGKEY_DBFILE = "DBFile";
         private static readonly string CONFIGKEY_SMTP = "SMTP";
         private static readonly string CONFIGKEY_WPOS = "WindowPosition";
+        private static readonly string CONFIGKEY_AWPS = "AdditionalWindows";
+        private static readonly string CONFIGKEY_WPOS_NAME = "Name";
         private static readonly string CONFIGKEY_MEET = "MeetingTime";
     }
 }
