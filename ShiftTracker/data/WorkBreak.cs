@@ -3,40 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using com.tybern.ShiftTracker.enums;
 using SQLite.Net2;
 
 namespace com.tybern.ShiftTracker.data {
-    public enum BreakType {
-        [Description("Break")]
-        ShiftBreak,
-
-        [Description("Lunch Break")]
-        LunchBreak,
-
-        [Description("Meeting")]
-        Meeting,
-
-        [Description("Training")]
-        Training,
-
-        [Description("Coaching Session")]
-        Coaching,
-
-        [Description("Fault / System Issue")]
-        SystemIssue,
-
-        [Description("Personal / Sick Leave")]
-        PersonalLeave,
-
-        [Description("Unpaid Leave")]
-        UnpaidLeave,
-
-        [Description("Public Holiday")]
-        PublicHoliday,
-
-        [Description("Annual Leave")]
-        AnnualLeave
-    };
 
     public class WorkBreak : INotifyPropertyChanged, IComparable<WorkBreak> {
 

@@ -13,8 +13,7 @@
     <Setter Property="Template">
       <ControlTemplate>
         <TextBlock 
-            FontSize="24" 
-            HorizontalAlignment="Center" 
+            Classes="MainWindowTitle"
             Text="{Binding TimerText, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, StringFormat='hh\\:mm\\:ss'}" 
         />
       </ControlTemplate>

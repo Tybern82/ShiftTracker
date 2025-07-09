@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using com.tybern.ShiftTracker.enums;
 
 namespace com.tybern.ShiftTracker.data {
     public enum WorkShiftState {
@@ -57,29 +58,20 @@ namespace com.tybern.ShiftTracker.data {
         public WorkBreak? NextBreak { get; private set; }
         public WorkBreak? LastBreak { get; private set; }
 
-        public WorkShiftState Status { get; private set; } = WorkShiftState.Offline;
-
         public void doStartShift() {
-            Status = WorkShiftState.InCalls;
             if (NextBreak == null) NextBreak = GetNextBreak(LastBreak);
         }
 
-        public void doEndShift() {
-            Status = WorkShiftState.Offline;
-        }
+        public void doEndShift() {}
 
-        public void doEndBreak() {
-            Status = WorkShiftState.InCalls;
-        }
+        public void doEndBreak() {}
 
         public void matchState(WorkShift other) {
             this.LastBreak = other.LastBreak;
-            this.Status = other.Status;
             this.NextBreak = GetNextBreak(LastBreak);   // recalculate NextBreak as this may have changed
         }
 
         public SortedSet<WorkBreak> doStartBreak() {
-            Status = WorkShiftState.OnBreak;
             SortedSet<WorkBreak> _result = new SortedSet<WorkBreak>();
 
             TimeSpan currTime = DateTime.Now.TimeOfDay;

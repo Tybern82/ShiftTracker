@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:ShiftTrackerGUI.ViewModels"
              xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
              xmlns:view="clr-namespace:ShiftTrackerGUI"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1000"
              x:Class="ShiftTrackerGUI.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -16,8 +16,7 @@
   <TabControl Grid.Row="0" Grid.Column="1" >
     <TabItem Header="Call">
       <StackPanel>
-        <view:CallControlsView Name="pCallControls" Width="450" Height="120" />
-        <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
+        <view:CurrentTimeView Name="pCurrentTime" />
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
           <TextBlock Name="fBreakTimer" Text="{Binding ShiftState.BreakTimerText}" FontSize="18" FontFamily="Lato" />
           <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
@@ -25,6 +24,10 @@
           <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
           <TextBlock Name="fEOSTimer" Text="{Binding ShiftState.EOSTimerText}" FontSize="18" FontFamily="Lato" />
         </StackPanel>
+        <view:CallControlsView Name="pCallControls" Width="450" Height="120" />
+        <view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" />
+        <view:NoteControlsView Name="pNoteControls" Width="450" Height="120" />
+        <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
         <Separator Margin="20" />
         <Separator Margin="20" />
         <controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" />

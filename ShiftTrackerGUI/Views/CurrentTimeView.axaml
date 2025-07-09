@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ShiftTrackerGUI.ViewModels;assembly=ShiftTrackerGUI"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="70"
+             x:DataType="vm:CurrentTimeModel"
+             x:Class="ShiftTrackerGUI.CurrentTimeView">
+  <Design.DataContext>
+    <vm:BasicCurrentTimeModel />
+  </Design.DataContext>
+  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+    <TextBlock Name="fDayOfWeek" Classes="MainWindowTitle" Text="{Binding CurrentTime, StringFormat='dddd'}" />
+    <TextBlock Name="fClock" Classes="MainWindowTitle" Text="{Binding CurrentTime, StringFormat='HH:mm:ss'}" />
+  </StackPanel>
+</UserControl>

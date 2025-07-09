@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using com.tybern.ShiftTracker.enums;
 
 namespace ShiftTrackerGUI;
 
@@ -13,21 +14,17 @@ public partial class SMECallView : UserControl {
 
     public event SMECallback? onSMEClose;
 
-    public enum SMECallType {
-        [Description("Systems / Program Access")]
-        Tools,
-
-        [Description("General Query")]
-        Query
-    }
-
     private bool isClosing = false;
 
     public SMECallView() {
         InitializeComponent();
 
         rSMETools.Content = com.tybern.ShiftTracker.EnumConverter.GetEnumDescription(SMECallType.Tools);
+        ToolTip.SetTip(rSMETools, com.tybern.ShiftTracker.EnumConverter.GetEnumTooltip(SMECallType.Tools));
+
         rSMEQuery.Content = com.tybern.ShiftTracker.EnumConverter.GetEnumDescription(SMECallType.Query);
+        ToolTip.SetTip(rSMEQuery, com.tybern.ShiftTracker.EnumConverter.GetEnumTooltip(SMECallType.Query));
+
 
         btnSaveSME.Click += (sender, args) => onSMEClose?.Invoke(((rSMETools.IsChecked == true) ? SMECallType.Tools : SMECallType.Query), tSMETime.TimerText, txtDetails.Text ?? string.Empty);
 

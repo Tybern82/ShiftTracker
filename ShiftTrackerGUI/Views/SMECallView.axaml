@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="520"
              x:Class="ShiftTrackerGUI.SMECallView">
   <Grid ColumnDefinitions="*,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-    <TextBlock Margin="10 5" FontSize="18" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">SME Request</TextBlock>
+    <TextBlock Classes="MainWindowTitle" TextAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">SME Request</TextBlock>
     <controls:SegmentTimer Name="tSMETime" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" />
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Add details and select "Save" when closing SME call - time will calculate automatically: </TextBlock>
     <Border Background="Gainsboro"

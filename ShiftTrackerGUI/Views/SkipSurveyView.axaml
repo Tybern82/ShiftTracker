@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:view="clr-namespace:ShiftTrackerGUI.Views;assembly=ShiftTrackerGUI"
+             xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="750"
+             x:Class="ShiftTrackerGUI.Views.SkipSurveyView">
+  <StackPanel>
+    <TextBlock Classes="MainWindowTitle">Skip Survey</TextBlock>
+    <TextBlock Classes="MainWindowLabel" HorizontalAlignment="Left">Identify reason for skipping survey prompt to customer:</TextBlock>
+    <HeaderedContentControl Classes="GroupBox" Header="Reason">
+      <StackPanel>
+        <RadioButton GroupName="rgpSkipSurvey" Name="rSurveyRequested" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rCallback" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rAgent" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rNonTelstra" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rNonFaults" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rTransfer" />
+        <RadioButton GroupName="rgpSkipSurvey" Name="rUnspecified" />
+        <controls:NotesControl Title="Details" Name="pNotes" />
+      </StackPanel>
+    </HeaderedContentControl>
+  <Button HorizontalAlignment="Center" Margin="10" Padding="10" Grid.Row="3" Grid.Column="2" Name="btnSaveSurvey">Save</Button>
+    </StackPanel>
+</UserControl>

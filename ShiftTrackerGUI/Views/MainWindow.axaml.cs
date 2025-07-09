@@ -33,6 +33,47 @@ public partial class MainWindow : Window {
             dlgEditWeek.ShowDialog(this);
         };
 
+        pMainView.pExtraControls.onAddNote += () => {
+            ExtraNotesWindow wndNotes = new ExtraNotesWindow();
+            wndNotes.onCancel += () => {
+                // Just close - don't save
+                wndNotes.Close();
+            };
+            wndNotes.onSave += (notes) => {
+                NoteRecord nr = new NoteRecord(DateTime.Now) {NoteContent = notes};
+                DBShiftTracker.Instance.save(nr);
+                wndNotes.Close();
+            };
+            wndNotes.ShowDialog(this);
+        };
+
+        pMainView.pExtraControls.onSkipSurvey += () => {
+            SkipSurveyWindow wndSkipSurvey = new SkipSurveyWindow();
+            wndSkipSurvey.vSkipSurvey.onSkipSurvey += (reason) => {
+                if (pMainView.ViewModel.CallState.CurrentCall != null) {
+                    pMainView.ViewModel.CallState.CurrentCall.Survey = reason;
+                    LOG.Info("Update Survey: " + reason.ToString());
+                }
+            };
+            wndSkipSurvey.vSkipSurvey.onSave += () => {
+                pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
+                wndSkipSurvey.Close();
+            };
+            wndSkipSurvey.ShowDialog(this);
+        };
+
+        Transition? endCall = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_INWRAP), State.getState(CallSM.CALL_WAITING));
+        if (endCall != null) {
+            endCall.onTransition += (oldState, newState) => {
+                if (pMainView.ViewModel.CallState.CurrentCall != null) {
+                    if (pMainView.ViewModel.CallState.CurrentCall.Survey == com.tybern.ShiftTracker.enums.SurveyStatus.Missing) {
+                        // No survey marker recorded on current call - show the dialog automatically
+                        // TODO: showDialog SkipSurvey
+                    }
+                }
+            };
+        }
+
         State.getState(CallSM.CALL_SME).enterState += (s, param) => {
             SMECallWindow wndSMECall = new SMECallWindow(pMainView.ViewModel.CallState);    // link to common notes
 

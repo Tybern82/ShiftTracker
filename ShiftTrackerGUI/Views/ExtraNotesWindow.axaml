@@ -6,13 +6,14 @@
         xmlns:models="using:com.tybern.ShiftTracker.data"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ShiftTrackerGUI.ExtraNotesWindow"
+        RequestedThemeVariant="Light"
         x:DataType="models:NoteStore"
         Title="ExtraNotesWindow">
   <Design.DataContext>
     <models:BasicNoteStore />
   </Design.DataContext>
   <Grid ColumnDefinitions="*" RowDefinitions="*,auto">
-    <controls:NotesControl NoteContent="{Binding NoteContent}" Grid.Row="0" Grid.Column="0" />
+    <controls:NotesControl Title="Add Note" NoteContent="{Binding NoteContent}" Grid.Row="0" Grid.Column="0" />
     <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" >
       <Button Name="btnSave" Content="Save" Classes="MainWindowButton" />
       <Button Name="btnCancel" Content="Cancel" Classes="MainWindowButton" />

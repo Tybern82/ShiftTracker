@@ -19,7 +19,8 @@ namespace com.tybern.ShiftTracker.db {
     public class DBShiftTracker {
 
         public static readonly string FORMAT_DATE = "yyyy-MM-dd";
-        public static readonly string FORMAT_TIME = "c";
+        public static readonly string FORMAT_TIME = "hh\\:mm\\:ss";
+        public static readonly string FORMAT_DT   = FORMAT_DATE + " HH\\:mm\\:ss";
 
         protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
@@ -37,6 +38,8 @@ namespace com.tybern.ShiftTracker.db {
             dbConnection.CreateTable<DBMarkerTable>();
             dbConnection.CreateTable<DBTableWorkShift>();
             dbConnection.CreateTable<DBTableWorkBreak>();
+            dbConnection.CreateTable<DBTableNotes>();
+            dbConnection.CreateTable<DBTableCalls>();
 
             if (DBMarker.MarkerID == null) DBMarker = loadMarker(); // load the marker ID from the database
             if (DBMarker.MarkerID == null) {            // if still null, marker was not found in the table:
@@ -125,6 +128,88 @@ namespace com.tybern.ShiftTracker.db {
             var data = dbConnection.Table<DBTableWorkShift>();
             SortedSet<WorkShift> _result = new SortedSet<WorkShift>();
             if (data != null) foreach (DBTableWorkShift shift in data) _result.Add(shift.asWorkShift());
+            return _result;
+        }
+
+        // Notes
+        public bool save(NoteRecord nr) {
+            DBTableNotes dbNote = new DBTableNotes(nr);
+            return addRecord<DBTableNotes>(dbNote);
+        }
+
+        public SortedSet<NoteRecord> loadNotes(DateTime dt) {
+            var data = dbConnection.Query<DBTableNotes>("SELECT * FROM shiftNotes WHERE startTime LIKE ?", dt.ToString(FORMAT_DATE) + "%");
+            SortedSet<NoteRecord> _result = new SortedSet<NoteRecord>();
+            if (data != null) foreach (DBTableNotes note in data) _result.Add(note.asNoteRecord());
+            return _result;
+        }
+
+        public SortedSet<NoteRecord> allNotes() {
+            var data = dbConnection.Table<DBTableNotes>();
+            SortedSet<NoteRecord> _result = new SortedSet<NoteRecord>();
+            if (data != null) foreach (DBTableNotes note in data) _result.Add(note.asNoteRecord());
+            return _result;
+        }
+
+        // CallRecord
+        public bool save(CallRecord cr) {
+            DBTableCalls dbCall = new DBTableCalls(cr);
+            bool _result = true;
+            try {
+                dbConnection.BeginTransaction();
+
+                dbConnection.InsertOrReplace(dbCall.DBNotes);   // save the notes...
+                dbConnection.InsertOrReplace(dbCall);           // ... and the main call details
+
+                dbConnection.Commit();
+            } catch (SQLiteException e) {
+                LOG.Error(e.ToString());
+                try { dbConnection.Rollback(); } catch (SQLiteException) { }
+                _result = false;
+            }
+            return _result;
+        }
+
+        public SortedSet<CallRecord> loadCallRecords(DateTime dt) {
+            var data = dbConnection.Query<DBTableCalls>("SELECT * FROM callRecords WHERE startTime LIKE ?", dt.ToString(FORMAT_DATE) + "%");
+            SortedSet<CallRecord> _result = new SortedSet<CallRecord>();
+            foreach (DBTableCalls call in data) {
+                var note = dbConnection.Query<DBTableNotes>("SELECT * FROM shiftNotes WHERE startTime = ?", call.StartTimeText);
+                if ((note.Count == 0) || (note.Count > 1))
+                    LOG.Error("Missing / multiple notes records");
+                else
+                    call.DBNotes = note[0]; // attach the notes from this timestamp
+                _result.Add(call.asCallRecord());
+            }
+            return _result;
+        }
+
+        public SortedSet<NoteRecord> loadNCNotes(DateTime dt) {
+            var data = dbConnection.Query<DBTableCalls>("SELECT * FROM callRecords WHERE startTime LIKE ?", dt.ToString(FORMAT_DATE) + "%");
+            SortedSet<NoteRecord> _result = loadNotes(dt);
+            foreach (DBTableCalls call in data) {
+                NoteRecord q = new NoteRecord(call.StartTime);
+                NoteRecord? note = null;
+                if (_result.TryGetValue(q, out note)) {
+                    // we found the entry, remove that record
+                    _result.Remove(note);
+                }
+            }
+            return _result;     // any remaining items have no associated call record
+        }
+
+        public SortedSet<CallRecord> allCallRecords() {
+            var data = dbConnection.Table<DBTableCalls>();
+            SortedSet<NoteRecord> allNotes = this.allNotes();
+            SortedSet<CallRecord> _result = new SortedSet<CallRecord>();
+            foreach (DBTableCalls call in data) {
+                NoteRecord q = new NoteRecord(call.StartTime);
+                NoteRecord? note = null;
+                if (allNotes.TryGetValue(q, out note)) {
+                    call.DBNotes = new DBTableNotes(note);
+                }
+                _result.Add(call.asCallRecord());
+            }
             return _result;
         }
 

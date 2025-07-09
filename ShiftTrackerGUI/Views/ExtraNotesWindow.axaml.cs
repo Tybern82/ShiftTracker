@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using ShiftTrackerGUI.ViewModels;
+using ShiftTrackerGUI.Views;
 
 namespace ShiftTrackerGUI;
 
@@ -25,10 +26,15 @@ public partial class ExtraNotesWindow : Window {
     public ExtraNotesWindow(NoteStore dataStore) {
         InitializeComponent();
 
+        WindowPosition? wPos = TrackerSettings.Instance.loadWindow(nameof(ExtraNotesWindow));
+        if (wPos != null) Utility.setPosition(this, wPos);
+
         this._NoteStorage = dataStore;
         this.DataContext = dataStore;
 
         btnSave.Click += (sender, args) => onSave?.Invoke(dataStore.NoteContent);
         btnCancel.Click += (sender, args) => onCancel?.Invoke();
+
+        this.Closing += (sender, args) => TrackerSettings.Instance.saveWindow(nameof(ExtraNotesWindow), Utility.getPosition(this));
     }
 }

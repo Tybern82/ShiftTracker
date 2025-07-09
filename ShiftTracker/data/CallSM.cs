@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using com.tybern.ShiftTracker.db;
 using StateMachine;
 
 namespace com.tybern.ShiftTracker.data {
     public class CallSM : INotifyPropertyChanged, IDisposable, NoteStore {
+
+        protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
         public static readonly string CALL_WAITING = "Call-Waiting";
         public static readonly string CALL_ACTIVE = "Call-Active";
@@ -16,30 +19,61 @@ namespace com.tybern.ShiftTracker.data {
 
         public StateManager callState { get; private set; }
 
+        private CallRecord? _CurrentCall;
+        public CallRecord? CurrentCall { 
+            get => _CurrentCall;
+            set {
+                _CurrentCall = value;
+                lock (this) {
+                    if ((_CurrentCall != null) && (!string.IsNullOrEmpty(_NoteContent))) {
+                        // add any existing note to the start of the new call record and clear the between-call buffer
+                        _CurrentCall.prependNote(_NoteContent);
+                        _NoteContent = string.Empty;
+                    }
+                }
+                onPropertyChanged(nameof(CurrentCall));
+                onPropertyChanged(nameof(NoteContent));
+            }
+        }
+
         private string _NoteContent = string.Empty;
         public string NoteContent {
             get {
-                lock(_NoteContent) return _NoteContent;
+                lock(this) return CurrentCall?.NoteContent ?? _NoteContent;
             }
             set {
-                lock (_NoteContent) {
-                    _NoteContent = value;
+                lock (this) {
+                    if (CurrentCall != null) {
+                        CurrentCall.NoteContent = value;
+                    } else {
+                        _NoteContent = value;
+                    }
                     onPropertyChanged(nameof(NoteContent));
                 }
             } 
         }
 
         public void prependNote(string note) {
-            lock (_NoteContent) {
-                string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
-                NoteContent = note + sep + NoteContent;
+            lock (this) {
+                if (CurrentCall != null) {
+                    CurrentCall.prependNote(note);
+                    onPropertyChanged(nameof(NoteContent));
+                } else {
+                    string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
+                    NoteContent = note + sep + NoteContent;
+                }
             }
         }
 
         public void appendNote(string note) {
-            lock (_NoteContent) {
-                string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
-                NoteContent += sep + note;
+            lock (this) {
+                if (CurrentCall != null) {
+                    CurrentCall.appendNote(note);
+                    onPropertyChanged(nameof(NoteContent));
+                } else {
+                    string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
+                    NoteContent += sep + note;
+                }
             }
         }
 
@@ -55,17 +89,80 @@ namespace com.tybern.ShiftTracker.data {
             callState = new StateManager(callWaiting)
                 .add(callWaiting, callActive)           // Waiting  => Active
                 .add(callActive, callInWrap, false)     // Active  <=> Wrap
-                .add(callInWrap, callWaiting)           // Active   => Waiting
+                .add(callInWrap, callWaiting)           // Wrap     => Waiting
                 .add(callTransfer, callInWrap)          // Transfer => Wrap
                 .add(callActive, callTransfer)          // Active   => Transfer
                 .add(callWaiting, callSME, false)       // Waiting <=> SME
                 .add(callActive, callSME, false)        // Active  <=> SME
                 .add(callInWrap, callSME, false);       // Wrap    <=> SME
-                        
-            callState.getTransition(callSME, callWaiting).onTransition += (initial, final) => {
-                // TODO: Add Transition (SME -> WAITING) - add notes as additional note and clear; (SME -> ACTIVE) and (SME -> WRAP) add note when closing call
+
+            Transition? initialCall = callState.getTransition(callWaiting, callActive);
+            if (initialCall != null) {
+                initialCall.onTransition += (initial, final) => {
+                    CurrentCall = new CallRecord(DateTime.Now);
+                    SegmentStartTime = null;
+                };
+            } else {
+                LOG.Error("Missing Transition: <Waiting> -> <Active>");
+            }
+
+            Transition? directSMEReturn = callState.getTransition(callSME, callWaiting);    // Call was direct to SME, no active call
+            if (directSMEReturn != null) {
+                directSMEReturn.onTransition += (initial, final) => {
+                    // Add the SME call details as a note record
+                    NoteRecord nr = new NoteRecord(DateTime.Now) { NoteContent = "Direct " + this.NoteContent };
+                    DBShiftTracker.Instance.save(nr);
+                    NoteContent = string.Empty;
+                };
+            } else {
+                LOG.Error("Missing Transition: <SME> -> <Waiting>");
+            }
+
+            State.getState(CALL_SME).enterState += (oldState, param) => {
+                SegmentStartTime = DateTime.Now;
+            };
+
+            State.getState(CALL_SME).leaveState += (newState, param) => {
+                if ((SegmentStartTime != null) && (CurrentCall != null)) {
+                    TimeSpan smeTime = DateTime.Now - (DateTime)SegmentStartTime;
+                    SegmentStartTime = null;
+                    CurrentCall.SMETime += smeTime;
+                }
+            };
+
+            State.getState(CALL_TRANSFER).enterState += (oldState, param) => {
+                SegmentStartTime = DateTime.Now;
+            };
+
+            State.getState(CALL_TRANSFER).leaveState += (newState, param) => {
+                if ((SegmentStartTime != null) && (CurrentCall != null)) {  // should ALWAYS be valid
+                    TimeSpan transferTime = DateTime.Now - (DateTime)SegmentStartTime;
+                    SegmentStartTime = null;
+                    CurrentCall.TransferTime += transferTime;
+                    CurrentCall.TransferCount++;  // increment Transfer count
+                } else LOG.Error("Missing StartTime or no active call after Transfer");                
+            };
+
+            State.getState(CALL_INWRAP).enterState += (oldState, param) => {
+                SegmentStartTime = DateTime.Now;
+            };
+
+            State.getState(CALL_INWRAP).leaveState += (newState, param) => {
+                if ((SegmentStartTime != null) && (CurrentCall != null)) {
+                    TimeSpan wrapTime = DateTime.Now - (DateTime)SegmentStartTime;
+                    SegmentStartTime = null;
+                    CurrentCall.WrapTime += wrapTime;
+                } else LOG.Error("Missing StartTime or no active call after Wrap");
+            };
+
+            State.getState(CALL_WAITING).enterState += (oldState, param) => {
+                if (CurrentCall != null)
+                    DBShiftTracker.Instance.save(CurrentCall);
+                CurrentCall = null;
             };
         }
+
+        private DateTime? SegmentStartTime { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void onPropertyChanged(string propertyName) =>

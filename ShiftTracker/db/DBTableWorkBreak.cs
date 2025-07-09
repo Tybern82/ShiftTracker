@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using com.tybern.ShiftTracker.data;
+using com.tybern.ShiftTracker.enums;
 using SQLite.Net2;
 
 namespace com.tybern.ShiftTracker.db {

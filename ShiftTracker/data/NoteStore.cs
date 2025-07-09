@@ -15,14 +15,7 @@ namespace com.tybern.ShiftTracker.data {
     public class BasicNoteStore : NoteStore {
         public string NoteContent { get; set; } = string.Empty;
 
-        public void prependNote(string note) {
-            string sep = (string.IsNullOrEmpty(NoteContent)) ? string.Empty : "\n";
-            NoteContent = note + sep + NoteContent;
-        }
-
-        public void appendNote(string note) {
-            string sep = (string.IsNullOrEmpty(NoteContent)) ? string.Empty : "\n";
-            NoteContent += sep + note;
-        }
+        public void prependNote(string note) => Utility.prependNote(this, note);
+        public void appendNote(string note) => Utility.appendNote(this, note);
     }
 }

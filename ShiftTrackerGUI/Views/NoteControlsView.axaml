@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="120" Width="450" Height="120"
+             x:Class="ShiftTrackerGUI.NoteControlsView">
+  <HeaderedContentControl Classes="GroupBox" Header="Auto Notes">
+    <Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="*" HorizontalAlignment="Center">
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="0" IsEnabled="True" Content="Generated" Name="btnGenerated" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="1" IsEnabled="False" Content="Edited" Name="btnEdited" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="2" IsEnabled="False" Content="Saved" Name="btnSaved" />
+      <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="3" IsEnabled="False" Content="Manual" Name="btnManual" />
+    </Grid>
+  </HeaderedContentControl>
+</UserControl>

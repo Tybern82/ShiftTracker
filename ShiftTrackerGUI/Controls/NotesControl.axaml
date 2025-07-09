@@ -16,11 +16,8 @@
         <Grid ColumnDefinitions="*" RowDefinitions="auto,*">
           <TextBlock
             Grid.Row="0" Grid.Column="1"
-            Margin="10" Padding="10"
-            FontSize="24" FontFamily="Lato"
-            TextAlignment="Center">
-            Call Notes
-          </TextBlock>
+            Classes="MainWindowTitle" 
+            Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
           <TextBox
             Grid.Row="1" Grid.Column="0"
             Name="txtNotes"
