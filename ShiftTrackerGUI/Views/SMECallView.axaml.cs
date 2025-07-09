@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using com.tybern.ShiftTracker.enums;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class SMECallView : UserControl {
 

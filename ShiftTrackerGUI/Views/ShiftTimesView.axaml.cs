@@ -6,7 +6,7 @@ using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using ShiftTrackerGUI.Views;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class ShiftTimesView : UserControl {
 

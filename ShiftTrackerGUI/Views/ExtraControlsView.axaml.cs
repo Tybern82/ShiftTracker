@@ -4,9 +4,9 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using com.tybern.ShiftTracker;
-using static ShiftTrackerGUI.CallControlsView;
+using static ShiftTrackerGUI.Views.CallControlsView;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class ExtraControlsView : UserControl {
 

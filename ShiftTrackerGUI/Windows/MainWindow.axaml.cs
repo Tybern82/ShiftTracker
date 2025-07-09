@@ -64,6 +64,33 @@ public partial class MainWindow : Window {
             wndSkipSurvey.ShowDialog(this);
         };
 
+        pMainView.pCallControls.onCallback += () => {
+            CallbackWindow wndCallback = new CallbackWindow();
+
+            wndCallback.vCallback.onCallback += (type, details) => {
+                pMainView.ViewModel.CallState.appendNote("Callback - " + type);
+                pMainView.ViewModel.CallState.appendNote(details);
+                wndCallback.Close();
+            };
+
+            wndCallback.ShowDialog(this);
+        };
+
+        pMainView.pCallControls.onCallTransfer += () => {
+            CallTransferWindow wndCallTransfer = new CallTransferWindow(pMainView.ViewModel.CallState); // link to Common Notes
+
+            wndCallTransfer.vCallTransfer.onTransferCall += (type, time, notes) => {
+                wndCallTransfer.Close();
+                pMainView.ViewModel.CallState.callState.gotoState(State.getState(CallSM.CALL_INWRAP));
+            };
+            wndCallTransfer.vCallTransfer.onTransferClose += (type, time, notes) => {
+                wndCallTransfer.Close();
+                pMainView.ViewModel.CallState.callState.gotoState(State.getState(CallSM.CALL_ACTIVE));
+            };
+
+            wndCallTransfer.ShowDialog(this);
+        };
+
         Transition? initialCall = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_WAITING), State.getState(CallSM.CALL_ACTIVE));
         if (initialCall != null) {
             initialCall.onTransition += (initial, final) => {

@@ -50,7 +50,7 @@ namespace com.tybern.ShiftTracker.data {
         private string _NoteContent = string.Empty;
         public string NoteContent {
             get {
-                lock(this) return CurrentCall?.NoteContent ?? _NoteContent;
+                lock(this) return (CurrentCall?.NoteContent ?? _NoteContent).Trim();
             }
             set {
                 lock (this) {
@@ -70,8 +70,8 @@ namespace com.tybern.ShiftTracker.data {
                     CurrentCall.prependNote(note);
                     onPropertyChanged(nameof(NoteContent));
                 } else {
-                    string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
-                    NoteContent = note + sep + NoteContent;
+                    string sep = (string.IsNullOrWhiteSpace(_NoteContent)) ? string.Empty : "\n";
+                    NoteContent = note.Trim() + sep + NoteContent;
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace com.tybern.ShiftTracker.data {
                     CurrentCall.appendNote(note);
                     onPropertyChanged(nameof(NoteContent));
                 } else {
-                    string sep = (string.IsNullOrEmpty(_NoteContent)) ? string.Empty : "\n";
-                    NoteContent += sep + note;
+                    string sep = (string.IsNullOrWhiteSpace(_NoteContent)) ? string.Empty : "\n";
+                    NoteContent += sep + note.Trim();
                 }
             }
         }

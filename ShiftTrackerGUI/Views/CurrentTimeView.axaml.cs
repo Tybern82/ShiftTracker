@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
 using ShiftTrackerGUI.ViewModels;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class CurrentTimeView : UserControl, INotifyPropertyChanged, CurrentTimeModel {
 

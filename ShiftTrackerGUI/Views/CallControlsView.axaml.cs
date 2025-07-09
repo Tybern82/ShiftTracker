@@ -6,7 +6,7 @@ using Avalonia.Threading;
 using com.tybern.ShiftTracker;
 using Org.BouncyCastle.Asn1.Mozilla;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class CallControlsView : UserControl {
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Avalonia.Controls;
+using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
 using com.tybern.ShiftTracker.enums;
@@ -23,6 +24,9 @@ public partial class MainView : UserControl {
         DataContext = ViewModel;
 
         // pCurrentTime.DataContext = pCurrentTime;
+
+        TrackerSettings.Instance.SMTP.Host = "app.titan.email";
+        pSMTPSettings.SMTP = TrackerSettings.Instance.SMTP;
 
         pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(DateTime.Now.Date) ?? new WorkShift(DateTime.Now);
         ViewModel.ShiftState.ActiveShift = pShiftTimes.ActiveShift;

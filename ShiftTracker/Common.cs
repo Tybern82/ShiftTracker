@@ -12,13 +12,13 @@ namespace com.tybern.ShiftTracker {
 
     public class Utility {
         public static void appendNote(NoteStore ns, string note) {
-            string sep = (string.IsNullOrEmpty(ns.NoteContent)) ? string.Empty : "\n";
-            ns.NoteContent += sep + note;
+            string sep = (string.IsNullOrWhiteSpace(ns.NoteContent)) ? string.Empty : "\n";
+            ns.NoteContent += sep + note.Trim();
         }
 
         public static void prependNote(NoteStore ns, string note) {
-            string sep = (string.IsNullOrEmpty(ns.NoteContent)) ? string.Empty : "\n";
-            ns.NoteContent = note + sep + ns.NoteContent;
+            string sep = (string.IsNullOrWhiteSpace(ns.NoteContent)) ? string.Empty : "\n";
+            ns.NoteContent = note.Trim() + sep + ns.NoteContent;
         }
     }
 

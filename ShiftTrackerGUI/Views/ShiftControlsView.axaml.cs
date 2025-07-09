@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using com.tybern.ShiftTracker;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class ShiftControlsView : UserControl {
 

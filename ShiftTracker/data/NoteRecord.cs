@@ -21,7 +21,7 @@ namespace com.tybern.ShiftTracker.data {
 
         private string _NoteContent = string.Empty;
         public string NoteContent {
-            get => _NoteContent;
+            get => _NoteContent.Trim();
             set {
                 _NoteContent = value;
                 onPropertyChanged(nameof(NoteContent));

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="120" Width="450" Height="120"
-             x:Class="ShiftTrackerGUI.ShiftControlsView">
+             x:Class="ShiftTrackerGUI.Views.ShiftControlsView">
   <HeaderedContentControl Classes="GroupBox" Header="Shift">
     <Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="*" HorizontalAlignment="Center">
       <Button Classes="MainWindowButton" Grid.Row="0" Grid.Column="0" IsEnabled="True" Content="Start" Name="btnStartShift" />

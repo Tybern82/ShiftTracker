@@ -5,9 +5,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.enums;
-using static ShiftTrackerGUI.CallControlsView;
+using static ShiftTrackerGUI.Views.CallControlsView;
 
-namespace ShiftTrackerGUI;
+namespace ShiftTrackerGUI.Views;
 
 public partial class NoteControlsView : UserControl {
 

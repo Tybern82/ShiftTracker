@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
-using static ShiftTrackerGUI.SMECallView;
+using static ShiftTrackerGUI.Views.SMECallView;
 
 namespace ShiftTrackerGUI;
 

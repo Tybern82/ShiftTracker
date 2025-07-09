@@ -5,8 +5,8 @@
              xmlns:vm="clr-namespace:ShiftTrackerGUI.ViewModels"
              xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
              xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
-             xmlns:view="clr-namespace:ShiftTrackerGUI"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1000"
+             xmlns:view="clr-namespace:ShiftTrackerGUI.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1200"
              x:Class="ShiftTrackerGUI.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -47,6 +47,7 @@
         <view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" />
         <view:NoteControlsView Name="pNoteControls" Width="450" Height="120" />
         <Separator Margin="20" />
+        <!-- Shift Stats -->
         <Separator Margin="20" />
         <controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" />
       </StackPanel>
@@ -61,7 +62,7 @@
 
     </TabItem>
     <TabItem Header="Settings">
-
+      <view:SMTPSettingsView Name="pSMTPSettings" />
     </TabItem>
   </TabControl>
 </UserControl>

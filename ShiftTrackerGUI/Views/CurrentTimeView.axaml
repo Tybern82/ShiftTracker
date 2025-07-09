@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:ShiftTrackerGUI.ViewModels;assembly=ShiftTrackerGUI"
              mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="70"
              x:DataType="vm:CurrentTimeModel"
-             x:Class="ShiftTrackerGUI.CurrentTimeView">
+             x:Class="ShiftTrackerGUI.Views.CurrentTimeView">
   <Design.DataContext>
     <vm:BasicCurrentTimeModel />
   </Design.DataContext>

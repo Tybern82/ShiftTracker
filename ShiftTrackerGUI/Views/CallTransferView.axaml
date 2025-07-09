@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="780" Width="600" Height="780"
+             x:Class="ShiftTrackerGUI.Views.CallTransferView">
+  <Grid ColumnDefinitions="*,2*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+    <TextBlock Classes="MainWindowTitle" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">Transfer</TextBlock>
+    <controls:SegmentTimer Name="tTransferTime" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
+    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">Add details and select "Save" when closing SME call - time will calculate automatically: </TextBlock>
+    <Border Background="Gainsboro"
+          BorderBrush="Black"
+          BorderThickness="2"
+          CornerRadius="3"
+          Padding="10" Margin="15" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+      <StackPanel>
+        <RadioButton GroupName="rgpCallTransfer" Name="rBilling" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rFAST" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rConnectionManagement" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rPSTN" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rBusiness" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rFoxtel" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rNFS" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rCOAT" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rMoves" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rDamages" />
+        <RadioButton GroupName="rgpCallTransfer" Name="rUnspecified" />
+        <TextBox Margin="15" Padding="5" AcceptsReturn="True" TextWrapping="Wrap" Name="txtDetails" Height="100" Watermark="Enter request..." />
+      </StackPanel>
+    </Border>
+    <Button Classes="MainWindowButton" Grid.Row="4" Grid.Column="2" Name="btnTransferCall">Transfer</Button>
+    <Button Classes="MainWindowButton" Grid.Row="4" Grid.Column="3" Name="btnCloseTransfer">Close</Button>
+  </Grid>
+</UserControl>

@@ -6,7 +6,7 @@
              xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:WorkShift"
-             x:Class="ShiftTrackerGUI.ShiftTimesView">
+             x:Class="ShiftTrackerGUI.Views.ShiftTimesView">
   <UserControl.Resources>
     <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
   </UserControl.Resources>
