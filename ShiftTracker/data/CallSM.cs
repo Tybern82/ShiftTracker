@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.enums;
 using StateMachine;
 
 namespace com.tybern.ShiftTracker.data {
@@ -33,6 +34,16 @@ namespace com.tybern.ShiftTracker.data {
                 }
                 onPropertyChanged(nameof(CurrentCall));
                 onPropertyChanged(nameof(NoteContent));
+            }
+        }
+
+        public CallType Type {
+            get => (CurrentCall != null) ? CurrentCall.Type : CallType.Other;
+            set {
+                if (CurrentCall != null) {
+                    CurrentCall.Type = value;
+                    onPropertyChanged(nameof(Type));
+                }
             }
         }
 

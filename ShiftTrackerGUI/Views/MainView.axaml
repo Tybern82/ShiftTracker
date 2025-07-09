@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ShiftTrackerGUI.ViewModels"
              xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
+             xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
              xmlns:view="clr-namespace:ShiftTrackerGUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1000"
              x:Class="ShiftTrackerGUI.Views.MainView"
@@ -13,6 +14,9 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
+  <UserControl.Resources>
+    <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
+  </UserControl.Resources>
   <TabControl Grid.Row="0" Grid.Column="1" >
     <TabItem Header="Call">
       <StackPanel>
@@ -24,10 +28,24 @@
           <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
           <TextBlock Name="fEOSTimer" Text="{Binding ShiftState.EOSTimerText}" FontSize="18" FontFamily="Lato" />
         </StackPanel>
+        <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
         <view:CallControlsView Name="pCallControls" Width="450" Height="120" />
+        <ComboBox Name="cmbCallType"
+                  Width="200"
+                  Margin="5"
+                  ItemsSource="{Binding Models}"
+                  SelectedItem="{Binding CallState.Type}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  IsEnabled="false">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
         <view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" />
         <view:NoteControlsView Name="pNoteControls" Width="450" Height="120" />
-        <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
         <Separator Margin="20" />
         <Separator Margin="20" />
         <controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" />

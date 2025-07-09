@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
+using com.tybern.ShiftTracker.enums;
 using ShiftTrackerGUI.ViewModels;
 using StateMachine;
 
@@ -62,6 +64,17 @@ public partial class MainWindow : Window {
             wndSkipSurvey.ShowDialog(this);
         };
 
+        Transition? initialCall = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_WAITING), State.getState(CallSM.CALL_ACTIVE));
+        if (initialCall != null) {
+            initialCall.onTransition += (initial, final) => {
+                pMainView.cmbCallType.IsEnabled = true;
+                if (pMainView.ViewModel.CallState.CurrentCall != null)
+                    pMainView.cmbCallType.SelectedItem = pMainView.ViewModel.CallState.CurrentCall.Type;
+            };
+        } else {
+            LOG.Error("Missing Transition: <Waiting> -> <Active>");
+        }
+
         Transition? endCall = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_INWRAP), State.getState(CallSM.CALL_WAITING));
         if (endCall != null) {
             endCall.onTransition += (oldState, newState) => {
@@ -71,6 +84,8 @@ public partial class MainWindow : Window {
                         // TODO: showDialog SkipSurvey
                     }
                 }
+                pMainView.cmbCallType.IsEnabled = false;
+                pMainView.cmbCallType.SelectedItem = CallType.NBN;
             };
         }
 
