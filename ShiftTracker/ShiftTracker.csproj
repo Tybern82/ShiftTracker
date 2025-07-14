@@ -22,7 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="reports\" />
+    <Folder Include="fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="fonts\GlanceCherry-dr82Z.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="fonts\MaragsaDisplay-GO6PD.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

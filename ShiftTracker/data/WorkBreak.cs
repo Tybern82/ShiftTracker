@@ -71,6 +71,24 @@ namespace com.tybern.ShiftTracker.data {
             }
         }
 
+        private bool? isFine = null;
+        public bool IsFine {
+            get { 
+                if (isFine == null) {
+                    isFine = (
+                        (StartTime.Minutes % 5 != 0)
+                        || (EndTime.Minutes % 5 != 0)
+                        || (Type == BreakType.Coaching)
+                        || (Type == BreakType.SystemIssue));
+                }
+                return isFine ?? false;
+            }
+            set {
+                isFine = value;
+                onPropertyChanged(nameof(IsFine));
+            }
+        }
+
         public TimeSpan Length {
             get {
                 if (EndTime < StartTime) {

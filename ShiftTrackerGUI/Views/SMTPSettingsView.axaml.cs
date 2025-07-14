@@ -19,7 +19,7 @@ public partial class SMTPSettingsView : UserControl {
     private SMTPRecord _SMTP = new SMTPRecord();
     public SMTPRecord SMTP {
         get { return _SMTP; }
-        set { _SMTP = value; DataContext = _SMTP; }
+        set { _SMTP = value; DataContext = value; }
     }
 
     public SMTPSettingsView() {

@@ -35,6 +35,9 @@ namespace com.tybern.ShiftTracker.enums {
         [Description("Fetch TV / Telstra TV")]
         FetchTV,
 
+        [Description("Foxtel")]
+        Foxtel,
+
         [Description("4G Fixed / 5G Home Wireless")]
         HomeWireless,
 

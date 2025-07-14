@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using com.tybern.CMDProcessor;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
 using com.tybern.ShiftTracker.enums;
+using com.tybern.ShiftTracker.reports;
+using EZFontResolverNS;
+using MimeKit;
+using PdfSharp.Fonts;
 using ShiftTrackerGUI.ViewModels;
 using StateMachine;
 
@@ -13,15 +21,100 @@ namespace ShiftTrackerGUI.Views;
 
 public partial class MainWindow : Window {
 
+    private static bool isFRSet = false;
+    private static void setFontResolver() {
+        if (!isFRSet) {
+            EZFontResolver fonts = EZFontResolver.Get;
+            GlobalFontSettings.FontResolver = fonts;
+            GlobalFontSettings.FallbackFontResolver = new SubstitutingFontResolver.SubstitutingFontResolver();
+            fonts.AddFont("Glance Cherry", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\GlanceCherry-dr82Z.ttf");
+            fonts.AddFont("Maragsa Display", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\MaragsaDisplay-GO6PD.ttf");
+        }
+        isFRSet = true;
+    }
+
+    private StatusBarModel statusBar;
+
     protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
     public MainWindow() {
         InitializeComponent();
+        setFontResolver();
 
+        CommandProcessor.RunAsUIThread += (cmd) => {
+            if (Dispatcher.UIThread.CheckAccess()) {
+                cmd.Process();  // already on UIThread, just run
+            } else {
+                Dispatcher.UIThread.Invoke(() => cmd.Process());    // delegate to run later on the UIThread
+            }
+        };
+
+        /* Used to load old CallRecordDB
+        string dbName = "CallRecordGUI.db";
+        com.tybern.ShiftTracker.data.old.CallLog cLog = new (dbName);
+        com.tybern.ShiftTracker.data.old.SurveyLog sLog = new (cLog.conn);
+        com.tybern.ShiftTracker.data.old.CallLogConversionResult callLogs = cLog.convertAll();
+        SortedSet<CallRecord> calls = callLogs.Calls;
+        bool surveyCheck = sLog.updateSurveyStatus(calls, sLog.LoadAll());
+
+        LOG.Info("Found <" + callLogs.Notes.Count + ">");
+        LOG.Info("Found <" + calls.Count + "> calls");
+        LOG.Info("Survey Update: " + surveyCheck);
+
+        foreach (NoteRecord note in callLogs.Notes) DBShiftTracker.Instance.save(note);
+        foreach (CallRecord call in calls) DBShiftTracker.Instance.save(call);
+        */
+
+        // MAKE SURE we don't try to access anything from TrackerSettings before this line
         TrackerSettings.Instance.loadConfigFile();
 
         Utility.setPosition(this, TrackerSettings.Instance.MainWindowPosition);
 
-        statusBarText.Text = TrackerSettings.Instance.VersionString;
+        statusBar = new StatusBarModel();
+        pStatusBar.DataContext = statusBar;
+
+        statusBar.StatusVersion = TrackerSettings.Instance.VersionString;
+
+        pMainView.pSMTPSettings.SMTP = TrackerSettings.Instance.SMTP;
+        pMainView.ViewModel.PDFPassword = TrackerSettings.Instance.PDFPassword; // ensure reload now the config file has been loaded
+        pMainView.ViewModel.MeetingTime = TrackerSettings.Instance.MeetingTime;
+
+        pMainView.btnDailyReportSend.Click += (sender, args) => {
+            // TODO: Move to separate thread (CMDProcessor?)
+            statusBar.StatusText = "Generating report...";
+            DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
+            PdfSharp.Pdf.PdfDocument report = new DailyReport(dt).generate();
+            MemoryStream output = new MemoryStream();
+            report.Save(output, false);
+            statusBar.StatusText = "Sending report...";
+            List<MimeEntity> attachments = new List<MimeEntity>();
+            MimeEntity e = MimeEntity.Load(new ContentType("application", "pdf"), output);
+            e.ContentType.Name = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE) + ".pdf";
+            attachments.Add(e);
+            SMTPRecord.SMTPSendResponse sendResult = TrackerSettings.Instance.SMTP.sendMail("Daily Report: " + dt.ToString(DBShiftTracker.FORMAT_DATE), "see attached", attachments);
+            statusBar.StatusText = ((sendResult.Success ? "Sent" : "Not Sent") + (string.IsNullOrWhiteSpace(sendResult.Error) ? string.Empty : ": " + sendResult.Error));
+        };
+
+        pMainView.btnDailyReportSave.Click += async (sender, args) => {
+            statusBar.StatusText = "Generating report...";
+            DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
+            PdfSharp.Pdf.PdfDocument report = new DailyReport(dt).generate();
+
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel != null) {
+                var file = await topLevel.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions {
+                    Title = "Save Report File",
+                    DefaultExtension = "pdf",
+                    SuggestedFileName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE) + ".pdf",
+                    SuggestedStartLocation = await topLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents)
+                });
+
+                if (file is not null) {
+                    string fname = file.TryGetLocalPath() ?? Path.Combine(file.Path.AbsolutePath, file.Name);
+                    report.Save(fname);
+                    statusBar.StatusText = "Report saved...";
+                }
+            }
+        };
 
         pMainView.pShiftTimes.onEditWeek += () => {
             DateTime currentDate = pMainView.pShiftTimes.fDateSelector.SelectedDate.HasValue ? pMainView.pShiftTimes.fDateSelector.SelectedDate.Value.Date : DateTime.Now.Date;
@@ -43,6 +136,7 @@ public partial class MainWindow : Window {
             };
             wndNotes.onSave += (notes) => {
                 NoteRecord nr = new NoteRecord(DateTime.Now) {NoteContent = notes};
+                pMainView.ViewModel.CallState.updateNote(nr);
                 DBShiftTracker.Instance.save(nr);
                 wndNotes.Close();
             };
@@ -112,7 +206,6 @@ public partial class MainWindow : Window {
                     }
                 }
                 pMainView.cmbCallType.IsEnabled = false;
-                pMainView.cmbCallType.SelectedItem = CallType.NBN;
             };
         }
 

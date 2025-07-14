@@ -9,60 +9,186 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1200"
              x:Class="ShiftTrackerGUI.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
-  <UserControl.Resources>
-    <nsenum:EnumDescriptionConverter x:Key="enumConverter" />
-  </UserControl.Resources>
-  <TabControl Grid.Row="0" Grid.Column="1" >
-    <TabItem Header="Call">
-      <StackPanel>
-        <view:CurrentTimeView Name="pCurrentTime" />
-        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-          <TextBlock Name="fBreakTimer" Text="{Binding ShiftState.BreakTimerText}" FontSize="18" FontFamily="Lato" />
-          <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-          <TextBlock Name="fCurrBreakTimer" Text="{Binding ShiftState.CurrentBreakText}" FontSize="18" FontFamily="Lato" />
-          <TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-          <TextBlock Name="fEOSTimer" Text="{Binding ShiftState.EOSTimerText}" FontSize="18" FontFamily="Lato" />
-        </StackPanel>
-        <view:ShiftControlsView Name="pShiftControls" Width="450" Height="120" />
-        <view:CallControlsView Name="pCallControls" Width="450" Height="120" />
-        <ComboBox Name="cmbCallType"
-                  Width="200"
-                  Margin="5"
-                  ItemsSource="{Binding Models}"
-                  SelectedItem="{Binding CallState.Type}"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Center"
-                  IsEnabled="false">
-          <ComboBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
-            </DataTemplate>
-          </ComboBox.ItemTemplate>
-        </ComboBox>
-        <view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" />
-        <view:NoteControlsView Name="pNoteControls" Width="450" Height="120" />
-        <Separator Margin="20" />
-        <!-- Shift Stats -->
-        <Separator Margin="20" />
-        <controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" />
-      </StackPanel>
-    </TabItem>
-    <TabItem Header="Shift">
-      <view:ShiftTimesView Name="pShiftTimes" EditDate="False" />
-    </TabItem>
-    <TabItem Header="Call Log">
-      
-    </TabItem>
-    <TabItem Header="Reports">
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<UserControl.Resources>
+		<nsenum:EnumDescriptionConverter x:Key="enumConverter" />
+	</UserControl.Resources>
+	<TabControl>
+		<TabItem Header="Call">
+			<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*" HorizontalAlignment="Center">
+				<view:CurrentTimeView Name="pCurrentTime" Grid.Row="0" Grid.Column="0" />
+				<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+					<TextBlock Name="fBreakTimer" Text="{Binding ShiftState.BreakTimerText}" FontSize="18" FontFamily="Lato" />
+					<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
+					<TextBlock Name="fCurrBreakTimer" Text="{Binding ShiftState.CurrentBreakText}" FontSize="18" FontFamily="Lato" />
+					<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
+					<TextBlock Name="fEOSTimer" Text="{Binding ShiftState.EOSTimerText}" FontSize="18" FontFamily="Lato" />
+				</StackPanel>
+				<ScrollViewer IsScrollChainingEnabled="True" Grid.Row="2" Grid.Column="0">
+					<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto,auto">
+						<view:ShiftControlsView Name="pShiftControls" Width="500" Height="120" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" />
+						<view:CallControlsView Name="pCallControls" Width="470" Height="120" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
+						
+						<ComboBox Name="cmbCallType"
+									 Width="200"
+									 Margin="5"
+									 ItemsSource="{Binding Models}"
+									 SelectedItem="{Binding CallState.Type}"
+									 VerticalAlignment="Center"
+									 HorizontalAlignment="Center"
+									 IsEnabled="false"
+									 Grid.Column="0" Grid.Row="2">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<Button Name="btnSystemIssue" Classes="MainWindowButton" Content="System Issue" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" />
+						
+						<view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" />
+						<view:NoteControlsView Name="pNoteControls" Width="450" Height="120" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" />
+						<Separator Margin="20" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" />
+						<!-- Shift Stats -->
+						<Separator Margin="20" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" />
+						<controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" />
+					</Grid>
+				</ScrollViewer>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Shift">
+			<view:ShiftTimesView Name="pShiftTimes" EditDate="False" />
+		</TabItem>
+		<TabItem Header="Call Log">
+			<ScrollViewer IsScrollChainingEnabled="True">
+				<DataGrid Margin="20" ItemsSource="{Binding CallState.Calls}"
+							 IsReadOnly="False"
+							 CanUserReorderColumns="True"
+							 CanUserResizeColumns="True"
+							 CanUserSortColumns="True"
+							 GridLinesVisibility="All"
+							 BorderThickness="1" BorderBrush="Gray" Name="dataCallLog">
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Header="Start Time">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<!-- Prevent editing -->
+									<TextBlock Classes="MainWindowLabel" TextAlignment="Center" Text="{Binding StartTime, StringFormat='yyyy-mm-dd HH\:mm\:ss'}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="End Time">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<!-- Prevent editing -->
+									<TextBlock Classes="MainWindowLabel" TextAlignment="Center" Text="{Binding EndTime, StringFormat='yyyy-mm-dd HH\:mm\:ss'}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Type">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ComboBox Width="200"
+												 Margin="5"
+												 ItemsSource="{Binding Models}"
+												 SelectedItem="{Binding Type}"
+												 VerticalAlignment="Center"
+												 HorizontalAlignment="Center"
+												 IsEnabled="true">
+										<ComboBox.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
+											</DataTemplate>
+										</ComboBox.ItemTemplate>
+									</ComboBox>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Notes">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding NoteContent}"
+												Margin="10" Padding="10"
+												Height="80" MinWidth="300"
+												TextWrapping="Wrap"
+												AcceptsReturn="True"
+												Watermark="Enter notes..."
+												HorizontalAlignment="Stretch"
+												VerticalAlignment="Stretch"
+												VerticalContentAlignment="Stretch" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Notes">
+			<ScrollViewer IsScrollChainingEnabled="True">
+				<DataGrid Margin="20" ItemsSource="{Binding CallState.AdditionalNotes}"
+							 IsReadOnly="False"
+							 CanUserReorderColumns="True"
+							 CanUserResizeColumns="True"
+							 CanUserSortColumns="True"
+							 GridLinesVisibility="All"
+							 BorderThickness="1" BorderBrush="Gray" Name="dataNoteLog">
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Header="Note Time">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<!-- Prevent editing -->
+									<TextBlock Classes="MainWindowLabel" TextAlignment="Center" Text="{Binding StartTime, StringFormat='yyyy-mm-dd HH\:mm\:ss'}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Notes">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding NoteContent}"
+												Margin="10" Padding="10"
+												Height="80" MinWidth="300"
+												TextWrapping="Wrap"
+												AcceptsReturn="True"
+												Watermark="Enter notes..."
+												HorizontalAlignment="Stretch"
+												VerticalAlignment="Stretch"
+												VerticalContentAlignment="Stretch" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Reports">
+			<HeaderedContentControl Header="Reports" Classes="GroupBox">
+				<Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="auto" HorizontalAlignment="Center">
+					
+					<TextBlock Classes="MainWindowLabel" Text="Daily Report: " Grid.Row="0" Grid.Column="0" />
+					<CalendarDatePicker Classes="MainWindowCalendarDatePicker" Name="dtDailyReport" FirstDayOfWeek="Monday" SelectedDate="{Binding ShiftState.ActiveShift.CurrentDate}" Grid.Row="0" Grid.Column="1" />
+					<Button Classes="MainWindowButton" Name="btnDailyReportSend" Content="Send" Grid.Row="0" Grid.Column="2" />
+					<Button Classes="MainWindowButton" Name="btnDailyReportSave" Content="Save" Grid.Row="0" Grid.Column="3" />
+					
+					
+				</Grid>
+			</HeaderedContentControl>
+		</TabItem>
+		<TabItem Header="Settings">
+			<ScrollViewer>
+				<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto" HorizontalAlignment="Center">
+					<view:SMTPSettingsView Name="pSMTPSettings" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
 
-    </TabItem>
-    <TabItem Header="Settings">
-      <view:SMTPSettingsView Name="pSMTPSettings" />
-    </TabItem>
-  </TabControl>
+					<TextBlock Text="PDF Password: " Classes="MainWindowLabel" Grid.Row="1" Grid.Column="0" />
+					<TextBox Name="txtPDFPassword" Text="{Binding PDFPassword, Mode=TwoWay}" Classes="MainWindowEntry" Watermark="PDF Password..." PasswordChar="•" Grid.Row="1" Grid.Column="1" />
+
+					<TextBlock Text="Standard Meeting Time: " Classes="MainWindowLabel" Grid.Row="2" Grid.Column="0" />
+					<TimePicker Name="tMeetingTime" SelectedTime="{Binding MeetingTime, Mode=TwoWay}" Classes="MainWindowTimeSpan" Grid.Row="2" Grid.Column="1" />
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
+	</TabControl>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -17,6 +18,46 @@ namespace com.tybern.ShiftTracker.data {
         public static readonly string CALL_INWRAP = "Call-InWrap";
         public static readonly string CALL_TRANSFER = "Call-Transfer";
         public static readonly string CALL_SME = "Call-SME";
+
+        public ObservableCollection<CallRecord> Calls { get; } = new ObservableCollection<CallRecord>();
+
+        public void updateCall(CallRecord call) {
+            if (Calls.Contains(call)) {    
+                foreach (var c in Calls) {
+                    if (c.Equals(call)) c.PropertyChanged -= saveCallUpdates;
+                }
+                Calls.Remove(call);
+            }
+            Calls.Add(call);
+            call.PropertyChanged += saveCallUpdates;
+        }
+
+        private void saveCallUpdates(object sender, PropertyChangedEventArgs e) {
+            if ((sender != null) && (sender is CallRecord)) {
+                CallRecord source = (CallRecord)sender;
+                DBShiftTracker.Instance.save(source);
+            }
+        }
+
+        public ObservableCollection<NoteRecord> AdditionalNotes { get; } = new ObservableCollection<NoteRecord>();
+
+        public void updateNote(NoteRecord note) {
+            if (AdditionalNotes.Contains(note)) {
+                foreach (var n in AdditionalNotes) {
+                    if (n.Equals(note)) n.PropertyChanged -= saveNoteUpdates;
+                }
+                AdditionalNotes.Remove(note);
+            }
+            AdditionalNotes.Add(note);
+            note.PropertyChanged += saveNoteUpdates;
+        }
+
+        private void saveNoteUpdates(object sender, PropertyChangedEventArgs e) {
+            if ((sender != null) && (sender is NoteRecord)) {
+                NoteRecord source = (NoteRecord)sender;
+                DBShiftTracker.Instance.save(source);
+            }
+        }
 
         public StateManager callState { get; private set; }
 
@@ -102,7 +143,7 @@ namespace com.tybern.ShiftTracker.data {
                 .add(callActive, callInWrap, false)     // Active  <=> Wrap
                 .add(callInWrap, callWaiting)           // Wrap     => Waiting
                 .add(callTransfer, callInWrap)          // Transfer => Wrap
-                .add(callActive, callTransfer)          // Active   => Transfer
+                .add(callActive, callTransfer, false)   // Active  <=> Transfer
                 .add(callWaiting, callSME, false)       // Waiting <=> SME
                 .add(callActive, callSME, false)        // Active  <=> SME
                 .add(callInWrap, callSME, false);       // Wrap    <=> SME
@@ -167,10 +208,19 @@ namespace com.tybern.ShiftTracker.data {
             };
 
             State.getState(CALL_WAITING).enterState += (oldState, param) => {
-                if (CurrentCall != null)
+                if (CurrentCall != null) {
+                    CurrentCall.EndTime = DateTime.Now;
                     DBShiftTracker.Instance.save(CurrentCall);
+                    updateCall(CurrentCall);
+                }
                 CurrentCall = null;
             };
+
+            var log = DBShiftTracker.Instance.loadCallRecords(DateTime.Today);
+            foreach (var r in log) updateCall(r);
+
+            var nlog = DBShiftTracker.Instance.loadNCNotes(DateTime.Today);
+            foreach (var r in nlog) updateNote(r);
         }
 
         private DateTime? SegmentStartTime { get; set; }

@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:ShiftTrackerGUI.Controls">
+
+  <!--
+    Additional resources 
+    Using Control Themes:
+         https://docs.avaloniaui.net/docs/basics/user-interface/styling/control-themes
+    Using Theme Variants:
+         https://docs.avaloniaui.net/docs/guides/styles-and-resources/how-to-use-theme-variants
+  -->
+  
+  <Design.PreviewWith>
+    <StackPanel Width="400" Spacing="10">      
+        <StackPanel Background="{DynamicResource SystemRegionBrush}">
+          <controls:TunedTimePicker ActiveTime="00:05:00" />
+        </StackPanel>
+    </StackPanel>
+  </Design.PreviewWith>
+ 
+  <ControlTheme x:Key="{x:Type controls:TunedTimePicker}" TargetType="controls:TunedTimePicker">
+    <Setter Property="Template">
+      <ControlTemplate>
+			<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto">
+				<TimePicker Classes="MainWindowTimeSpan"
+					SelectedTime="{Binding ActiveTime, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" 
+					MinuteIncrement="{Binding IncrementValue, RelativeSource={RelativeSource TemplatedParent}}"
+					Grid.Row="0" Grid.Column="0" />
+				<ToggleButton Content="Fine"
+								  Name="PART_FineButton"
+								  IsChecked="{Binding IsFine, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+								  Grid.Row="0" Grid.Column="1" />
+			</Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

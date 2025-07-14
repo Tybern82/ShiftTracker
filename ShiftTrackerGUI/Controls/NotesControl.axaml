@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		  xmlns:c="using:ShiftTrackerGUI"
         xmlns:controls="using:ShiftTrackerGUI.Controls">
   
   <Design.PreviewWith>
@@ -11,6 +12,9 @@
   </Design.PreviewWith>
  
   <ControlTheme x:Key="{x:Type controls:NotesControl}" TargetType="controls:NotesControl">
+	  <ControlTheme.Resources>
+		  <c:PercentageConverter x:Key="pConvert" />
+	  </ControlTheme.Resources>
     <Setter Property="Template">
       <ControlTemplate>
         <Grid ColumnDefinitions="*" RowDefinitions="auto,*">
@@ -23,13 +27,14 @@
             Name="txtNotes"
             Text="{Binding NoteContent, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
             Margin="10" Padding="10"
-            MinHeight="200" MinWidth="350"
+            MinHeight="200" MinWidth="350" 
+				Width="{Binding $parent[Window].Width, Converter={StaticResource pConvert}, ConverterParameter='0.8'}" 
             TextWrapping="Wrap"
             AcceptsReturn="True"
             Watermark="Enter notes..."
             VerticalAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            />
+            VerticalContentAlignment="Stretch" />
+			  <!-- Set to 80% width of containing Window -->
         </Grid>
       </ControlTemplate>
     </Setter>

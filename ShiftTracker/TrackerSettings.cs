@@ -14,7 +14,7 @@ namespace com.tybern.ShiftTracker {
 
         public static TrackerSettings Instance = new TrackerSettings();
 
-        public string VersionString { get; } = "v2.0-pre3";
+        public string VersionString { get; } = "v2.0.2";
 
         private string _DBFile = DefaultDBFile;
         public string DBFile { 
@@ -33,6 +33,8 @@ namespace com.tybern.ShiftTracker {
 
         public SMTPRecord SMTP { get; set; } = new SMTPRecord();
         public WindowPosition MainWindowPosition { get; set; } = new WindowPosition();
+
+        public string PDFPassword { get; set; } = string.Empty;
 
         private Dictionary<string, WindowPosition> savedWindows { get; set; } = new Dictionary<string, WindowPosition>();
 
@@ -110,6 +112,11 @@ namespace com.tybern.ShiftTracker {
                 string? meetTime = configData.Value<string>(CONFIGKEY_MEET);
                 if (meetTime != null) MeetingTime = TimeSpan.Parse(meetTime);
             }
+
+            if (configData.ContainsKey(CONFIGKEY_EPWD)) {
+                string? epwd = configData.Value<string>( CONFIGKEY_EPWD);
+                if (epwd != null) PDFPassword = epwd;
+            }
         }
 
         private JObject encodeJSON() {
@@ -118,6 +125,7 @@ namespace com.tybern.ShiftTracker {
 
             _result.Add(CONFIGKEY_DBFILE, DBFile);
             _result.Add(CONFIGKEY_SMTP, SMTP.toJSON());
+            _result.Add(CONFIGKEY_EPWD, PDFPassword);
             _result.Add(CONFIGKEY_WPOS, MainWindowPosition.toJSON());
             _result.Add(CONFIGKEY_MEET, MeetingTime.ToString(@"hh\:mm"));
 
@@ -141,5 +149,6 @@ namespace com.tybern.ShiftTracker {
         private static readonly string CONFIGKEY_AWPS = "AdditionalWindows";
         private static readonly string CONFIGKEY_WPOS_NAME = "Name";
         private static readonly string CONFIGKEY_MEET = "MeetingTime";
+        private static readonly string CONFIGKEY_EPWD = "PDFPassword";
     }
 }

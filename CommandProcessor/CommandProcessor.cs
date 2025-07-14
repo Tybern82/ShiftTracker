@@ -14,6 +14,10 @@ namespace com.tybern.CMDProcessor {
     /// </summary>
     public class CommandProcessor {
 
+        public delegate void UIThreadCommand(Command cmd);
+
+        public static UIThreadCommand? RunAsUIThread { get; set; }
+
         private readonly BlockingCollection<Command> _commands = new BlockingCollection<Command>(new ConcurrentQueue<Command>());
 
         private bool _terminated = false;
@@ -65,7 +69,15 @@ namespace com.tybern.CMDProcessor {
                         Terminated = true;      // ensure any other threads identify termination
                         break;                  // auto-close this thread
                     } else {
-                        cmd.Process();
+                        switch (cmd.Type) {
+                            case Command.RunThread.Background:
+                                cmd.Process();
+                                break;
+
+                            case Command.RunThread.UIThread:
+                                RunAsUIThread?.Invoke(cmd);     // UI Toolkit needs to provide implementation of this method to call the command on the UI Thread
+                                break;
+                        }
                     }
                 }
             });

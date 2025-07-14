@@ -4,10 +4,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:ShiftTrackerGUI.Views;assembly=ShiftTrackerGUI"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="860"
+		  MinHeight="780" MinWidth="450"
         x:Class="ShiftTrackerGUI.CallTransferWindow"
         RequestedThemeVariant="Light"
         Title="CallTransferWindow">
-    <StackPanel>
-      <view:CallTransferView Name="vCallTransfer" />
-    </StackPanel>
+    <Grid ColumnDefinitions="*" RowDefinitions="auto" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+      <view:CallTransferView Name="vCallTransfer" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" />
+    </Grid>
 </Window>

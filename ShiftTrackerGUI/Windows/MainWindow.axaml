@@ -11,11 +11,7 @@
         RequestedThemeVariant="Light"
         Title="ShiftTrackerGUI">
   <Grid RowDefinitions="*,auto" ColumnDefinitions="*">
-    <ScrollViewer>
-      <views:MainView Name="pMainView" Grid.Row="0" Grid.Column="0" />
-    </ScrollViewer>
-    <Grid Name="statusPanel" RowDefinitions="*" ColumnDefinitions="*" Grid.Row="1" Grid.Column="0">
-      <TextBox Name="statusBarText" IsEnabled="False" Height="20" TextAlignment="Right" Grid.Row="0" Grid.Column="0" /> 
-    </Grid>
+    <views:MainView Name="pMainView" Grid.Row="0" Grid.Column="0" />
+	  <views:StatusBarView Name="pStatusBar" Grid.Row="1" Grid.Column="0" />
   </Grid>
 </Window>

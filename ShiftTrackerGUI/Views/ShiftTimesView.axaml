@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:com.tybern.ShiftTracker.data;assembly=ShiftTracker"
+				 xmlns:controls="using:ShiftTrackerGUI.Controls"
              xmlns:nsenum="clr-namespace:EnumBindingWithDescription"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:WorkShift"
@@ -31,8 +32,8 @@
       <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="0" Content="Clear" Name="btnClearDay" />
       <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="0" Content="Week" Name="btnEditWeek" />
       
-      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="1" Content="+ 7:50" Name="btnStandardShift" />
-      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="1" Content="+ 7:55" Name="btnExtendedShift" />
+      <Button Classes="MainWindowButton" Grid.Column="0" Grid.Row="1" Content="+7:50" Name="btnStandardShift" />
+      <Button Classes="MainWindowButton" Grid.Column="1" Grid.Row="1" Content="+7:55" Name="btnExtendedShift" />
     </Grid>
 
     <HeaderedContentControl Classes="GroupBox" Header="Breaks" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
@@ -67,14 +68,14 @@
             <DataGridTemplateColumn Header="Break Start">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding StartTime}" />
+						 <controls:TunedTimePicker ActiveTime="{Binding StartTime}" IsFine="{Binding IsFine}" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTemplateColumn Header="Break End">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <TimePicker Classes="MainWindowTimeSpan" SelectedTime="{Binding EndTime}" />
+						 <controls:TunedTimePicker ActiveTime="{Binding EndTime}" IsFine="{Binding IsFine}" />
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

@@ -12,7 +12,7 @@ namespace com.tybern.CMDProcessor {
     /// Command instance the internal function returns; caller can pass in a suitably configured CTerminate which the calling
     /// function returns, without providing direct access to the CommandProcessor instance).
     /// </summary>
-    public class CTerminate : Command {
+    public class CTerminate : BackgroundCommand {
 
         private CommandProcessor _proc;
 
@@ -29,7 +29,7 @@ namespace com.tybern.CMDProcessor {
         /// NOTE: This operation is normally not called as default CommandProcessor auto-detects the CTerminate
         /// command and processes internally.
         /// </summary>
-        public void Process() {
+        public override void Process() {
             _proc.Terminated = true;
         }
     }

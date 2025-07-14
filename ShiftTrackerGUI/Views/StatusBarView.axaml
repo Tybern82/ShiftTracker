@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				 xmlns:model="using:ShiftTrackerGUI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+				 x:DataType="model:StatusBarModel"
+             x:Class="ShiftTrackerGUI.Views.StatusBarView">
+	<Design.DataContext>
+		<model:StatusBarModel />
+	</Design.DataContext>
+	<Grid Name="statusPanel" RowDefinitions="*" ColumnDefinitions="*,auto">
+		<TextBox Name="decayStatus" 
+					IsEnabled="False" 
+					Height="20" 
+					TextAlignment="Left" 
+					Grid.Row="0" Grid.Column="0" 
+					Text="{Binding StatusText}" 
+					BorderThickness="0" CornerRadius="0" />
+		<TextBox Name="statusBarText" 
+					IsEnabled="False" 
+					Height="20" 
+					TextAlignment="Right" 
+					Grid.Row="0" Grid.Column="1" 
+					Text="{Binding StatusVersion}" 
+					BorderThickness="0" CornerRadius="0"/>
+	</Grid>
+</UserControl>

@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using com.tybern.ShiftTracker.enums;
 
 namespace com.tybern.ShiftTracker.data {
     public class CallRecord : NoteRecord, AutoNoteStore {
+
+
+        public static IEnumerable<CallType> MODELS = Enum.GetValues(typeof(CallType)).Cast<CallType>();
+        public IEnumerable<CallType> Models { get { return MODELS; } }
 
         public CallRecord(DateTime startTime) : base(startTime) { }
 
@@ -51,6 +56,15 @@ namespace com.tybern.ShiftTracker.data {
             set {
                 _TransferCount = value;
                 onPropertyChanged(nameof(TransferCount));
+            }
+        }
+
+        private int _CallbackCount = 0;
+        public int CallbackCount {
+            get => _CallbackCount;
+            set {
+                _CallbackCount = value;
+                onPropertyChanged(nameof(CallbackCount));
             }
         }
 

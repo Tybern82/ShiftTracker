@@ -44,6 +44,8 @@ namespace com.tybern.ShiftTracker.db {
 
         [Column("transferCount")] public int TransferCount { get; set; }
 
+        [Column("callbackCount")] public int CallbackCount { get; set; }
+
         [Column("isPrefName")] public bool isPreferredName { get; set; }
 
         [Ignore] public SurveyStatus Survey { get; set; }
@@ -77,6 +79,7 @@ namespace com.tybern.ShiftTracker.db {
             this.WrapTime = cr.WrapTime;
             this.TransferTime = cr.TransferTime;
             this.TransferCount = cr.TransferCount;
+            this.CallbackCount = cr.CallbackCount;
             this.isPreferredName = cr.IsPreferredNameRequested;
             this.Survey = cr.Survey;
             this.Type = cr.Type;
@@ -91,6 +94,7 @@ namespace com.tybern.ShiftTracker.db {
                 WrapTime = this.WrapTime,
                 TransferTime = this.TransferTime,
                 TransferCount = this.TransferCount,
+                CallbackCount = this.CallbackCount,
                 IsPreferredNameRequested = this.isPreferredName,
                 Survey = this.Survey,
                 Type = this.Type,

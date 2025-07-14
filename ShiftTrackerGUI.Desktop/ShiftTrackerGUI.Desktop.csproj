@@ -52,6 +52,12 @@
 
     <SignToolExe Condition=" '$(SignToolFolder)' != '' ">$(SignToolFolder)SignTool.exe</SignToolExe>
 
+    <FileVersion>2.0.0</FileVersion>
+
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+
+    <NeutralLanguage>en-AU</NeutralLanguage>
+
   </PropertyGroup>
 
 
@@ -65,7 +71,7 @@
     <Message Importance="High" Text="SignToolExe = $(SignToolExe)" />
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;$(SignToolExe)&quot; sign /a /t http://timestamp.sectigo.com /fd SHA384 &quot;$(TargetPath)&quot;"  Condition="$(ConfigurationName) == Release"/>
+    <Exec Command="&quot;$(SignToolExe)&quot; sign /a /t http://timestamp.sectigo.com /fd SHA384 &quot;$(TargetPath)&quot;" Condition="$(ConfigurationName) == Release" />
     <!-- <Exec Command="&quot;$(SignToolExe)&quot; sign /n &quot;Jeff Sweeney&quot; /a /t http://timestamp.sectigo.com /fd SHA384 &quot;$(TargetPath)&quot;"  Condition="$(ConfigurationName) == Release"/> -->
   </Target>
 </Project>

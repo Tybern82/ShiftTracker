@@ -15,8 +15,9 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <!-- Don't miss this line -->
-        <ResourceInclude Source="/Controls/NotesControl.axaml" />
-        <ResourceInclude Source="/Controls/SegmentTimer.axaml" />
+         <ResourceInclude Source="/Controls/NotesControl.axaml" />
+         <ResourceInclude Source="/Controls/SegmentTimer.axaml" />
+			<ResourceInclude Source="/Controls/TunedTimePicker.axaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

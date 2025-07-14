@@ -7,6 +7,7 @@ using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
 using com.tybern.ShiftTracker.db;
 using com.tybern.ShiftTracker.enums;
+using com.tybern.ShiftTracker.reports;
 using ShiftTrackerGUI.ViewModels;
 using StateMachine;
 
@@ -24,11 +25,7 @@ public partial class MainView : UserControl {
         DataContext = ViewModel;
 
         // pCurrentTime.DataContext = pCurrentTime;
-
-        TrackerSettings.Instance.SMTP.Host = "app.titan.email";
-        pSMTPSettings.SMTP = TrackerSettings.Instance.SMTP;
-
-        pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(DateTime.Now.Date) ?? new WorkShift(DateTime.Now);
+        pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(DateTime.Today) ?? new WorkShift(DateTime.Today);
         ViewModel.ShiftState.ActiveShift = pShiftTimes.ActiveShift;
 
         pShiftTimes.onSelectDate += (oldDate, newDate) => {

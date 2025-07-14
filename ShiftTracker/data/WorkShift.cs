@@ -138,7 +138,10 @@ namespace com.tybern.ShiftTracker.data {
         }
 
         public void doAddAllDayBreak() {
-            Breaks.Add(new WorkBreak() { Type = BreakType.PersonalLeave, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.EndTime });
+            // Schedules Lunch break around halfway through the shift
+            Breaks.Add(new WorkBreak() { Type = BreakType.PersonalLeave, CurrentDate = this.CurrentDate, StartTime = this.StartTime, EndTime = this.StartTime + TimeSpan.FromHours(4) });
+            Breaks.Add(new WorkBreak() { Type = BreakType.LunchBreak, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromHours(4), EndTime = this.StartTime + TimeSpan.FromHours(4) + LUNCH_LENGTH });
+            Breaks.Add(new WorkBreak() { Type = BreakType.PersonalLeave, CurrentDate = this.CurrentDate, StartTime = this.StartTime + TimeSpan.FromHours(4) + LUNCH_LENGTH, EndTime = this.EndTime });
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

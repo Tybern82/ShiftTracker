@@ -3,11 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
-             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="780" Width="600" Height="780"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="780" 
+				 Width="450" Height="780" MinWidth="450"
              x:Class="ShiftTrackerGUI.Views.CallTransferView">
-  <Grid ColumnDefinitions="*,2*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+  <Grid ColumnDefinitions="auto,*,auto,auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
     <TextBlock Classes="MainWindowTitle" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">Transfer</TextBlock>
-    <controls:SegmentTimer Name="tTransferTime" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
+    <controls:SegmentTimer Name="tTransferTime" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" />
     <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">Add details and select "Save" when closing SME call - time will calculate automatically: </TextBlock>
     <Border Background="Gainsboro"
           BorderBrush="Black"
