@@ -209,6 +209,16 @@ public partial class MainWindow : Window {
             };
         }
 
+        Transition? endTransfer = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_TRANSFER), State.getState(CallSM.CALL_INWRAP));
+        if (endTransfer != null) {
+            if ((pMainView.ViewModel.CallState.CurrentCall != null) && (pMainView.ViewModel.CallState.CurrentCall?.Survey == SurveyStatus.Missing)) {
+                // Record Transfer for Survey if not already set on the call (if already set, will retain existing value)
+                pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.Transfer;
+                pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
+
+            }
+        }
+
         State.getState(CallSM.CALL_SME).enterState += (s, param) => {
             SMECallWindow wndSMECall = new SMECallWindow(pMainView.ViewModel.CallState);    // link to common notes
 

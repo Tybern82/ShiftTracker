@@ -36,6 +36,10 @@ public partial class CallTransferView : UserControl {
         [TooltipDescription("Agent transfer to Foxtel (transfers to Foxtel Agent)")]
         Foxtel,
 
+        [Description("5G Home Internet")]
+        [TooltipDescription("Agent transfer to 5G Home Internet team")]
+        Upfront5G,
+
         [Description("Need for Speed / ADSL L2 Team")]
         [TooltipDescription("Agent transfer to Need for Speed (ADSL L2 Testers)")]
         NFS,
@@ -75,6 +79,7 @@ public partial class CallTransferView : UserControl {
         setContent(rPSTN, TransferType.PSTN);
         setContent(rBusiness, TransferType.Business);
         setContent(rFoxtel, TransferType.Foxtel);
+        setContent(rUpfront5G, TransferType.Upfront5G);
         setContent(rNFS, TransferType.NFS);
         setContent(rCOAT, TransferType.COAT);
         setContent(rMoves, TransferType.Moves);
