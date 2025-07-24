@@ -116,6 +116,14 @@ public partial class MainWindow : Window {
             }
         };
 
+        pMainView.btnSystemIssue.Click += (sender, args) => {
+            doImmediateBreak(BreakType.SystemIssue);
+        };
+
+        pMainView.btnCoaching.Click += (sender, args) => {
+            doImmediateBreak(BreakType.Coaching);
+        };
+
         pMainView.pShiftTimes.onEditWeek += () => {
             DateTime currentDate = pMainView.pShiftTimes.fDateSelector.SelectedDate.HasValue ? pMainView.pShiftTimes.fDateSelector.SelectedDate.Value.Date : DateTime.Now.Date;
             DBShiftTracker.Instance.save(pMainView.pShiftTimes.ActiveShift);    // save any current edits before trying to load
@@ -152,6 +160,8 @@ public partial class MainWindow : Window {
                 }
             };
             wndSkipSurvey.vSkipSurvey.onSave += () => {
+                string note = wndSkipSurvey.vSkipSurvey.pNotes.NoteContent;
+                if (!string.IsNullOrWhiteSpace(note)) pMainView.ViewModel.CallState.appendNote("Survey: [" + note + "]");
                 pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
                 wndSkipSurvey.Close();
             };
@@ -207,16 +217,21 @@ public partial class MainWindow : Window {
                 }
                 pMainView.cmbCallType.IsEnabled = false;
             };
+        } else {
+            LOG.Error("Mising Transition: <Wrap> -> <Waiting>");
         }
 
         Transition? endTransfer = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_TRANSFER), State.getState(CallSM.CALL_INWRAP));
         if (endTransfer != null) {
-            if ((pMainView.ViewModel.CallState.CurrentCall != null) && (pMainView.ViewModel.CallState.CurrentCall?.Survey == SurveyStatus.Missing)) {
-                // Record Transfer for Survey if not already set on the call (if already set, will retain existing value)
-                pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.Transfer;
-                pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
-
-            }
+            endTransfer.onTransition += (oldState, newState) => {
+                if ((pMainView.ViewModel.CallState.CurrentCall != null) && (pMainView.ViewModel.CallState.CurrentCall?.Survey == SurveyStatus.Missing)) {
+                    // Record Transfer for Survey if not already set on the call (if already set, will retain existing value)
+                    pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.Transfer;
+                    pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
+                }
+            };
+        } else {
+            LOG.Error("Missing Transition: <Transfer> -> <Wrap>");
         }
 
         State.getState(CallSM.CALL_SME).enterState += (s, param) => {
@@ -244,5 +259,25 @@ public partial class MainWindow : Window {
 
             TrackerSettings.Instance.saveConfigFile();
         };
+    }
+
+    private void doImmediateBreak(BreakType type) {
+        ImmediateBreakWindow wndBreak = new ImmediateBreakWindow();
+        string desc = EnumConverter.GetEnumDescription(type);
+        wndBreak.Title = desc;
+        wndBreak.vImmediateBreak.pNotes.Title = desc;
+        wndBreak.vImmediateBreak.onClose += () => {
+            wndBreak.Close();
+            string notes = wndBreak.vImmediateBreak.pNotes.NoteContent;
+            if (!string.IsNullOrWhiteSpace(notes)) {
+                NoteRecord nr = wndBreak.vImmediateBreak.pTimer.createNote(notes);
+                nr.prependNote(desc);
+                pMainView.ViewModel.CallState.updateNote(nr);
+                DBShiftTracker.Instance.save(nr);
+            }
+            WorkBreak brk = wndBreak.vImmediateBreak.pTimer.createBreak(type);
+            pMainView.ViewModel.ShiftState.ActiveShift.Breaks.Add(brk); // don't update NextBreak
+        };
+        wndBreak.ShowDialog(this);
     }
 }

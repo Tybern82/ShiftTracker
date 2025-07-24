@@ -21,14 +21,49 @@ namespace com.tybern.ShiftTracker.data {
 
         public ObservableCollection<CallRecord> Calls { get; } = new ObservableCollection<CallRecord>();
 
+        private int _TotalCalls = 0;
+        public int TotalCalls {
+            get => _TotalCalls;
+            set {
+                _TotalCalls = value;
+                onPropertyChanged(nameof(TotalCalls));
+            }
+        }
+
+        private TimeSpan _TotalCallTime = TimeSpan.Zero;
+        public TimeSpan TotalCallTime {
+            get => _TotalCallTime;
+            set {
+                _TotalCallTime = value;
+                onPropertyChanged(nameof(TotalCallTime));
+            }
+        }
+
+        private TimeSpan _CurrentTime = TimeSpan.Zero;
+        public TimeSpan CurrentTime {
+            get => _CurrentTime;
+            set {
+                if (_CurrentTime != value) {
+                    _CurrentTime = value;
+                    onPropertyChanged(nameof(CurrentTime));
+                }
+            }
+        }
+
         public void updateCall(CallRecord call) {
             if (Calls.Contains(call)) {    
                 foreach (var c in Calls) {
-                    if (c.Equals(call)) c.PropertyChanged -= saveCallUpdates;
+                    if (c.Equals(call)) {
+                        c.PropertyChanged -= saveCallUpdates;
+                        TotalCallTime -= c.CallTime;
+                    }
                 }
                 Calls.Remove(call);
+                TotalCalls--;
             }
             Calls.Add(call);
+            TotalCalls++;
+            TotalCallTime += call.CallTime;
             call.PropertyChanged += saveCallUpdates;
         }
 
@@ -147,6 +182,14 @@ namespace com.tybern.ShiftTracker.data {
                 .add(callWaiting, callSME, false)       // Waiting <=> SME
                 .add(callActive, callSME, false)        // Active  <=> SME
                 .add(callInWrap, callSME, false);       // Wrap    <=> SME
+
+            ClockTimer.GlobalTimer.ClockUpdate += (currTime) => {
+                if (CurrentCall != null) {
+                    CurrentTime = currTime - CurrentCall.StartTime;
+                } else {
+                    CurrentTime = TimeSpan.Zero;
+                }
+            };
 
             Transition? initialCall = callState.getTransition(callWaiting, callActive);
             if (initialCall != null) {

@@ -23,6 +23,8 @@ namespace com.tybern.ShiftTracker.data {
             }
         }
 
+        public TimeSpan CallTime => EndTime - StartTime;
+
         private TimeSpan _SMETIme = TimeSpan.Zero;
         public TimeSpan SMETime {
             get => _SMETIme;

@@ -39,7 +39,7 @@
 									 ItemsSource="{Binding Models}"
 									 SelectedItem="{Binding CallState.Type}"
 									 VerticalAlignment="Center"
-									 HorizontalAlignment="Center"
+									 HorizontalAlignment="Right"
 									 IsEnabled="false"
 									 Grid.Column="0" Grid.Row="2">
 							<ComboBox.ItemTemplate>
@@ -48,12 +48,25 @@
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>
-						<Button Name="btnSystemIssue" Classes="MainWindowButton" Content="System Issue" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" />
+						<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" Grid.Column="1" Grid.Row="2">
+							<Button Name="btnSystemIssue" Classes="MainWindowButton" Content="System Issue" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" />
+							<Button Name="btnCoaching" Classes="MainWindowButton" Content="Coaching" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" />
+						</Grid>
 						
 						<view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" />
 						<view:NoteControlsView Name="pNoteControls" Width="450" Height="120" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" />
 						<Separator Margin="20" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" />
-						<!-- Shift Stats -->
+						<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6">
+							<!-- Shift Stats -->
+							<TextBlock Text="Call Time: " FontSize="18" FontFamily="Lato" />
+							<TextBlock Text="{Binding CallState.CurrentTime, StringFormat='hh\\:mm\\:ss'}" FontSize="18" FontFamily="Lato" />
+							<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
+							<TextBlock Text="Total Calls: " FontSize="18" FontFamily="Lato" />
+							<TextBlock Text="{Binding CallState.TotalCalls}" FontSize="18" FontFamily="Lato" />
+							<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
+							<TextBlock Text="Total Time: " FontSize="18" FontFamily="Lato" />
+							<TextBlock Text="{Binding CallState.TotalCallTime, StringFormat='hh\\:mm\\:ss'}" FontSize="18" FontFamily="Lato" />
+						</StackPanel>
 						<Separator Margin="20" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" />
 						<controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" />
 					</Grid>

@@ -129,7 +129,7 @@ namespace com.tybern.ShiftTracker.reports {
                 totalSMETime += c.SMETime;
                 totalTransferTime += c.TransferTime;
                 totalWrapTime += c.WrapTime;
-                TimeSpan callTime = c.EndTime - c.StartTime;
+                TimeSpan callTime = c.CallTime;
                 totalCallTime += callTime;
 
                 totalCallbacks += c.CallbackCount;

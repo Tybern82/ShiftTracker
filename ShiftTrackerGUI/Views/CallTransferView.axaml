@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:ShiftTrackerGUI.Controls;assembly=ShiftTrackerGUI"
-             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="780" 
-				 Width="450" Height="780" MinWidth="450"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="840" 
+				 Width="450" Height="840" MinWidth="450" MinHeight="820"
              x:Class="ShiftTrackerGUI.Views.CallTransferView">
   <Grid ColumnDefinitions="auto,*,auto,auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
     <TextBlock Classes="MainWindowTitle" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4">Transfer</TextBlock>
     <controls:SegmentTimer Name="tTransferTime" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" />
-    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">Add details and select "Save" when closing SME call - time will calculate automatically: </TextBlock>
+    <TextBlock Margin="15 10" FontSize="14" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">Add details and select "Transfer" to hand off, or close if retaining caller: </TextBlock>
     <Border Background="Gainsboro"
           BorderBrush="Black"
           BorderThickness="2"
