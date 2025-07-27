@@ -28,7 +28,8 @@ public partial class MainWindow : Window {
             EZFontResolver fonts = EZFontResolver.Get;
             GlobalFontSettings.FontResolver = fonts;
             GlobalFontSettings.FallbackFontResolver = new SubstitutingFontResolver.SubstitutingFontResolver();
-            fonts.AddFont("Glance Cherry", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\GlanceCherry-dr82Z.ttf");
+            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\ZtOtezRegular-0v504.ttf");
+            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Italic, @".\fonts\ZtOtezItalic-ovYyV.ttf");
             fonts.AddFont("Maragsa Display", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\MaragsaDisplay-GO6PD.ttf");
         }
         isFRSet = true;
@@ -75,7 +76,7 @@ public partial class MainWindow : Window {
 
         statusBar.StatusVersion = TrackerSettings.Instance.VersionString;
 
-        pMainView.pSMTPSettings.SMTP = TrackerSettings.Instance.SMTP;
+        pMainView.vSettings.pSMTPSettings.SMTP = TrackerSettings.Instance.SMTP;
         pMainView.ViewModel.PDFPassword = TrackerSettings.Instance.PDFPassword; // ensure reload now the config file has been loaded
         pMainView.ViewModel.MeetingTime = TrackerSettings.Instance.MeetingTime;
 

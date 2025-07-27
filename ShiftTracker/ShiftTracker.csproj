@@ -32,6 +32,12 @@
     <None Update="fonts\MaragsaDisplay-GO6PD.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="fonts\ZtOtezItalic-ovYyV.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="fonts\ZtOtezRegular-0v504.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="700"
+				 MinWidth="600" MinHeight="700"
+             xmlns:view="clr-namespace:ShiftTrackerGUI.Views"
+             xmlns:model="clr-namespace:ShiftTrackerGUI.ViewModels"
+             x:Class="ShiftTrackerGUI.Views.MVSettingsView"
+             x:DataType="model:MainViewModel">
+	<Design.DataContext>
+		<model:MainViewModel />
+	</Design.DataContext>
+	<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto,*,auto,auto,auto,auto" HorizontalAlignment="Center">
+		<view:SMTPSettingsView Name="pSMTPSettings" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+
+		<TextBlock Text="PDF Password: " Classes="MainWindowLabel" Grid.Row="1" Grid.Column="0" />
+		<TextBox Name="txtPDFPassword" Text="{Binding PDFPassword, Mode=TwoWay}" Classes="MainWindowEntry" Watermark="PDF Password..." PasswordChar="•" Grid.Row="1" Grid.Column="1" />
+
+		<TextBlock Text="Standard Meeting Time: " Classes="MainWindowLabel" Grid.Row="2" Grid.Column="0" />
+		<TimePicker Name="tMeetingTime" SelectedTime="{Binding MeetingTime, Mode=TwoWay}" Classes="MainWindowTimeSpan" Grid.Row="2" Grid.Column="1" />
+
+		<!-- Auto-Fill space - pushes items below to the bottom of the container -->
+		
+		<Separator Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" />
+		<StackPanel Orientation="Vertical" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+			<HyperlinkButton Name="hlkFontZTOtez" Content="Font: ZT Otez" HorizontalAlignment="Center" />
+			<TextBlock Text="License: Freeware" HorizontalAlignment="Center" />
+		</StackPanel>
+
+		<Separator Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" />
+		<StackPanel Orientation="Vertical" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
+			<HyperlinkButton Name="hlkFontMaragsa" Content="Font: Maragsâ" HorizontalAlignment="Center" />
+			<TextBlock Text="License: Freeware" HorizontalAlignment="Center" />
+		</StackPanel>
+	</Grid>
+</UserControl>

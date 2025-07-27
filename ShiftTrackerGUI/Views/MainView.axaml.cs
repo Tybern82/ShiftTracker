@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Avalonia.Controls;
 using com.tybern.ShiftTracker;
@@ -17,12 +19,13 @@ public partial class MainView : UserControl {
 
     protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
-    public MainViewModel ViewModel { get; private set; } = new MainViewModel();
+    public MainViewModel ViewModel { get; private set; } = new MainViewModel(); 
 
     public MainView() {
         InitializeComponent();
 
         DataContext = ViewModel;
+        vSettings.DataContext = ViewModel;
 
         // pCurrentTime.DataContext = pCurrentTime;
         pShiftTimes.ActiveShift = DBShiftTracker.Instance.loadWorkShift(DateTime.Today) ?? new WorkShift(DateTime.Today);
