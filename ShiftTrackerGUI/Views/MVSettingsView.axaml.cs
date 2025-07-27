@@ -11,6 +11,8 @@ public partial class MVSettingsView : UserControl {
 
     private static readonly string ZTOtezFont = "https://www.fontspace.com/zt-otez-font-f146082";
     private static readonly string MaragsaFont = "https://www.fontspace.com/maragsa-font-f48694";
+    private static readonly string MainIcon = "https://www.flaticon.com/free-icons/history";
+    private static readonly string MainIconLink = "https://www.flaticon.com/free-icon/track_10210591";
 
     private void OpenURL(string url) {
         try {
@@ -35,5 +37,7 @@ public partial class MVSettingsView : UserControl {
 
         hlkFontZTOtez.Click += (sender, args) => OpenURL(ZTOtezFont);
         hlkFontMaragsa.Click += (sender, args) => OpenURL(MaragsaFont);
+        hlkMainIcon.Click += (sender, args) => OpenURL(MainIcon);
+        hlkIconLink.Click += (sender, args) => OpenURL(MainIconLink);
     }
 }

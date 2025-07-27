@@ -11,7 +11,7 @@
 	<Design.DataContext>
 		<model:MainViewModel />
 	</Design.DataContext>
-	<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto,*,auto,auto,auto,auto" HorizontalAlignment="Center">
+	<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto,*,auto,auto,auto,auto,auto,auto" HorizontalAlignment="Center">
 		<view:SMTPSettingsView Name="pSMTPSettings" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
 
 		<TextBlock Text="PDF Password: " Classes="MainWindowLabel" Grid.Row="1" Grid.Column="0" />
@@ -32,6 +32,12 @@
 		<StackPanel Orientation="Vertical" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">
 			<HyperlinkButton Name="hlkFontMaragsa" Content="Font: Maragsâ" HorizontalAlignment="Center" />
 			<TextBlock Text="License: Freeware" HorizontalAlignment="Center" />
+		</StackPanel>
+
+		<Separator Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" />
+		<StackPanel Orientation="Vertical" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2">
+			<HyperlinkButton Name="hlkMainIcon" Content="History icons created by Vectors Tank - Flaticon" HorizontalAlignment="Center" />
+			<HyperlinkButton Name="hlkIconLink" Content="(Specific Icon)" HorizontalAlignment="Center" />
 		</StackPanel>
 	</Grid>
 </UserControl>
