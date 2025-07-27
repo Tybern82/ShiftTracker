@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -28,9 +29,13 @@ public partial class MainWindow : Window {
             EZFontResolver fonts = EZFontResolver.Get;
             GlobalFontSettings.FontResolver = fonts;
             GlobalFontSettings.FallbackFontResolver = new SubstitutingFontResolver.SubstitutingFontResolver();
-            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\ZtOtezRegular-0v504.ttf");
-            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Italic, @".\fonts\ZtOtezItalic-ovYyV.ttf");
-            fonts.AddFont("Maragsa Display", PdfSharp.Drawing.XFontStyleEx.Regular, @".\fonts\MaragsaDisplay-GO6PD.ttf");
+            string path = Path.GetDirectoryName(Environment.ProcessPath) ?? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? ".";   // Try ProcessPath; Fallback to Assembly path; Fallback to current directory
+            LOG.Info("Program Path: " + path);
+            LOG.Debug("Loading Font: ZT Otez");
+            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Regular, Path.Combine(path, @"fonts\ZtOtezRegular-0v504.ttf"));
+            fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Italic, Path.Combine(path, @"fonts\ZtOtezItalic-ovYyV.ttf"));
+            LOG.Debug("Loading Font: Maragsâ");
+            fonts.AddFont("Maragsa Display", PdfSharp.Drawing.XFontStyleEx.Regular, Path.Combine(path, @"fonts\MaragsaDisplay-GO6PD.ttf"));
         }
         isFRSet = true;
     }
