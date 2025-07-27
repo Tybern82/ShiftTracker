@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -78,42 +79,33 @@ public partial class MainWindow : Window {
         pMainView.ViewModel.PDFPassword = TrackerSettings.Instance.PDFPassword; // ensure reload now the config file has been loaded
         pMainView.ViewModel.MeetingTime = TrackerSettings.Instance.MeetingTime;
 
-        pMainView.btnDailyReportSend.Click += (sender, args) => {
+        pMainView.btnDailyReportSend.Click += async (sender, args) => {
             // TODO: Move to separate thread (CMDProcessor?)
-            statusBar.StatusText = "Generating report...";
             DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
-            PdfSharp.Pdf.PdfDocument report = new DailyReport(dt).generate();
-            MemoryStream output = new MemoryStream();
-            report.Save(output, false);
-            statusBar.StatusText = "Sending report...";
-            List<MimeEntity> attachments = new List<MimeEntity>();
-            MimeEntity e = MimeEntity.Load(new ContentType("application", "pdf"), output);
-            e.ContentType.Name = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE) + ".pdf";
-            attachments.Add(e);
-            SMTPRecord.SMTPSendResponse sendResult = TrackerSettings.Instance.SMTP.sendMail("Daily Report: " + dt.ToString(DBShiftTracker.FORMAT_DATE), "see attached", attachments);
-            statusBar.StatusText = ((sendResult.Success ? "Sent" : "Not Sent") + (string.IsNullOrWhiteSpace(sendResult.Error) ? string.Empty : ": " + sendResult.Error));
+            DailyReport dr = new DailyReport(dt);
+            string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
+            await doSendReport(dr, reportName);
         };
 
         pMainView.btnDailyReportSave.Click += async (sender, args) => {
-            statusBar.StatusText = "Generating report...";
             DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
-            PdfSharp.Pdf.PdfDocument report = new DailyReport(dt).generate();
+            DailyReport dr = new DailyReport(dt);
+            string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
+            await doSaveReport(dr, reportName);
+        };
 
-            var topLevel = TopLevel.GetTopLevel(this);
-            if (topLevel != null) {
-                var file = await topLevel.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions {
-                    Title = "Save Report File",
-                    DefaultExtension = "pdf",
-                    SuggestedFileName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE) + ".pdf",
-                    SuggestedStartLocation = await topLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents)
-                });
+        pMainView.btnEOFYReportSend.Click += async (sender, args) => {
+            DateTime dt = pMainView.dtEOFYReport.SelectedDate ?? DateTime.Today;
+            WFHReport dr = new WFHReport(dt);
+            string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
+            await doSendReport(dr, reportName);
+        };
 
-                if (file is not null) {
-                    string fname = file.TryGetLocalPath() ?? Path.Combine(file.Path.AbsolutePath, file.Name);
-                    report.Save(fname);
-                    statusBar.StatusText = "Report saved...";
-                }
-            }
+        pMainView.btnEOFYReportSave.Click += async (sender, args) => {
+            DateTime dt = pMainView.dtEOFYReport.SelectedDate ?? DateTime.Today;
+            WFHReport dr = new WFHReport(dt);
+            string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
+            await doSaveReport(dr, reportName);
         };
 
         pMainView.btnSystemIssue.Click += (sender, args) => {
@@ -279,5 +271,40 @@ public partial class MainWindow : Window {
             pMainView.ViewModel.ShiftState.ActiveShift.Breaks.Add(brk); // don't update NextBreak
         };
         wndBreak.ShowDialog(this);
+    }
+
+    private async Task doSendReport(BaseReport report, string reportName) {
+        statusBar.StatusText = "Generating report...";
+        PdfSharp.Pdf.PdfDocument reportDocument = report.generate();
+        MemoryStream output = new MemoryStream();
+        reportDocument.Save(output);
+        statusBar.StatusText = "Sending report...";
+        List<MimeEntity> attachments = new List<MimeEntity>();
+        MimeEntity e = MimeEntity.Load(new ContentType("application", "pdf"), output);
+        e.ContentType.Name = reportName + ".pdf";
+        attachments.Add(e);
+        SMTPRecord.SMTPSendResponse sendResult = TrackerSettings.Instance.SMTP.sendMail(reportName, "see attached", attachments);
+        statusBar.StatusText = ((sendResult.Success ? "Sent" : "Not Sent") + (string.IsNullOrWhiteSpace(sendResult.Error) ? string.Empty : ": " + sendResult.Error));
+    }
+
+    private async Task doSaveReport(BaseReport report, string reportName) {
+        statusBar.StatusText = "Generating report...";
+        PdfSharp.Pdf.PdfDocument reportDocument = report.generate();
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel != null) {
+            var file = await topLevel.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions {
+                Title = "Save Report File",
+                DefaultExtension = "pdf",
+                SuggestedFileName = reportName + ".pdf",
+                SuggestedStartLocation = await topLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents)
+            });
+
+            if (file is not null) {
+                string fname = file.TryGetLocalPath() ?? Path.Combine(file.Path.AbsolutePath, file.Name);
+                reportDocument.Save(fname);
+                statusBar.StatusText = "Report saved...";
+            }
+        }
     }
 }

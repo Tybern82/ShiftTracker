@@ -41,6 +41,8 @@ namespace com.tybern.ShiftTracker.data {
                     case BreakType.Meeting:
                         EndTime = StartTime + TimeSpan.FromMinutes(15); break;
 
+                    default:
+                        EndTime = StartTime; break;
                 }
             }
         }

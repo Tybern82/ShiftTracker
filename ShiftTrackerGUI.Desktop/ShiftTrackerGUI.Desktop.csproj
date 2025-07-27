@@ -52,9 +52,9 @@
 
     <SignToolExe Condition=" '$(SignToolFolder)' != '' ">$(SignToolFolder)SignTool.exe</SignToolExe>
 
-    <FileVersion>2.0.0</FileVersion>
+    <FileVersion>2.1.2</FileVersion>
 
-    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <AssemblyVersion>2.1.2</AssemblyVersion>
 
     <NeutralLanguage>en-AU</NeutralLanguage>
 

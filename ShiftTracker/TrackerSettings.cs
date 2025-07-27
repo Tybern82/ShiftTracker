@@ -14,7 +14,7 @@ namespace com.tybern.ShiftTracker {
 
         public static TrackerSettings Instance = new TrackerSettings();
 
-        public string VersionString { get; } = "v2.1.0";
+        public string VersionString { get; } = "v2.1.2";
 
         private string _DBFile = DefaultDBFile;
         public string DBFile { 

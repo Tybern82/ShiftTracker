@@ -47,6 +47,18 @@ namespace com.tybern.ShiftTracker.data {
             set { _EndTime = value; onPropertyChanged(nameof(EndTime)); }
         }
 
+        public TimeSpan Length {
+            get {
+                if (EndTime < StartTime) {
+                    DateTime sdt = WorkBreak.fromCurrent(CurrentDate, StartTime);
+                    DateTime edt = WorkBreak.fromCurrent(CurrentDate + TimeSpan.FromDays(1), EndTime);
+                    return edt - sdt;
+                } else {
+                    return EndTime - StartTime;
+                }
+            }
+        }
+
         public ObservableCollection<WorkBreak> Breaks { get; } = new ObservableCollection<WorkBreak>();
 
         public WorkShift(DateTime dt) {

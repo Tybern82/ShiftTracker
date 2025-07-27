@@ -10,6 +10,12 @@ public class NotesControl : TemplatedControl, NoteStore {
 
     public static readonly StyledProperty<string> NoteContentProperty = AvaloniaProperty.Register<NotesControl, string>(name:"NoteContent", defaultValue:"", defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
     public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<NotesControl, string>(name:"Title", defaultValue:"Call Notes", defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
+    public static readonly StyledProperty<bool> ShowTitleProperty = AvaloniaProperty.Register<NotesControl, bool>(name:"ShowTitle", defaultValue:true, defaultBindingMode:Avalonia.Data.BindingMode.OneWay);
+
+    public bool ShowTitle {
+        get => GetValue(ShowTitleProperty);
+        set => SetValue(ShowTitleProperty, value);
+    }
 
     public string Title {
         get { return GetValue(TitleProperty); }

@@ -2,9 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		       xmlns:c="using:ShiftTrackerGUI"
              xmlns:view="clr-namespace:ShiftTrackerGUI.Views"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="800"
              x:Class="ShiftTrackerGUI.Views.ShiftWeekView">
+	<UserControl.Resources>
+		<c:PercentageConverter x:Key="pConvert" />
+	</UserControl.Resources>
   <StackPanel>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
       <TextBlock Classes="MainWindowLabel">Date from week:</TextBlock>
@@ -12,26 +16,27 @@
       <Button Classes="MainWindowButton" Name="btnCloseDialog" Content="Close" />
     </StackPanel>
     <TabControl Name="tabDays">
+		 <!-- Width="{Binding $parent[Window].Width, Converter={StaticResource pConvert}, ConverterParameter='0.8'}" -->
       <TabItem Header="Monday" Name="tMonday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftMonday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftMonday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Tuesday" Name="tTuesday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftTuesday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftTuesday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Wednesday" Name="tWednesday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftWednesday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftWednesday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Thursday" Name="tThursday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftThursday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftThursday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Friday" Name="tFriday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftFriday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftFriday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Saturday" Name="tSaturday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSaturday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSaturday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
       <TabItem Header="Sunday" Name="tSunday">
-        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSunday" />
+        <view:ShiftTimesView EditDate="False" EditWeekVisible="False" Name="pShiftSunday" Height="{Binding $parent[Window].Height, Converter={StaticResource pConvert}, ConverterParameter='0.9'}" />
       </TabItem>
     </TabControl>
   </StackPanel>

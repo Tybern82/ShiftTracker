@@ -43,6 +43,7 @@
         <Button Classes="MainWindowButton" Grid.Column="3" Grid.Row="0" Content="Remove" Name="btnRemoveBreak"/>
         <Button Classes="MainWindowButton" Grid.Column="4" Grid.Row="0" Content="Clear Breaks" Name="btnClearBreaks" />
         <Button Classes="MainWindowButton" Grid.Column="5" Grid.Row="0" Content="Add Leave" Name="btnAllDayBreak" />
+			
         <DataGrid Grid.Column="0" Grid.ColumnSpan="6" Grid.Row="1"
           Margin="20" ItemsSource="{Binding Breaks}"
           IsReadOnly="False"
