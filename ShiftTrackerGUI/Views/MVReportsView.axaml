@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="200"
+				 MinWidth="600" MinHeight="200"
+             xmlns:view="clr-namespace:ShiftTrackerGUI.Views"
+             xmlns:model="clr-namespace:ShiftTrackerGUI.ViewModels"
+             x:Class="ShiftTrackerGUI.Views.MVReportsView"
+             x:DataType="model:MainViewModel">
+	<Design.DataContext>
+		<model:MainViewModel />
+	</Design.DataContext>
+	<HeaderedContentControl Header="Reports" Classes="GroupBox">
+		<Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="auto,auto,auto,auto" HorizontalAlignment="Center">
+
+			<TextBlock Classes="MainWindowLabel" Text="Daily Report: " Grid.Row="0" Grid.Column="0" />
+			<CalendarDatePicker Classes="MainWindowCalendarDatePicker" Name="dtDailyReport" FirstDayOfWeek="Monday" SelectedDate="{Binding ShiftState.ActiveShift.CurrentDate}" Grid.Row="0" Grid.Column="1" />
+			<Button Classes="MainWindowButton" Name="btnDailyReportSend" Content="Send" Grid.Row="0" Grid.Column="2" />
+			<Button Classes="MainWindowButton" Name="btnDailyReportSave" Content="Save" Grid.Row="0" Grid.Column="3" />
+
+			<Separator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
+
+			<TextBlock Classes="MainWindowLabel" Text="Work From Home Annual Report: " Grid.Row="2" Grid.Column="0" />
+			<CalendarDatePicker Classes="MainWindowCalendarDatePicker" Name="dtEOFYReport" FirstDayOfWeek="Monday" SelectedDate="{Binding ShiftState.ActiveShift.CurrentDate}" Grid.Row="2" Grid.Column="1" />
+			<Button Classes="MainWindowButton" Name="btnEOFYReportSend" Content="Send" Grid.Row="2" Grid.Column="2" />
+			<Button Classes="MainWindowButton" Name="btnEOFYReportSave" Content="Save" Grid.Row="2" Grid.Column="3" />
+
+			<Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" />
+
+		</Grid>
+	</HeaderedContentControl>
+</UserControl>

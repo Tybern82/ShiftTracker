@@ -85,40 +85,40 @@ public partial class MainWindow : Window {
         pMainView.ViewModel.PDFPassword = TrackerSettings.Instance.PDFPassword; // ensure reload now the config file has been loaded
         pMainView.ViewModel.MeetingTime = TrackerSettings.Instance.MeetingTime;
 
-        pMainView.btnDailyReportSend.Click += async (sender, args) => {
+        pMainView.vReports.btnDailyReportSend.Click += async (sender, args) => {
             // TODO: Move to separate thread (CMDProcessor?)
-            DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
+            DateTime dt = pMainView.vReports.dtDailyReport.SelectedDate ?? DateTime.Today;
             DailyReport dr = new DailyReport(dt);
             string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
             await doSendReport(dr, reportName);
         };
 
-        pMainView.btnDailyReportSave.Click += async (sender, args) => {
-            DateTime dt = pMainView.dtDailyReport.SelectedDate ?? DateTime.Today;
+        pMainView.vReports.btnDailyReportSave.Click += async (sender, args) => {
+            DateTime dt = pMainView.vReports.dtDailyReport.SelectedDate ?? DateTime.Today;
             DailyReport dr = new DailyReport(dt);
             string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
             await doSaveReport(dr, reportName);
         };
 
-        pMainView.btnEOFYReportSend.Click += async (sender, args) => {
-            DateTime dt = pMainView.dtEOFYReport.SelectedDate ?? DateTime.Today;
+        pMainView.vReports.btnEOFYReportSend.Click += async (sender, args) => {
+            DateTime dt = pMainView.vReports.dtEOFYReport.SelectedDate ?? DateTime.Today;
             WFHReport dr = new WFHReport(dt);
             string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
             await doSendReport(dr, reportName);
         };
 
-        pMainView.btnEOFYReportSave.Click += async (sender, args) => {
-            DateTime dt = pMainView.dtEOFYReport.SelectedDate ?? DateTime.Today;
+        pMainView.vReports.btnEOFYReportSave.Click += async (sender, args) => {
+            DateTime dt = pMainView.vReports.dtEOFYReport.SelectedDate ?? DateTime.Today;
             WFHReport dr = new WFHReport(dt);
             string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
             await doSaveReport(dr, reportName);
         };
 
-        pMainView.btnSystemIssue.Click += (sender, args) => {
+        pMainView.vCall.btnSystemIssue.Click += (sender, args) => {
             doImmediateBreak(BreakType.SystemIssue);
         };
 
-        pMainView.btnCoaching.Click += (sender, args) => {
+        pMainView.vCall.btnCoaching.Click += (sender, args) => {
             doImmediateBreak(BreakType.Coaching);
         };
 
@@ -134,7 +134,7 @@ public partial class MainWindow : Window {
             dlgEditWeek.ShowDialog(this);
         };
 
-        pMainView.pExtraControls.onAddNote += () => {
+        pMainView.vCall.pExtraControls.onAddNote += () => {
             ExtraNotesWindow wndNotes = new ExtraNotesWindow();
             wndNotes.onCancel += () => {
                 // Just close - don't save
@@ -149,7 +149,7 @@ public partial class MainWindow : Window {
             wndNotes.ShowDialog(this);
         };
 
-        pMainView.pExtraControls.onSkipSurvey += () => {
+        pMainView.vCall.pExtraControls.onSkipSurvey += () => {
             SkipSurveyWindow wndSkipSurvey = new SkipSurveyWindow();
             wndSkipSurvey.vSkipSurvey.onSkipSurvey += (reason) => {
                 if (pMainView.ViewModel.CallState.CurrentCall != null) {
@@ -160,13 +160,13 @@ public partial class MainWindow : Window {
             wndSkipSurvey.vSkipSurvey.onSave += () => {
                 string note = wndSkipSurvey.vSkipSurvey.pNotes.NoteContent;
                 if (!string.IsNullOrWhiteSpace(note)) pMainView.ViewModel.CallState.appendNote("Survey: [" + note + "]");
-                pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
+                pMainView.vCall.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
                 wndSkipSurvey.Close();
             };
             wndSkipSurvey.ShowDialog(this);
         };
 
-        pMainView.pCallControls.onCallback += () => {
+        pMainView.vCall.pCallControls.onCallback += () => {
             CallbackWindow wndCallback = new CallbackWindow();
 
             wndCallback.vCallback.onCallback += (type, details) => {
@@ -178,7 +178,7 @@ public partial class MainWindow : Window {
             wndCallback.ShowDialog(this);
         };
 
-        pMainView.pCallControls.onCallTransfer += () => {
+        pMainView.vCall.pCallControls.onCallTransfer += () => {
             CallTransferWindow wndCallTransfer = new CallTransferWindow(pMainView.ViewModel.CallState); // link to Common Notes
 
             wndCallTransfer.vCallTransfer.onTransferCall += (type, time, notes) => {
@@ -196,9 +196,9 @@ public partial class MainWindow : Window {
         Transition? initialCall = pMainView.ViewModel.CallState.callState.getTransition(State.getState(CallSM.CALL_WAITING), State.getState(CallSM.CALL_ACTIVE));
         if (initialCall != null) {
             initialCall.onTransition += (initial, final) => {
-                pMainView.cmbCallType.IsEnabled = true;
+                pMainView.vCall.cmbCallType.IsEnabled = true;
                 if (pMainView.ViewModel.CallState.CurrentCall != null)
-                    pMainView.cmbCallType.SelectedItem = pMainView.ViewModel.CallState.CurrentCall.Type;
+                    pMainView.vCall.cmbCallType.SelectedItem = pMainView.ViewModel.CallState.CurrentCall.Type;
             };
         } else {
             LOG.Error("Missing Transition: <Waiting> -> <Active>");
@@ -213,7 +213,7 @@ public partial class MainWindow : Window {
                         // TODO: showDialog SkipSurvey
                     }
                 }
-                pMainView.cmbCallType.IsEnabled = false;
+                pMainView.vCall.cmbCallType.IsEnabled = false;
             };
         } else {
             LOG.Error("Mising Transition: <Wrap> -> <Waiting>");
@@ -225,7 +225,7 @@ public partial class MainWindow : Window {
                 if ((pMainView.ViewModel.CallState.CurrentCall != null) && (pMainView.ViewModel.CallState.CurrentCall?.Survey == SurveyStatus.Missing)) {
                     // Record Transfer for Survey if not already set on the call (if already set, will retain existing value)
                     pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.Transfer;
-                    pMainView.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
+                    pMainView.vCall.pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls); // disable survey controls
                 }
             };
         } else {

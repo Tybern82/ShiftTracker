@@ -17,59 +17,7 @@
 	</UserControl.Resources>
 	<TabControl>
 		<TabItem Header="Call">
-			<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*" HorizontalAlignment="Center">
-				<view:CurrentTimeView Name="pCurrentTime" Grid.Row="0" Grid.Column="0" />
-				<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
-					<TextBlock Name="fBreakTimer" Text="{Binding ShiftState.BreakTimerText}" FontSize="18" FontFamily="Lato" />
-					<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-					<TextBlock Name="fCurrBreakTimer" Text="{Binding ShiftState.CurrentBreakText}" FontSize="18" FontFamily="Lato" />
-					<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-					<TextBlock Name="fEOSTimer" Text="{Binding ShiftState.EOSTimerText}" FontSize="18" FontFamily="Lato" />
-				</StackPanel>
-				<ScrollViewer IsScrollChainingEnabled="True" Grid.Row="2" Grid.Column="0">
-					<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto,auto">
-						<view:ShiftControlsView Name="pShiftControls" Width="500" Height="120" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" />
-						<view:CallControlsView Name="pCallControls" Width="470" Height="120" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" />
-						
-						<ComboBox Name="cmbCallType"
-									 Width="200"
-									 Margin="5"
-									 ItemsSource="{Binding Models}"
-									 SelectedItem="{Binding CallState.Type}"
-									 VerticalAlignment="Center"
-									 HorizontalAlignment="Right"
-									 IsEnabled="false"
-									 Grid.Column="0" Grid.Row="2">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Converter={StaticResource enumConverter}}"/>
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
-						<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" Grid.Column="1" Grid.Row="2">
-							<Button Name="btnSystemIssue" Classes="MainWindowButton" Content="System Issue" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" />
-							<Button Name="btnCoaching" Classes="MainWindowButton" Content="Coaching" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" />
-						</Grid>
-						
-						<view:ExtraControlsView Name="pExtraControls" Width="500" Height="120" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" />
-						<view:NoteControlsView Name="pNoteControls" Width="450" Height="120" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" />
-						<Separator Margin="20" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" />
-						<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6">
-							<!-- Shift Stats -->
-							<TextBlock Text="Call Time: " FontSize="18" FontFamily="Lato" />
-							<TextBlock Text="{Binding CallState.CurrentTime, StringFormat='hh\\:mm\\:ss'}" FontSize="18" FontFamily="Lato" />
-							<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-							<TextBlock Text="Total Calls: " FontSize="18" FontFamily="Lato" />
-							<TextBlock Text="{Binding CallState.TotalCalls}" FontSize="18" FontFamily="Lato" />
-							<TextBlock Text=" / " FontSize="18" FontFamily="Lato" />
-							<TextBlock Text="Total Time: " FontSize="18" FontFamily="Lato" />
-							<TextBlock Text="{Binding CallState.TotalCallTime, StringFormat='hh\\:mm\\:ss'}" FontSize="18" FontFamily="Lato" />
-						</StackPanel>
-						<Separator Margin="20" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" />
-						<controls:NotesControl Name="pNotes" NoteContent="{Binding CallState.NoteContent}" ShowTitle="False" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2" />
-					</Grid>
-				</ScrollViewer>
-			</Grid>
+			<view:MVCallView Name="vCall" />
 		</TabItem>
 		<TabItem Header="Shift">
 			<view:ShiftTimesView Name="pShiftTimes" EditDate="False" />
@@ -176,25 +124,7 @@
 			</ScrollViewer>
 		</TabItem>
 		<TabItem Header="Reports">
-			<HeaderedContentControl Header="Reports" Classes="GroupBox">
-				<Grid ColumnDefinitions="auto,auto,auto,auto" RowDefinitions="auto,auto,auto,auto" HorizontalAlignment="Center">
-					
-					<TextBlock Classes="MainWindowLabel" Text="Daily Report: " Grid.Row="0" Grid.Column="0" />
-					<CalendarDatePicker Classes="MainWindowCalendarDatePicker" Name="dtDailyReport" FirstDayOfWeek="Monday" SelectedDate="{Binding ShiftState.ActiveShift.CurrentDate}" Grid.Row="0" Grid.Column="1" />
-					<Button Classes="MainWindowButton" Name="btnDailyReportSend" Content="Send" Grid.Row="0" Grid.Column="2" />
-					<Button Classes="MainWindowButton" Name="btnDailyReportSave" Content="Save" Grid.Row="0" Grid.Column="3" />
-
-					<Separator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
-
-					<TextBlock Classes="MainWindowLabel" Text="Work From Home Annual Report: " Grid.Row="2" Grid.Column="0" />
-					<CalendarDatePicker Classes="MainWindowCalendarDatePicker" Name="dtEOFYReport" FirstDayOfWeek="Monday" SelectedDate="{Binding ShiftState.ActiveShift.CurrentDate}" Grid.Row="2" Grid.Column="1" />
-					<Button Classes="MainWindowButton" Name="btnEOFYReportSend" Content="Send" Grid.Row="2" Grid.Column="2" />
-					<Button Classes="MainWindowButton" Name="btnEOFYReportSave" Content="Save" Grid.Row="2" Grid.Column="3" />
-
-					<Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" />
-					
-				</Grid>
-			</HeaderedContentControl>
+			<view:MVReportsView Name="vReports" />
 		</TabItem>
 		<TabItem Header="Settings">
 			<ScrollViewer>
