@@ -151,6 +151,8 @@ public partial class MainWindow : Window {
 
         pMainView.vCall.pExtraControls.onSkipSurvey += () => {
             SkipSurveyWindow wndSkipSurvey = new SkipSurveyWindow();
+            if (pMainView.ViewModel.CallState.CurrentCall != null) 
+                pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.NonFaults;  // set the initial skip type
             wndSkipSurvey.vSkipSurvey.onSkipSurvey += (reason) => {
                 if (pMainView.ViewModel.CallState.CurrentCall != null) {
                     pMainView.ViewModel.CallState.CurrentCall.Survey = reason;

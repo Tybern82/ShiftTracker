@@ -12,8 +12,8 @@
     <PackageReference Include="NLog" Version="6.0.2" />
     <PackageReference Include="PDFsharp-MigraDoc" Version="6.2.1" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
-    <PackageReference Include="System.Collections.Immutable" Version="9.0.7" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
