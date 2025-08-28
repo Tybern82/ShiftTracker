@@ -1,9 +1,12 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using com.tybern.ShiftTracker;
 using com.tybern.ShiftTracker.data;
+using MsBox.Avalonia;
 using ShiftTrackerGUI.Views;
 
 namespace ShiftTrackerGUI.Views;
@@ -29,7 +32,18 @@ public partial class ShiftTimesView : UserControl {
 
         btnAddBreak.Click += (sender, args) => onAddBreak?.Invoke();
         btnRemoveBreak.Click += (sender, args) => onRemoveBreak?.Invoke();
-        btnClearBreaks.Click += (sender, args) => onClearBreaks?.Invoke();
+        btnClearBreaks.Click += (sender, args) => {
+            Window? wnd = (Window?)TopLevel.GetTopLevel(this);
+            if (wnd == null)
+                onClearBreaks?.Invoke();
+            else {
+                var result = MessageBoxManager.GetMessageBoxStandard("Confirm", "Are you sure you want to remove all breaks?", MsBox.Avalonia.Enums.ButtonEnum.YesNo).ShowWindowDialogAsync(wnd);
+                Task.Run(() => {
+                    if (result.Result == MsBox.Avalonia.Enums.ButtonResult.Yes)
+                        Dispatcher.UIThread.Invoke(() => onClearBreaks?.Invoke());
+                });
+            }
+        };
         btnAddStandardBreaks.Click += (sender, args) => onAddStandardBreaks?.Invoke();
         btnAllDayBreak.Click += (sender, args) => onAddAllDayBreak?.Invoke();
     }
