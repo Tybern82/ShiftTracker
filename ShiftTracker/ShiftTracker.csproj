@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="6.0.2" />
+    <PackageReference Include="NLog" Version="6.0.3" />
     <PackageReference Include="PDFsharp-MigraDoc" Version="6.2.1" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.0" />
