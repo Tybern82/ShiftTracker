@@ -27,6 +27,7 @@ namespace com.tybern.ShiftTracker.reports {
 
             var summaryA = section.AddParagraph();   // create summary here so it sits above the table, will be filled in below once the numbers are known
             var summaryB = section.AddParagraph();
+            var callTypes = section.AddParagraph();
             section.AddParagraph();
 
             var autoNotesHeader = section.AddParagraph();
@@ -69,6 +70,8 @@ namespace com.tybern.ShiftTracker.reports {
             int totalCallbacks = 0; int totalTransfers = 0;
             int anGenerated = 0; int anEdited = 0; int anSaved = 0; int anManual = 0;
 
+            Dictionary<enums.CallType, int> callTypeCounts = new Dictionary<enums.CallType, int>();
+
             int callCount = 0;
             foreach (CallRecord c in calls) {
                 callCount++;    // index starts from 1
@@ -85,6 +88,12 @@ namespace com.tybern.ShiftTracker.reports {
                 anEdited += (c.AutoNotesStatus.HasFlag(enums.AutoNotesStatus.Edited)) ? 1 : 0;
                 anSaved += (c.AutoNotesStatus.HasFlag(enums.AutoNotesStatus.Saved)) ? 1 : 0;
                 anManual += (c.AutoNotesStatus.HasFlag(enums.AutoNotesStatus.Manual)) ? 1 : 0;
+
+                if (callTypeCounts.ContainsKey(c.Type)) {
+                    callTypeCounts[c.Type]++;
+                } else {
+                    callTypeCounts.Add(c.Type, 1);
+                }
 
                 var recordRow = callTable.AddRow();
                 recordRow[0].AddParagraph(callCount.ToString());
@@ -104,6 +113,14 @@ namespace com.tybern.ShiftTracker.reports {
             summaryB.Add(new Text("; Total Wrap: " + totalWrapTime.ToString(DBShiftTracker.FORMAT_TIME)));
             summaryB.Add(new Text("; Total SME: " + totalSMETime.ToString(DBShiftTracker.FORMAT_TIME)));
             summaryB.Add(new Text("; Total Transfer: " + totalTransferTime.ToString(DBShiftTracker.FORMAT_TIME)));
+
+            string callTypeCountText = "";
+            foreach (enums.CallType type in callTypeCounts.Keys) {
+                int count = callTypeCounts[type];
+                if (!string.IsNullOrWhiteSpace(callTypeCountText)) callTypeCountText += "; ";
+                callTypeCountText += EnumConverter.GetEnumDescription(type) + ": " + count + " (" + (count / (double)(callCount)).ToString("P02") + ")";
+            }
+            callTypes.AddText(callTypeCountText);
 
             autoNotesA.Add(new Text("Total Calls: " + callCount + "\n"));
             autoNotesB.Add(new Text("Total Generated Notes: " + anGenerated + " (" + (anGenerated * 100.0 / callCount).ToString("0.#") + "%)"));
