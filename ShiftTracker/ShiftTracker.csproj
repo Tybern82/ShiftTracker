@@ -13,7 +13,7 @@
     <PackageReference Include="PDFsharp-MigraDoc" Version="6.2.2" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
-    <PackageReference Include="System.Collections.Immutable" Version="9.0.9" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
