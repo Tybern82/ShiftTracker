@@ -29,7 +29,7 @@ public partial class MainWindow : Window {
             EZFontResolver fonts = EZFontResolver.Get;
             GlobalFontSettings.FontResolver = fonts;
             GlobalFontSettings.FallbackFontResolver = new SubstitutingFontResolver.SubstitutingFontResolver();
-            string path = Path.GetDirectoryName(Environment.ProcessPath) ?? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? ".";   // Try ProcessPath; Fallback to Assembly path; Fallback to current directory
+            string path = Path.GetDirectoryName(Environment.ProcessPath) ?? System.AppContext.BaseDirectory ?? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? ".";   // Try ProcessPath; Fallback to Assembly path; Fallback to current directory
             LOG.Info("Program Path: " + path);
             LOG.Debug("Loading Font: ZT Otez");
             fonts.AddFont("ZT Otez", PdfSharp.Drawing.XFontStyleEx.Regular, Path.Combine(path, @"fonts\ZtOtezRegular-0v504.ttf"));
