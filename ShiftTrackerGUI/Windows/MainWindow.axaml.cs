@@ -40,9 +40,9 @@ public partial class MainWindow : Window {
         isFRSet = true;
     }
 
-    private StatusBarModel statusBar;
+    private readonly StatusBarModel statusBar;
 
-    protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+    protected static readonly NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
     public MainWindow() {
         InitializeComponent();
         setFontResolver();
@@ -88,28 +88,28 @@ public partial class MainWindow : Window {
         pMainView.vReports.btnDailyReportSend.Click += async (sender, args) => {
             // TODO: Move to separate thread (CMDProcessor?)
             DateTime dt = pMainView.vReports.dtDailyReport.SelectedDate ?? DateTime.Today;
-            DailyReport dr = new DailyReport(dt);
+            DailyReport dr = new(dt);
             string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
             await doSendReport(dr, reportName);
         };
 
         pMainView.vReports.btnDailyReportSave.Click += async (sender, args) => {
             DateTime dt = pMainView.vReports.dtDailyReport.SelectedDate ?? DateTime.Today;
-            DailyReport dr = new DailyReport(dt);
+            DailyReport dr = new(dt);
             string reportName = "Report " + dt.ToString(DBShiftTracker.FORMAT_DATE);
             await doSaveReport(dr, reportName);
         };
 
         pMainView.vReports.btnEOFYReportSend.Click += async (sender, args) => {
             DateTime dt = pMainView.vReports.dtEOFYReport.SelectedDate ?? DateTime.Today;
-            WFHReport dr = new WFHReport(dt);
+            WFHReport dr = new(dt);
             string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
             await doSendReport(dr, reportName);
         };
 
         pMainView.vReports.btnEOFYReportSave.Click += async (sender, args) => {
             DateTime dt = pMainView.vReports.dtEOFYReport.SelectedDate ?? DateTime.Today;
-            WFHReport dr = new WFHReport(dt);
+            WFHReport dr = new(dt);
             string reportName = "WFH Annual Report " + dr.StartYear + "-" + (dr.StartYear + 1);
             await doSaveReport(dr, reportName);
         };
@@ -135,13 +135,13 @@ public partial class MainWindow : Window {
         };
 
         pMainView.vCall.pExtraControls.onAddNote += () => {
-            ExtraNotesWindow wndNotes = new ExtraNotesWindow();
+            ExtraNotesWindow wndNotes = new();
             wndNotes.onCancel += () => {
                 // Just close - don't save
                 wndNotes.Close();
             };
             wndNotes.onSave += (notes) => {
-                NoteRecord nr = new NoteRecord(DateTime.Now) {NoteContent = notes};
+                NoteRecord nr = new(DateTime.Now) {NoteContent = notes};
                 pMainView.ViewModel.CallState.updateNote(nr);
                 DBShiftTracker.Instance.save(nr);
                 wndNotes.Close();
@@ -150,9 +150,8 @@ public partial class MainWindow : Window {
         };
 
         pMainView.vCall.pExtraControls.onSkipSurvey += () => {
-            SkipSurveyWindow wndSkipSurvey = new SkipSurveyWindow();
-            if (pMainView.ViewModel.CallState.CurrentCall != null) 
-                pMainView.ViewModel.CallState.CurrentCall.Survey = SurveyStatus.NonFaults;  // set the initial skip type
+            SkipSurveyWindow wndSkipSurvey = new();
+            pMainView.ViewModel.CallState.CurrentCall?.Survey = SurveyStatus.NonFaults;  // set the initial skip type
             wndSkipSurvey.vSkipSurvey.onSkipSurvey += (reason) => {
                 if (pMainView.ViewModel.CallState.CurrentCall != null) {
                     pMainView.ViewModel.CallState.CurrentCall.Survey = reason;
@@ -169,7 +168,7 @@ public partial class MainWindow : Window {
         };
 
         pMainView.vCall.pCallControls.onCallback += () => {
-            CallbackWindow wndCallback = new CallbackWindow();
+            CallbackWindow wndCallback = new();
 
             wndCallback.vCallback.onCallback += (type, details) => {
                 pMainView.ViewModel.CallState.appendNote("Callback - " + type);
@@ -181,7 +180,7 @@ public partial class MainWindow : Window {
         };
 
         pMainView.vCall.pCallControls.onCallTransfer += () => {
-            CallTransferWindow wndCallTransfer = new CallTransferWindow(pMainView.ViewModel.CallState); // link to Common Notes
+            CallTransferWindow wndCallTransfer = new(pMainView.ViewModel.CallState); // link to Common Notes
 
             wndCallTransfer.vCallTransfer.onTransferCall += (type, time, notes) => {
                 wndCallTransfer.Close();
@@ -235,9 +234,9 @@ public partial class MainWindow : Window {
         }
 
         State.getState(CallSM.CALL_SME).enterState += (s, param) => {
-            SMECallWindow wndSMECall = new SMECallWindow(pMainView.ViewModel.CallState);    // link to common notes
+            SMECallWindow wndSMECall = new(pMainView.ViewModel.CallState);    // link to common notes
 
-            State nextState = ((param != null) && (param is State)) ? (State)param : State.getState(CallSM.CALL_WAITING);   // should always be non-null, but default return to Waiting
+            State nextState = ((param != null) && (param is State state)) ? state : State.getState(CallSM.CALL_WAITING);   // should always be non-null, but default return to Waiting
 
             wndSMECall.Closed += (sender, args) => {
                 pMainView.ViewModel.CallState.callState.gotoState(nextState);   // change state when closing SME call window
@@ -262,7 +261,7 @@ public partial class MainWindow : Window {
     }
 
     private void doImmediateBreak(BreakType type) {
-        ImmediateBreakWindow wndBreak = new ImmediateBreakWindow();
+        ImmediateBreakWindow wndBreak = new();
         string desc = EnumConverter.GetEnumDescription(type);
         wndBreak.Title = desc;
         wndBreak.vImmediateBreak.pNotes.Title = desc;
@@ -284,10 +283,10 @@ public partial class MainWindow : Window {
     private async Task doSendReport(BaseReport report, string reportName) {
         statusBar.StatusText = "Generating report...";
         PdfSharp.Pdf.PdfDocument reportDocument = report.generate();
-        MemoryStream output = new MemoryStream();
+        MemoryStream output = new();
         reportDocument.Save(output);
         statusBar.StatusText = "Sending report...";
-        List<MimeEntity> attachments = new List<MimeEntity>();
+        List<MimeEntity> attachments = [];
         MimeEntity e = MimeEntity.Load(new ContentType("application", "pdf"), output);
         e.ContentType.Name = reportName + ".pdf";
         attachments.Add(e);

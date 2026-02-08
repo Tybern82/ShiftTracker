@@ -21,12 +21,12 @@ namespace com.tybern.ShiftTracker.data {
         }
 
         public JObject toJSON() {
-            JObject _result = new JObject();
-
-            _result.Add(JKEY_POSX, PositionX);
-            _result.Add(JKEY_POSY, PositionY);
-            _result.Add(JKEY_WIDTH, Width);
-            _result.Add(JKEY_HEIGHT, Height);
+            JObject _result = new JObject {
+                { JKEY_POSX, PositionX },
+                { JKEY_POSY, PositionY },
+                { JKEY_WIDTH, Width },
+                { JKEY_HEIGHT, Height }
+            };
 
             return _result;
         }

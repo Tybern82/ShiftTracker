@@ -38,12 +38,12 @@ namespace com.tybern.ShiftTracker.reports {
 
             paragraph = section.AddParagraph();
             paragraph.AddFormattedText("Daily Records", StyleNames.Heading2);
-            var shiftTable = section.AddTable();
-            var stDate = shiftTable.AddColumn();
-            var stStart = shiftTable.AddColumn();
-            var stEnd = shiftTable.AddColumn();
-            var stShiftTime = shiftTable.AddColumn();
-            var stUnpaidTime = shiftTable.AddColumn();
+            var shiftTable = section.AddTable();    
+            shiftTable.AddColumn(); // Date
+            shiftTable.AddColumn(); // Start
+            shiftTable.AddColumn(); // End
+            shiftTable.AddColumn(); // ShiftTime
+            shiftTable.AddColumn(); // UnpaidTime
 
             var stHeaderRow = shiftTable.AddRow();
             stHeaderRow.HeadingFormat = true;

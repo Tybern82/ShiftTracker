@@ -68,8 +68,7 @@ namespace com.tybern.ShiftTracker.data {
         }
 
         private void saveCallUpdates(object sender, PropertyChangedEventArgs e) {
-            if ((sender != null) && (sender is CallRecord)) {
-                CallRecord source = (CallRecord)sender;
+            if ((sender != null) && (sender is CallRecord source)) {
                 DBShiftTracker.Instance.save(source);
             }
         }
@@ -88,8 +87,7 @@ namespace com.tybern.ShiftTracker.data {
         }
 
         private void saveNoteUpdates(object sender, PropertyChangedEventArgs e) {
-            if ((sender != null) && (sender is NoteRecord)) {
-                NoteRecord source = (NoteRecord)sender;
+            if ((sender != null) && (sender is NoteRecord source)) {
                 DBShiftTracker.Instance.save(source);
             }
         }

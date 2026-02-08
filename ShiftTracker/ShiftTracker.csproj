@@ -6,19 +6,27 @@
     <RootNamespace>com.tybern.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.14.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NLog" Version="6.0.7" />
-    <PackageReference Include="PDFsharp-MigraDoc" Version="6.2.3" />
+    <PackageReference Include="NLog" Version="6.1.0" />
+    <PackageReference Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageReference Include="sqlite-net2" Version="2.2.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
-    <PackageReference Include="System.Collections.Immutable" Version="10.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CommandProcessor\CMDProcessor.csproj" />
-    <ProjectReference Include="..\StateMachine\StateMachine.csproj" />
+    <ProjectReference Include="..\StateManager\StateMachine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,7 +20,7 @@ namespace ShiftTrackerGUI.Views;
 
 public partial class MainView : UserControl {
 
-    protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+    protected static readonly NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
     public MainViewModel ViewModel { get; private set; } = new MainViewModel(); 
 

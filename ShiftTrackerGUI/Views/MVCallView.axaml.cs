@@ -16,7 +16,7 @@ namespace ShiftTrackerGUI.Views;
 
 public partial class MVCallView : UserControl {
 
-    protected static NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
+    protected static readonly NLog.Logger LOG = NLog.LogManager.GetCurrentClassLogger();
 
     public MainViewModel? ViewModel { get; private set; } = null;
 
@@ -74,12 +74,12 @@ public partial class MVCallView : UserControl {
         };
 
         pExtraControls.onPreferredName += () => {
-            if (ViewModel.CallState.CurrentCall != null) ViewModel.CallState.CurrentCall.IsPreferredNameRequested = true;
+            ViewModel.CallState.CurrentCall?.IsPreferredNameRequested = true;
             pExtraControls.DisableButton(ExtraControlsView.ExtraControls.PreferredName);
         };
 
         pExtraControls.onSurveyRequest += () => {
-            if (ViewModel.CallState.CurrentCall != null) ViewModel.CallState.CurrentCall.Survey = SurveyStatus.SurveyRequested;
+            ViewModel.CallState.CurrentCall?.Survey = SurveyStatus.SurveyRequested;
             pExtraControls.DisableButton(ExtraControlsView.ExtraControls.SurveyControls);   // disable both Survey buttons once triggered
         };
 

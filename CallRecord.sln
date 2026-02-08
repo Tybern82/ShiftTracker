@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35521.163
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMDProcessor", "CommandProcessor\CMDProcessor.csproj", "{8F2571A9-1F94-475E-8870-B2C03E4F9956}"
 EndProject
@@ -11,7 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrackerGUI", "ShiftTra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftTrackerGUI.Desktop", "ShiftTrackerGUI.Desktop\ShiftTrackerGUI.Desktop.csproj", "{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMachine", "StateMachine\StateMachine.csproj", "{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMachine", "StateManager\StateMachine.csproj", "{B3A906D1-3EAB-7E30-8E9A-494EF2959CF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EBE61524-6129-4C40-AFB8-6AB890E3D8A0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +40,10 @@ Global
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95DEE806-06E9-E8AE-BDF5-21736C2D7CF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEFA3B97-80EF-44EE-BEDF-3A1A5BE1AC6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A906D1-3EAB-7E30-8E9A-494EF2959CF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A906D1-3EAB-7E30-8E9A-494EF2959CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A906D1-3EAB-7E30-8E9A-494EF2959CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A906D1-3EAB-7E30-8E9A-494EF2959CF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

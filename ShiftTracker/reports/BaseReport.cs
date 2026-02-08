@@ -11,7 +11,7 @@ using PdfSharp.Pdf;
 namespace com.tybern.ShiftTracker.reports {
     public abstract class BaseReport {
 
-        private bool isPasswordProtected = true;
+        private readonly bool isPasswordProtected = true;
 
         public BaseReport(bool isPasswordProtected = true) {
             this.isPasswordProtected = isPasswordProtected;
@@ -20,7 +20,7 @@ namespace com.tybern.ShiftTracker.reports {
         protected Document? GeneratedDocument { get; set; }
 
         public PdfDocument generate() {
-            Document reportDoc = (GeneratedDocument == null) ? createDocument() : GeneratedDocument;
+            Document reportDoc = GeneratedDocument ?? createDocument();
             var pdfRenderer = new PdfDocumentRenderer {
                 Document = reportDoc,
                 PdfDocument = {

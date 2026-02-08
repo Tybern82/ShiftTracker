@@ -13,7 +13,7 @@ using PdfSharp.Quality;
 namespace com.tybern.ShiftTracker.reports {
     public class DailyReport : BaseReport {
 
-        private DateTime reportDate;
+        private readonly DateTime reportDate;
 
         public DailyReport(DateTime dt) {
             this.reportDate = dt;
@@ -42,13 +42,13 @@ namespace com.tybern.ShiftTracker.reports {
             var callTableHeader = section.AddParagraph();
             callTableHeader.AddFormattedText("Calls", StyleNames.Heading2);
             var callTable = section.AddTable();
-            var cCallNumber = callTable.AddColumn(Unit.FromCentimeter(1));
-            var cCallType = callTable.AddColumn(Unit.FromCentimeter(3));
-            var cCallTime = callTable.AddColumn(Unit.FromCentimeter(2));
-            var cWrapTime = callTable.AddColumn(Unit.FromCentimeter(2));
-            var cHoldTime = callTable.AddColumn(Unit.FromCentimeter(2));
-            var cSurvey = callTable.AddColumn(Unit.FromCentimeter(3));
-            var cAutoNotes = callTable.AddColumn(Unit.FromCentimeter(3));
+            callTable.AddColumn(Unit.FromCentimeter(1));    // Call Number
+            callTable.AddColumn(Unit.FromCentimeter(3));    // Call Type
+            callTable.AddColumn(Unit.FromCentimeter(2));    // Call Time
+            callTable.AddColumn(Unit.FromCentimeter(2));    // Wrap Time
+            callTable.AddColumn(Unit.FromCentimeter(2));    // Hold Time
+            callTable.AddColumn(Unit.FromCentimeter(3));    // Survey
+            callTable.AddColumn(Unit.FromCentimeter(3));    // Auto Notes
             section.AddParagraph();
 
             var headerRow = callTable.AddRow();
@@ -133,8 +133,8 @@ namespace com.tybern.ShiftTracker.reports {
                 var notesHeader = section.AddParagraph();
                 notesHeader.AddFormattedText("Notes", StyleNames.Heading2);
                 var notesTable = section.AddTable();
-                var nTime = notesTable.AddColumn(Unit.FromCentimeter(2));
-                var nNote = notesTable.AddColumn(Unit.FromCentimeter(8));
+                notesTable.AddColumn(Unit.FromCentimeter(2));   // Time
+                notesTable.AddColumn(Unit.FromCentimeter(8));   // Note
 
                 var nHeaderRow = notesTable.AddRow();
                 nHeaderRow.HeadingFormat = true;

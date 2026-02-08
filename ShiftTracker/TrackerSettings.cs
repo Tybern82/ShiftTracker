@@ -43,7 +43,7 @@ namespace com.tybern.ShiftTracker {
         private SQLiteConnection? _DBConnection = null;
         public SQLiteConnection DBConnection {
             get {
-                if (_DBConnection == null) _DBConnection = new SQLiteConnection(DBFile, storeDateTimeAsTicks: false);
+                _DBConnection ??= new SQLiteConnection(DBFile, storeDateTimeAsTicks: false);
                 return _DBConnection;
             }
         }
@@ -59,25 +59,21 @@ namespace com.tybern.ShiftTracker {
         }
 
         public void loadConfigFile() {
-            using (FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate)) {
-                using (StreamReader configReader = new StreamReader(configFile)) {
-                    string configJSON = configReader.ReadToEnd();
-                    if (!string.IsNullOrWhiteSpace(configJSON)) {
-                        JObject configData = JObject.Parse(configJSON);
-                        decodeJSON(configData);
-                    }
-                }
+            using FileStream configFile = File.Open(ConfigFile, FileMode.OpenOrCreate);
+            using StreamReader configReader = new StreamReader(configFile);
+            string configJSON = configReader.ReadToEnd();
+            if (!string.IsNullOrWhiteSpace(configJSON)) {
+                JObject configData = JObject.Parse(configJSON);
+                decodeJSON(configData);
             }
         }
 
         public void saveConfigFile() {
-            using (FileStream configFile = File.Open(ConfigFile, FileMode.Create)) {
-                using (StreamWriter configWriter = new StreamWriter(configFile)) {
-                    configWriter.Write(encodeJSON().ToString());
-                    configWriter.Flush();
-                    configWriter.Close();
-                }
-            }
+            using FileStream configFile = File.Open(ConfigFile, FileMode.Create);
+            using StreamWriter configWriter = new StreamWriter(configFile);
+            configWriter.Write(encodeJSON().ToString());
+            configWriter.Flush();
+            configWriter.Close();
         }
 
         private void decodeJSON(JObject configData) {
@@ -98,11 +94,13 @@ namespace com.tybern.ShiftTracker {
             if (configData.ContainsKey(CONFIGKEY_AWPS)) {
                 JArray? additionalWindows = configData.Value<JArray>(CONFIGKEY_AWPS);
                 if (additionalWindows != null) {
-                    foreach (JObject wnd in additionalWindows) {
-                        WindowPosition wPos = new WindowPosition(wnd);
-                        string? name = wnd.Value<string>(CONFIGKEY_WPOS_NAME);
-                        if (name != null) {
-                            savedWindows[name] = wPos;
+                    foreach (JToken token in additionalWindows) {
+                        if (token is JObject wnd) {
+                            WindowPosition wPos = new WindowPosition(wnd);
+                            string? name = wnd.Value<string>(CONFIGKEY_WPOS_NAME);
+                            if (name != null) {
+                                savedWindows[name] = wPos;
+                            }
                         }
                     }
                 }
@@ -121,13 +119,13 @@ namespace com.tybern.ShiftTracker {
 
         private JObject encodeJSON() {
 
-            JObject _result = new JObject();
-
-            _result.Add(CONFIGKEY_DBFILE, DBFile);
-            _result.Add(CONFIGKEY_SMTP, SMTP.toJSON());
-            _result.Add(CONFIGKEY_EPWD, PDFPassword);
-            _result.Add(CONFIGKEY_WPOS, MainWindowPosition.toJSON());
-            _result.Add(CONFIGKEY_MEET, MeetingTime.ToString(@"hh\:mm"));
+            JObject _result = new JObject {
+                { CONFIGKEY_DBFILE, DBFile },
+                { CONFIGKEY_SMTP, SMTP.toJSON() },
+                { CONFIGKEY_EPWD, PDFPassword },
+                { CONFIGKEY_WPOS, MainWindowPosition.toJSON() },
+                { CONFIGKEY_MEET, MeetingTime.ToString(@"hh\:mm") }
+            };
 
             if (savedWindows.Count > 0) {
                 JArray additionalWindows = new JArray();
